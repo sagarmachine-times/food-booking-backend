@@ -23,7 +23,7 @@ public class FoodBookingApplication {
     Docket docketBean(){
         return  new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .paths(PathSelectors.ant("/api/*"))
+                .paths(PathSelectors.ant("/api/**"))
                 .build();
                   }
 
