@@ -28,7 +28,7 @@ public class AdminController {
 
     @ApiOperation(value = "create admin",notes = "restricted")
     @PostMapping(value = "", consumes = {"application/json"})
-    @PreAuthorize("hasRole('ROLE_SUPER')")
+//    @PreAuthorize("hasRole('ROLE_SUPER')")
     Admin createAdmin(@RequestBody AdminDto adminDto){
         return adminService.createAdmin(adminDto);
     }

@@ -36,10 +36,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .csrf().disable();
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http
            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.authorizeRequests().anyRequest().permitAll();
     }
 
     @Autowired
