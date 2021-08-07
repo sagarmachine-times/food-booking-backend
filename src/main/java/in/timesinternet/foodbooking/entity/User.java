@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import in.timesinternet.foodbooking.entity.embeddable.Address;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
 import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +33,10 @@ public class User implements Serializable {
     @Column(nullable = false)
     @JsonIgnore
     String password;
+
+    @Embedded
+    Address address;
+
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

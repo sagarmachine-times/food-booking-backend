@@ -11,11 +11,23 @@ import javax.persistence.ManyToOne;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class Staff extends User {
 
     @ManyToOne
     @JsonIgnore
     Restaurant restaurant;
 
+    @Override
+    public String toString() {
+        return "Staff{" +
+                "restaurant=" + restaurant +
+                ", id=" + id +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", address=" + address +
+                ", role=" + role +
+                '}';
+    }
 }

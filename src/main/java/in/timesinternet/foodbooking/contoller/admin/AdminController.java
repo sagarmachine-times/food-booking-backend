@@ -43,7 +43,7 @@ public class AdminController {
     @ApiOperation(value = "admin login",notes = "response - jwt token ")
     @PostMapping(value = "/login")
     ResponseEntity login(@RequestBody LoginDto loginDto){
-        return userService.login(loginDto.getEmail(), loginDto.getPassword(), null);
+        return userService.login(loginDto.getEmail(), loginDto.getPassword());
     }
 
 }

@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
-
 @RestController
 @RequestMapping(value = "/api/staff/restaurant")
 public class StaffRestaurantController {
@@ -25,11 +23,6 @@ public class StaffRestaurantController {
         restaurantService.updateRestaurantLogo(logo, restaurantId, userEmail);
     }
 
-    @GetMapping(value = "/test")
-    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    String test(@RequestBody MultipartFile logo, HttpServletRequest request) {
-        Integer restaurantId=(Integer)request.getAttribute("restaurantId");
-        String userEmail= (String)request.getAttribute("userEmail");
-        return restaurantId+"  "+userEmail;
-    }
+
+
 }

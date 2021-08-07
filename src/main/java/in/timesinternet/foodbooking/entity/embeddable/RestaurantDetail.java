@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+//@ToString
 public class RestaurantDetail {
 
     @Column(unique = true, updatable = false)

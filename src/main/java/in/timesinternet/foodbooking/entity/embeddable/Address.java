@@ -9,7 +9,7 @@ import javax.persistence.Embeddable;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+//@ToString
 public class Address {
     String line1;
     String line2;

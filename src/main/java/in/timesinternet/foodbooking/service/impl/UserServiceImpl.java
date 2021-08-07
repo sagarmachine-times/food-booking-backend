@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ResponseEntity login(String email, String password, Integer restaurantId) {
+    public ResponseEntity login(String email, String password) {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         if (authentication.isAuthenticated()) {
@@ -47,8 +47,7 @@ public class UserServiceImpl implements UserService {
             String jwt ;
             if (user instanceof Staff ) {
                 Staff staff= (Staff)user;
-                if(!staff.getRestaurant().getId().equals(restaurantId))
-                     throw new RuntimeException("unauthorized error");
+
                 jwt = jwtUtil.createJWT(email, role.getAuthority(),staff.getRestaurant().getId());
             }
 //            else if(user instanceof Customer)

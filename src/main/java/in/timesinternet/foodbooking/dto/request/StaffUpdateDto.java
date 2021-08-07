@@ -4,16 +4,13 @@ import in.timesinternet.foodbooking.entity.embeddable.Address;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
 import lombok.*;
 
-
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString
-public class StaffDto {
-    String email;
+@AllArgsConstructor
+@NoArgsConstructor
+public class StaffUpdateDto {
     String firstName;
     String lastName;
-    Role role;
     Address address;
 }
