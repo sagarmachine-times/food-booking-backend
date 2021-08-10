@@ -26,6 +26,12 @@ public class Restaurant {
     @Embedded
     RestaurantDetail restaurantDetail;
 
+    @CreationTimestamp
+    Date createdAt;
+
+    @UpdateTimestamp
+    Date updatedAt;
+
     //relationship
     @OneToOne(cascade = CascadeType.ALL)
     Image logo;
@@ -33,16 +39,67 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<Staff> staffList = new ArrayList<>();
-
-    @CreationTimestamp
-    Date createdAt;
-
-    @UpdateTimestamp
-    Date updatedAt;
-
     public void addStaff(Staff staff) {
         staffList.add(staff);
         staff.setRestaurant(this);
     }
+
+    @OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Customer> customerList = new ArrayList<>();
+    public void addCustomer(Customer customer) {
+        customerList.add(customer);
+        customer.setRestaurant(this);
+    }
+
+    @OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Category> categoryList = new ArrayList<>();
+    public void addCategory(Category category) {
+        categoryList.add(category);
+        category.setRestaurant(this);
+    }
+
+    @OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Item> itemList = new ArrayList<>();
+    public void addItem(Item item) {
+        itemList.add(item);
+        item.setRestaurant(this);
+    }
+
+    @OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Cart> cartList = new ArrayList<>();
+    public void addCart(Cart cart) {
+        cartList.add(cart);
+        cart.setRestaurant(this);
+    }
+
+    @OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Coupon> couponList = new ArrayList<>();
+    public void addCoupon(Coupon coupon) {
+        couponList.add(coupon);
+        coupon.setRestaurant(this);
+    }
+
+
+    @OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Order> orderList = new ArrayList<>();
+    public void addOrder(Order order) {
+        orderList.add(order);
+        order.setRestaurant(this);
+    }
+
+    @OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Serviceability> pincodeList = new ArrayList<>();
+    public void addPincode(Serviceability serviceability) {
+        pincodeList.add(serviceability);
+        serviceability.setRestaurant(this);
+    }
+
 
 }

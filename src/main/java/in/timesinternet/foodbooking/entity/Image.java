@@ -33,8 +33,4 @@ public class Image {
     @JsonIgnore
     String deleteUrl;
 
-    @OneToOne(mappedBy = "logo")
-    @JsonIgnore
-    Restaurant restaurantDetail;
-
 }

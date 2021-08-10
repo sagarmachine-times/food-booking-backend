@@ -17,17 +17,4 @@ public class Staff extends User {
     @JsonIgnore
     Restaurant restaurant;
 
-    @Override
-    public String toString() {
-        return "Staff{" +
-                "restaurant=" + restaurant +
-                ", id=" + id +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
-                ", address=" + address +
-                ", role=" + role +
-                '}';
-    }
 }
