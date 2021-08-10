@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.service.impl;
 
 import in.timesinternet.foodbooking.dto.request.RestaurantDto;
+import in.timesinternet.foodbooking.dto.request.RestaurantUpdateDto;
 import in.timesinternet.foodbooking.entity.Image;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Staff;
@@ -56,6 +57,20 @@ public class RestaurantServiceImpl implements RestaurantService {
         String url = "https://image.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg";
         restaurant.setLogo(new Image(url, url, url));
         restaurantRepository.save(restaurant);
+    }
+
+    @Override
+    public Restaurant getRestaurant(Integer restaurantId) {
+        return  restaurantRepository.findById(restaurantId).get();
+    }
+
+    @Override
+    public Restaurant updateRestaurant(RestaurantUpdateDto restaurantUpdateDto, Integer restaurantId) {
+
+        Restaurant restaurant= restaurantRepository.findById(restaurantId).get();
+        ModelMapper modelMapper= new ModelMapper();
+       modelMapper.map(restaurantUpdateDto, restaurant.getRestaurantDetail());
+        return restaurantRepository.save(restaurant);
     }
 
 
