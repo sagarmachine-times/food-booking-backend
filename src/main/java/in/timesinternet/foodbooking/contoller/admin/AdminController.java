@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -42,8 +44,9 @@ public class AdminController {
 
     @ApiOperation(value = "admin login",notes = "response - jwt token ")
     @PostMapping(value = "/login")
-    ResponseEntity login(@RequestBody LoginDto loginDto){
-        return userService.login(loginDto.getEmail(), loginDto.getPassword());
+
+    ResponseEntity<HashMap<String,String>> login(@RequestBody LoginDto loginDto){
+        return ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword()));
     }
 
 }

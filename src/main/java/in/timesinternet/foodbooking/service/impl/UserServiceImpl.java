@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ResponseEntity login(String email, String password) {
+    public HashMap<String, String> login(String email, String password) {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         if (authentication.isAuthenticated()) {
@@ -50,18 +50,18 @@ public class UserServiceImpl implements UserService {
 
                 jwt = jwtUtil.createJWT(email, role.getAuthority(),staff.getRestaurant().getId());
             }
-//            else if(user instanceof Customer)
-//            {
-//                Customer customer= (Customer) user;
-//                jwt = jwtUtil.createJWT(email, role.getAuthority(),customer.getRestaurant().getId());
-//            }
+            else if(user instanceof Customer)
+            {
+                Customer customer= (Customer) user;
+                jwt = jwtUtil.createJWT(email, role.getAuthority(),customer.getRestaurant().getId());
+            }
             else
                 jwt= jwtUtil.createJWT(email, role.getAuthority(), null);
 
             String token = "Bearer " + jwt;
-            return ResponseEntity.ok(new HashMap<String, String>() {{
+            return new HashMap<String, String>() {{
                 put("token", token);
-            }});
+            }};
         } else
             throw new RuntimeException("invalid credentials");
     }

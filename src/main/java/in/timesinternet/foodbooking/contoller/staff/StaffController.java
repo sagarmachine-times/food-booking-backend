@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -24,8 +25,8 @@ public class StaffController {
     StaffService staffService;
 
     @PostMapping(value = "/login")
-    ResponseEntity login(@RequestBody LoginDto loginDto){
-        return userService.login(loginDto.getEmail(), loginDto.getPassword());
+    ResponseEntity<HashMap<String,String>> login(@RequestBody LoginDto loginDto){
+        return ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword()));
     }
 
     @PostMapping(value = "")
