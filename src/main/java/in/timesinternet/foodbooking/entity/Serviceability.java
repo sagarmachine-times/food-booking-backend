@@ -22,7 +22,7 @@ public class Serviceability {
 
     Integer pincode;
     Integer deliveryCharge;
-    Boolean isServiceable;
+    Boolean isServiceable=true;
 
     @CreationTimestamp
     Date createdAt;
