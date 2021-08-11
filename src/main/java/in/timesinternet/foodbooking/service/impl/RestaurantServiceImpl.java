@@ -9,6 +9,7 @@ import in.timesinternet.foodbooking.entity.embeddable.RestaurantDetail;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.service.RestaurantService;
+import in.timesinternet.foodbooking.util.ImageService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,9 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    ImageService imageService;
 
     ModelMapper modelMapper = new ModelMapper();
 
@@ -49,27 +53,23 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     @Transactional
     public void updateRestaurantLogo(MultipartFile file, Integer restaurantId, String email) {
-        //authorize user
-
         Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
-
-        //upload file
-        String url = "https://image.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg";
-        restaurant.setLogo(new Image(url, url, url));
+        Image image = imageService.uploadImage(file);
+        restaurant.setLogo(image);
         restaurantRepository.save(restaurant);
     }
 
     @Override
     public Restaurant getRestaurant(Integer restaurantId) {
-        return  restaurantRepository.findById(restaurantId).get();
+        return restaurantRepository.findById(restaurantId).get();
     }
 
     @Override
     public Restaurant updateRestaurant(RestaurantUpdateDto restaurantUpdateDto, Integer restaurantId) {
 
-        Restaurant restaurant= restaurantRepository.findById(restaurantId).get();
-        ModelMapper modelMapper= new ModelMapper();
-       modelMapper.map(restaurantUpdateDto, restaurant.getRestaurantDetail());
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(restaurantUpdateDto, restaurant.getRestaurantDetail());
         return restaurantRepository.save(restaurant);
     }
 
