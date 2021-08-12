@@ -5,6 +5,7 @@ import in.timesinternet.foodbooking.dto.request.LoginDto;
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.service.CustomerService;
 import in.timesinternet.foodbooking.service.UserService;
+import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 
 @RestController
@@ -24,8 +26,11 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    BindingResultService bindingResultService;
+
     @PostMapping(value = "")
-    ResponseEntity<Customer> registerCustomer(@RequestBody CustomerDto customerDto){
+    ResponseEntity<Customer> registerCustomer(@RequestBody @Valid CustomerDto customerDto){
         return ResponseEntity.ok(customerService.createCustomer(customerDto));
     }
 
