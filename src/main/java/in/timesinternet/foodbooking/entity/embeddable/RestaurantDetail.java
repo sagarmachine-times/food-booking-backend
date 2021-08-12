@@ -25,10 +25,10 @@ public class RestaurantDetail {
     String subDomain;
 
     @Temporal(TemporalType.TIME)
-    Date openingDate;
+    Date openingTime;
 
     @Temporal(TemporalType.TIME)
-    Date closingDate;
+    Date closingTime;
 
     @Embedded
     Address address;

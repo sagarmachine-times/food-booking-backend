@@ -6,12 +6,15 @@ import in.timesinternet.foodbooking.dto.request.StaffUpdateDto;
 import in.timesinternet.foodbooking.entity.Staff;
 import in.timesinternet.foodbooking.service.StaffService;
 import in.timesinternet.foodbooking.service.UserService;
+import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,14 +27,19 @@ public class StaffController {
     @Autowired
     StaffService staffService;
 
+    @Autowired
+    BindingResultService bindingResultService;
+
     @PostMapping(value = "/login")
-    ResponseEntity<HashMap<String,String>> login(@RequestBody LoginDto loginDto){
+    ResponseEntity<HashMap<String,String>> login(@RequestBody @Valid LoginDto loginDto, BindingResult bindingResult){
+        bindingResultService.validate(bindingResult);
         return ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword()));
     }
 
     @PostMapping(value = "")
     @PreAuthorize("hasRole('ROLE_OWNER')")
-    ResponseEntity<List<Staff>> createStaff(@RequestBody StaffDto staffDto, HttpServletRequest request) {
+    ResponseEntity<List<Staff>> createStaff(@RequestBody @Valid StaffDto staffDto, HttpServletRequest request, BindingResult bindingResult){
+        bindingResultService.validate(bindingResult);
         Integer restaurantId=(Integer)request.getAttribute("restaurantId");
         return ResponseEntity.ok(staffService.createStaff(restaurantId, staffDto));
     }
@@ -45,14 +53,16 @@ public class StaffController {
 
     @PatchMapping(value = "")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Staff> updateStaff(@RequestBody StaffUpdateDto staffUpdateDto, HttpServletRequest request){
+    ResponseEntity<Staff> updateStaff(@RequestBody @Valid StaffUpdateDto staffUpdateDto, HttpServletRequest request, BindingResult bindingResult){
+        bindingResultService.validate(bindingResult);
         String userEmail=(String) request.getAttribute("userEmail") ;
         return  ResponseEntity.ok(staffService.updateStaff(userEmail, staffUpdateDto));
     }
 
     @DeleteMapping("/{staffId}")
     @PreAuthorize("hasRole('ROLE_OWNER')")
-    ResponseEntity<Staff> deleteStaff(@PathVariable Integer staffId,HttpServletRequest request){
+    ResponseEntity<Staff> deleteStaff(@PathVariable @Valid Integer staffId,HttpServletRequest request, BindingResult bindingResult){
+        bindingResultService.validate(bindingResult);
         String userEmail=(String) request.getAttribute("userEmail") ;
         return  ResponseEntity.ok(staffService.deleteStaff(userEmail, staffId));
     }
