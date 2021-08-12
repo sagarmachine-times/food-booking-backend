@@ -1,16 +1,17 @@
 package in.timesinternet.foodbooking.service.impl;
 
 import in.timesinternet.foodbooking.contoller.dto.request.PincodeDto;
-import in.timesinternet.foodbooking.entity.Category;
+import in.timesinternet.foodbooking.dto.request.AvalibilityDto;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Serviceability;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.repository.ServiceabilityRepository;
 import in.timesinternet.foodbooking.service.PincodeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,26 +23,80 @@ public class PincodeServiceImpl implements PincodeService {
     ServiceabilityRepository serviceabilityRepository;
 
     @Override
-    public Serviceability addPincode(PincodeDto pincodeDto, Integer restaurantId) {
+    public List<Serviceability> addPincode(List<PincodeDto> pincodeDto, Integer restaurantId) {
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
-        if(optionalRestaurant.isPresent())
-        {
-            Restaurant restaurant=optionalRestaurant.get();
-            Serviceability serviceability=new Serviceability();
-            serviceability.setDeliveryCharge(100);
-            serviceability.setPincode(pincodeDto.getPincode());
-            restaurant.addPincode(serviceability);
+        if (optionalRestaurant.isPresent()) {
 
-           return serviceabilityRepository.save(serviceability);
-        }
-        else
-        {
+            int i = 100;
+            Restaurant restaurant = optionalRestaurant.get();
+            for (PincodeDto pincodeDto1 : pincodeDto) {
+
+                // Print all elements of ArrayList
+
+
+                Serviceability serviceability = new Serviceability();
+                serviceability.setDeliveryCharge(i);
+                serviceability.setPincode(pincodeDto1.getPincode());
+                restaurant.addPincode(serviceability);
+                serviceabilityRepository.save(serviceability);
+                i++;
+            }
+            return restaurant.getPincodeList();
+        } else {
             throw new RuntimeException("This Restaurant does not exist");
         }
 
 
-//restaurant.getpincode();
+        //restaurant.getpincode();
+    }
 
+
+    @Override
+    public List<Serviceability> getPincode(Integer restaurantId) {
+        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
+        if (optionalRestaurant.isPresent()) {
+            Restaurant restaurant = optionalRestaurant.get();
+            return restaurant.getPincodeList();
+        } else {
+            throw new RuntimeException("This Restaurant does not exist");
+        }
 
     }
+
+    public Serviceability deletePincode(Integer pincodeId, Integer restaurantId) {
+
+        Optional<Serviceability> optionalServiceability = serviceabilityRepository.findById(pincodeId);
+        if (optionalServiceability.isPresent()) {
+            Serviceability serviceability = optionalServiceability.get();
+            Restaurant restaurant = serviceability.getRestaurant();
+            if (restaurant.getId() == restaurantId) {
+                serviceabilityRepository.deleteById(pincodeId);
+                return serviceability;
+            } else {
+                throw new RuntimeException("You are not authorised to delete this Pincode");
+            }
+        } else {
+            throw new RuntimeException(" This pincode Does not exits in your restaurant");
+        }
+
+    }
+    public Serviceability updatePincode(AvalibilityDto avalibilityDto, Integer restaurantId)
+    {   System.out.println(avalibilityDto);
+        Optional<Serviceability>  optionalServiceability= serviceabilityRepository.findById(avalibilityDto.getId());
+        if (optionalServiceability.isPresent()) {
+            Serviceability serviceability = optionalServiceability.get();
+            Restaurant restaurant = serviceability.getRestaurant();
+            if (restaurant.getId() == restaurantId) {
+                serviceability.setIsServiceable(avalibilityDto.getIsAvailable());
+                serviceabilityRepository.save(serviceability);
+                return serviceability;
+            } else {
+                throw new RuntimeException("You are not authorised to change the Avalibility of pincode");
+            }
+        } else {
+            throw new RuntimeException(" You are not authorised");
+        }
+
+    }
+
 }
