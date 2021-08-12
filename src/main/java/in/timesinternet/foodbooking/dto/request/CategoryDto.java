@@ -1,7 +1,8 @@
 package in.timesinternet.foodbooking.dto.request;
 
-import com.sun.istack.NotNull;
 import lombok.*;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -10,6 +11,7 @@ import lombok.*;
 @ToString
 public class CategoryDto {
 
+    @NotNull(message = "name can't be null")
     private String name;
 
 }
