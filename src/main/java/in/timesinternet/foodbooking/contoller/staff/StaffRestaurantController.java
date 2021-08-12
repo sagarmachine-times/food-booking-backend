@@ -1,8 +1,11 @@
 package in.timesinternet.foodbooking.contoller.staff;
 
+import in.timesinternet.foodbooking.contoller.dto.request.PincodeDto;
 import in.timesinternet.foodbooking.dto.request.RestaurantUpdateDto;
 import in.timesinternet.foodbooking.entity.Restaurant;
+import in.timesinternet.foodbooking.entity.Serviceability;
 import in.timesinternet.foodbooking.service.RestaurantService;
+import in.timesinternet.foodbooking.service.PincodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,6 +43,14 @@ public class StaffRestaurantController {
         return  ResponseEntity.ok(restaurantService.updateRestaurant(restaurantUpdateDto,restaurantId));
     }
 
+    @Autowired
+    PincodeService pincodeService;
+    @PostMapping("/pincode")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
+    ResponseEntity<Serviceability> addPincode(@RequestBody PincodeDto pincodeDto, HttpServletRequest request){
+        Integer restaurantId = (Integer) request.getAttribute("restaurantId");
 
+        return ResponseEntity.ok(pincodeService.addPincode(pincodeDto, restaurantId));
+    }
 
 }

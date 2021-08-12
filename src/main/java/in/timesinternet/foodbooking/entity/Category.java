@@ -34,7 +34,7 @@ public class Category implements Serializable {
     @UpdateTimestamp
     Date updatedAt;
 
-    Boolean isAvailable;
+    Boolean isAvailable=true;
 
 
     //relationships
