@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.service.impl;
 
 import in.timesinternet.foodbooking.entity.Customer;
+import in.timesinternet.foodbooking.entity.DeliveryBoy;
 import in.timesinternet.foodbooking.entity.Staff;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
 import in.timesinternet.foodbooking.repository.UserRepository;

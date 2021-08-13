@@ -1,11 +1,10 @@
 package in.timesinternet.foodbooking.contoller.staff;
 
-import in.timesinternet.foodbooking.contoller.dto.request.PincodeDto;
+import in.timesinternet.foodbooking.dto.request.PincodeDto;
 import in.timesinternet.foodbooking.dto.request.AvalibilityDto;
 import in.timesinternet.foodbooking.dto.request.RestaurantUpdateDto;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Serviceability;
-import in.timesinternet.foodbooking.entity.Staff;
 import in.timesinternet.foodbooking.service.RestaurantService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import in.timesinternet.foodbooking.service.PincodeService;

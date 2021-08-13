@@ -2,6 +2,7 @@ package in.timesinternet.foodbooking.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.timesinternet.foodbooking.entity.embeddable.Address;
+import in.timesinternet.foodbooking.entity.embeddable.Contact;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
 import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +37,9 @@ public class User implements Serializable {
 
     @Embedded
     Address address;
+
+    @Embedded
+    Contact contact;
 
 
     @Column(nullable = false)

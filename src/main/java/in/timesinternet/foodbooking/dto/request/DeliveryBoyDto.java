@@ -2,28 +2,29 @@ package in.timesinternet.foodbooking.dto.request;
 
 import in.timesinternet.foodbooking.entity.embeddable.Address;
 import in.timesinternet.foodbooking.entity.embeddable.Contact;
-import in.timesinternet.foodbooking.entity.enumeration.Role;
 import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class StaffDto {
-    @Email(message = "invalid email")
+public class DeliveryBoyDto {
+
     @NotNull(message = "email can't be null")
+    @Email(message = "invalid email")
     String email;
-    @NotNull(message = "firstName can't be null")
+
+    @NotNull(message = "first name can't be null")
     String firstName;
-    @NotNull(message = "lastName can't be null")
+
+    @NotNull(message = "last name can't be null")
     String lastName;
-    @NotNull(message = "role can't be null")
-    Role role;
+
     Address address;
     Contact contact;
+
 }

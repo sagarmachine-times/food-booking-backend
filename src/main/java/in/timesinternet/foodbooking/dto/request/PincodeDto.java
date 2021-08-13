@@ -1,4 +1,4 @@
-package in.timesinternet.foodbooking.contoller.dto.request;
+package in.timesinternet.foodbooking.dto.request;
 
 import lombok.*;
 

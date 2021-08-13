@@ -1,6 +1,6 @@
 package in.timesinternet.foodbooking.service.impl;
 
-import in.timesinternet.foodbooking.contoller.dto.request.PincodeDto;
+import in.timesinternet.foodbooking.dto.request.PincodeDto;
 import in.timesinternet.foodbooking.dto.request.AvalibilityDto;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Serviceability;
@@ -9,7 +9,6 @@ import in.timesinternet.foodbooking.repository.ServiceabilityRepository;
 import in.timesinternet.foodbooking.service.PincodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,9 +1,8 @@
 package in.timesinternet.foodbooking.service;
 
-import in.timesinternet.foodbooking.contoller.dto.request.PincodeDto;
+import in.timesinternet.foodbooking.dto.request.PincodeDto;
 import in.timesinternet.foodbooking.dto.request.AvalibilityDto;
 import in.timesinternet.foodbooking.entity.Serviceability;
-import io.swagger.models.auth.In;
 
 import java.util.List;
 
