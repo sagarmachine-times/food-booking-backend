@@ -4,8 +4,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Contact {
-    String email;
-    String number;
-    String firstName;
-    String lastName;
+    String contactEmail;
+    String contactNumber;
+    String contactFirstName;
+    String contactLastName;
 }
