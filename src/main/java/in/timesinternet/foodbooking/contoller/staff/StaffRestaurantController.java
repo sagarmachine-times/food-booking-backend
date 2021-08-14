@@ -3,12 +3,15 @@ package in.timesinternet.foodbooking.contoller.staff;
 import in.timesinternet.foodbooking.dto.request.PincodeDto;
 import in.timesinternet.foodbooking.dto.request.AvalibilityDto;
 import in.timesinternet.foodbooking.dto.request.RestaurantUpdateDto;
+import in.timesinternet.foodbooking.entity.Image;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Serviceability;
+import in.timesinternet.foodbooking.repository.ImageRepository;
 import in.timesinternet.foodbooking.service.RestaurantService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import in.timesinternet.foodbooking.service.PincodeService;
 
+import in.timesinternet.foodbooking.util.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +30,10 @@ import javax.validation.Valid;
 @RequestMapping(value = "/api/staff/restaurant")
 public class  StaffRestaurantController {
 
+    @Autowired
+    ImageRepository imageRepository;
+    @Autowired
+    ImageService imageService;
     @Autowired
     RestaurantService restaurantService;
 
@@ -100,4 +107,17 @@ public class  StaffRestaurantController {
         Integer restaurantId=(Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(pincodeService.updatePincode(avalibilityDto,restaurantId));
     }
+
+    @PostMapping("/pincode/image")
+    ResponseEntity<Image> uploadCouponImage(@RequestParam MultipartFile coupanImage)
+    {
+    return ResponseEntity.ok(imageRepository.save(imageService.uploadImage(coupanImage)));
+    }
+
 }
+//    @PostMapping("/item/image")
+////    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
+//    ResponseEntity<Image> uploadItemImage(@RequestParam MultipartFile itemImage){
+////        Integer restaurantId = (Integer)  request.getAttribute("restaurantId");
+//        return ResponseEntity.ok(imageRepository.save(imageService.uploadImage(itemImage)));
+//    }
