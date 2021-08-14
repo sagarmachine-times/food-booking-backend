@@ -36,7 +36,7 @@ public class Item {
     @UpdateTimestamp
     Date updatedAt;
 
-    Boolean isAvailable;
+    Boolean isAvailable=true;
     Integer actualPrice;
     Integer sellingPrice;
 

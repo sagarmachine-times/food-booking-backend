@@ -2,9 +2,17 @@ package in.timesinternet.foodbooking.contoller.staff;
 
 import in.timesinternet.foodbooking.dto.request.CategoryDto;
 import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
+import in.timesinternet.foodbooking.dto.request.ItemDto;
 import in.timesinternet.foodbooking.entity.Category;
+import in.timesinternet.foodbooking.entity.Image;
+import in.timesinternet.foodbooking.entity.Item;
+
 import in.timesinternet.foodbooking.repository.CategoryRepository;
+import in.timesinternet.foodbooking.repository.ImageRepository;
+import in.timesinternet.foodbooking.repository.ItemRepository;
 import in.timesinternet.foodbooking.service.CategoryService;
+import in.timesinternet.foodbooking.service.ItemService;
+import in.timesinternet.foodbooking.util.ImageService;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,12 +42,24 @@ public class StaffMenuController {
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    ImageRepository imageRepository;
+
 
     @Autowired
     CategoryService categoryService;
 
     @Autowired
     BindingResultService bindingResultService;
+
+    @Autowired
+    ItemRepository itemRepository;
+
+    @Autowired
+    ItemService itemService;
+
+    @Autowired
+    ImageService imageService;
 
     @PostMapping("/category")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
@@ -72,4 +93,18 @@ public class StaffMenuController {
         return ResponseEntity.ok(categoryService.updateCategory( categoryUpdateDto, restaurantId));
     }
 
+    @PostMapping("/item/image")
+//    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
+    ResponseEntity<Image> uploadItemImage(@RequestParam MultipartFile itemImage){
+//        Integer restaurantId = (Integer)  request.getAttribute("restaurantId");
+        return ResponseEntity.ok(imageRepository.save(imageService.uploadImage(itemImage)));
+    }
+
+    @PostMapping("/item")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
+    ResponseEntity<Item> createItem(@RequestBody @Valid ItemDto itemDto, HttpServletRequest request)
+    {
+        Integer restaurantId = (Integer) request.getAttribute("restaurantId");
+        return ResponseEntity.ok(itemService.createItem(itemDto, restaurantId));
+    }
 }
