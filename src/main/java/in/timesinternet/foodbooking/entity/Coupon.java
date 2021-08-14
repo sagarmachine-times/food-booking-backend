@@ -46,14 +46,16 @@ public class Coupon {
     //relationship
 
     @ManyToOne
+    @JsonIgnore
     Restaurant restaurant;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     Image banner;
 
-    @OneToMany(mappedBy = "coupon",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<Order> orderList = new ArrayList<>();
+
     public void addOrder(Order order) {
         orderList.add(order);
         order.setCoupon(this);

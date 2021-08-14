@@ -33,4 +33,6 @@ public class Image {
     @JsonIgnore
     String deleteUrl;
 
+
+
 }

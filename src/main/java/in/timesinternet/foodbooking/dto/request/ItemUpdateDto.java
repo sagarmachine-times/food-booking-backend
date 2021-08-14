@@ -19,6 +19,6 @@ public class ItemUpdateDto {
     private Integer actualPrice;
     private Integer sellingPrice;
     private ItemType itemType;
-    private Category category;
-    private Image image;
+    private Integer categoryId;
+    private Integer imageId;
 }

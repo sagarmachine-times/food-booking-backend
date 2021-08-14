@@ -1,17 +1,18 @@
 package in.timesinternet.foodbooking.contoller.staff;
 
-import in.timesinternet.foodbooking.dto.request.PincodeDto;
-import in.timesinternet.foodbooking.dto.request.AvalibilityDto;
-import in.timesinternet.foodbooking.dto.request.RestaurantUpdateDto;
+import in.timesinternet.foodbooking.dto.request.*;
+import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.Image;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Serviceability;
 import in.timesinternet.foodbooking.repository.ImageRepository;
+import in.timesinternet.foodbooking.service.CouponService;
 import in.timesinternet.foodbooking.service.RestaurantService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import in.timesinternet.foodbooking.service.PincodeService;
 
 import in.timesinternet.foodbooking.util.ImageService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,7 +37,8 @@ public class  StaffRestaurantController {
     ImageService imageService;
     @Autowired
     RestaurantService restaurantService;
-
+    @Autowired
+    CouponService couponService;
     @Autowired
     BindingResultService bindingResultService;
 
@@ -108,10 +110,40 @@ public class  StaffRestaurantController {
         return ResponseEntity.ok(pincodeService.updatePincode(avalibilityDto,restaurantId));
     }
 
-    @PostMapping("/pincode/image")
-    ResponseEntity<Image> uploadCouponImage(@RequestParam MultipartFile coupanImage)
+    @PostMapping("/coupon/image")
+    ResponseEntity<Image> uploadImage(@RequestParam MultipartFile couponImage)
     {
-    return ResponseEntity.ok(imageRepository.save(imageService.uploadImage(coupanImage)));
+    return ResponseEntity.ok(imageRepository.save(imageService.uploadImage(couponImage)));
+    }
+
+    @PostMapping("/coupon")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
+    ResponseEntity<Coupon> addCoupon(@RequestBody CouponDto couponDto, HttpServletRequest request)
+    {
+        Integer restaurantId=(Integer) request.getAttribute("restaurantId");
+        return ResponseEntity.ok(couponService.addCoupon(couponDto,restaurantId));
+    }
+
+    @PatchMapping("/coupon/{couponId}")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
+    ResponseEntity<Coupon>updateCoupon(@RequestBody UpdateCouponDto updateCouponDto,@PathVariable Integer couponId ,HttpServletRequest request)
+    {
+        Integer restaurantId=(Integer) request.getAttribute("restaurantId");
+        return ResponseEntity.ok(couponService.updateCoupon(updateCouponDto,couponId, restaurantId));
+    }
+    @DeleteMapping("/coupon/{couponId}")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
+    ResponseEntity<Coupon>deleteCoupon(@PathVariable Integer couponId ,HttpServletRequest request)
+    {
+        Integer restaurantId=(Integer) request.getAttribute("restaurantId");
+        return ResponseEntity.ok(couponService.deleteCoupon(couponId, restaurantId));
+    }
+    @GetMapping("/coupon")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
+    ResponseEntity<List<Coupon>>GetAllCoupon(HttpServletRequest request)
+    {
+        Integer restaurantId=(Integer) request.getAttribute("restaurantId");
+        return ResponseEntity.ok(couponService.GetAllCoupon(restaurantId));
     }
 
 }
