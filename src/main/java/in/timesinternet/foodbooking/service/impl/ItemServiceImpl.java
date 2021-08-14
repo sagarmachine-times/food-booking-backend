@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.service.impl;
 
 import in.timesinternet.foodbooking.dto.request.ItemDto;
+import in.timesinternet.foodbooking.dto.request.ItemUpdateDto;
 import in.timesinternet.foodbooking.entity.Category;
 import in.timesinternet.foodbooking.entity.Item;
 import in.timesinternet.foodbooking.entity.Restaurant;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -62,6 +64,95 @@ public class ItemServiceImpl implements ItemService {
         }
         else{
             throw new RuntimeException("restaurant or category not found with id ");
+        }
+    }
+
+    @Override
+    public List<Item> getAllItem(Integer restaurantId)
+    {
+        List<Item> allItem  = itemRepository.findAllByRestaurantId(restaurantId);
+        return  allItem;
+    }
+
+    @Override
+    public Item deleteItem(Integer itemId, Integer restaurantId)
+    {
+        Optional<Item> itemOptional = itemRepository.findById(itemId);
+
+        if (itemOptional.isPresent())
+        {
+            Item item = itemOptional.get();
+
+            if (item.getRestaurant().getId() == restaurantId)
+            {
+                itemRepository.deleteById(itemId);
+                return  item;
+            }
+            else{
+                throw new RuntimeException("unauthorized access for deleting the item");
+            }
+        }
+        else{
+            throw new RuntimeException("item not found");
+        }
+    }
+
+    @Override
+    public Item updateItem(ItemUpdateDto itemUpdateDto, Integer restaurantId)
+    {
+        Optional<Item> itemOptional = itemRepository.findById(itemUpdateDto.getId());
+
+        if (itemOptional.isPresent())
+        {
+            Item item = itemOptional.get();
+
+            if (item.getRestaurant().getId() == restaurantId)
+            {
+                if (itemUpdateDto.getName() != null)
+                    item.setName(itemUpdateDto.getName());
+
+                if (itemUpdateDto.getSellingPrice()!= null)
+                    item.setSellingPrice(itemUpdateDto.getSellingPrice());
+
+                if (itemUpdateDto.getSellingPrice()!= null)
+                    item.setActualPrice(itemUpdateDto.getActualPrice());
+
+                if (itemUpdateDto.getIsAvailable()!= null)
+                    item.setIsAvailable(itemUpdateDto.getIsAvailable());
+
+                if (itemUpdateDto.getItemType()!= null)
+                    item.setItemType(itemUpdateDto.getItemType());
+
+                if (itemUpdateDto.getCategoryId() != null){
+                    Optional<Category> categoryOptional = categoryRepository.findById(itemUpdateDto.getCategoryId());
+
+                    if (categoryOptional.isPresent())
+                    {
+                        Category category = categoryOptional.get();
+                        item.setCategory(category);
+                        category.addItem(item);
+                    }
+                }
+
+                if (itemUpdateDto.getImageId() != null){
+                    Optional<Image> imageOptional = imageRepository.findById(itemUpdateDto.getImageId());
+
+                    if (imageOptional.isPresent()){
+                        Image image = imageOptional.get();
+                        item.setImage(image);
+                    }
+                }
+
+                itemRepository.save(item);
+                return  item;
+            }
+            else
+            {
+                throw  new RuntimeException(" unauthorised access for updating the item");
+            }
+        }
+        else{
+            throw new RuntimeException(" item not found");
         }
     }
 }

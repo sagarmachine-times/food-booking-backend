@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
 
-//    List<Category> findAllByRestaurantId(Integer restaurantId);
+    List<Item> findAllByRestaurantId(Integer restaurantId);
 
 //    Category deleteCategoryById(Integer categoryId);
 }
