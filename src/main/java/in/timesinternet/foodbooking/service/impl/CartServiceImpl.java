@@ -9,12 +9,8 @@ import in.timesinternet.foodbooking.repository.CustomerRepository;
 import in.timesinternet.foodbooking.repository.ItemRepository;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.service.CartService;
-import org.omg.CORBA.Current;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,14 +32,10 @@ public class CartServiceImpl implements CartService {
     public Cart updateCart(CartDto cartDto, String email) {
         Customer customer = customerRepository.findByEmail(email).get();
         Cart currentCart = customer.getCurrentCart();
-//        List<CartItem> cartItemList = new ArrayList<>();
         Integer total= 0;
         System.out.println(currentCart.getCartItemList().size());
-        System.out.println("------------------");
         while(!currentCart.getCartItemList().isEmpty())
             currentCart.getCartItemList().remove(0);
-        System.out.println(currentCart.getCartItemList().size());
-        System.out.println("------------------");
         for(CartItemDto cartItemDto: cartDto.getCartItemList()){
             Optional<Item> itemOptional = itemRepository.findById(cartItemDto.getItemId());
             if(itemOptional.isPresent() && itemOptional.get().getIsAvailable()){
@@ -56,10 +48,7 @@ public class CartServiceImpl implements CartService {
                 total+=cartItem.getQuantity()*cartItem.getPrice();
             }
         }
-        System.out.println(currentCart.getCartItemList().size());
-        System.out.println("------------------");
         currentCart.setTotal(total);
-//        currentCart.setCartItemList(cartItemList);
         return  cartRepository.save(currentCart);
     }
 
