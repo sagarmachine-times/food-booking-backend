@@ -19,6 +19,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer extends User{
+
+    String actualEmail;
+
+
     //relationship
 
     @ManyToOne

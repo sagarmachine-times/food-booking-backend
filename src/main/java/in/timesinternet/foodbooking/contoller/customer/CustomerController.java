@@ -8,10 +8,7 @@ import in.timesinternet.foodbooking.service.UserService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -36,7 +33,7 @@ public class CustomerController {
 
 
     @PostMapping(value = "/login")
-    ResponseEntity<HashMap<String,String>> loginCustomer(@RequestBody LoginDto loginDto){
-        return ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword()));
+    ResponseEntity<HashMap<String,String>> loginCustomer(@RequestBody LoginDto loginDto, @RequestParam Integer restaurantId){
+        return ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword(),  restaurantId));
     }
 }

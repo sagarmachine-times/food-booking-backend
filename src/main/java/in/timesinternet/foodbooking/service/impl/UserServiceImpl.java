@@ -2,8 +2,10 @@ package in.timesinternet.foodbooking.service.impl;
 
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.entity.DeliveryBoy;
+import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Staff;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
+import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.repository.UserRepository;
 import in.timesinternet.foodbooking.security.JWTUtil;
 import in.timesinternet.foodbooking.service.UserService;
@@ -35,6 +37,9 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     @Autowired
+    RestaurantRepository restaurantRepository;
+
+    @Autowired
     JWTUtil jwtUtil;
 
 
@@ -42,29 +47,42 @@ public class UserServiceImpl implements UserService {
     public HashMap<String, String> login(String email, String password) {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-        if (authentication.isAuthenticated()) {
+        GrantedAuthority role = authentication.getAuthorities().stream().findFirst().get();
+        in.timesinternet.foodbooking.entity.User user = userRepository.findByEmail(email).get();
+        String jwt;
+        if (user instanceof Staff) {
+            Staff staff = (Staff) user;
+
+            jwt = jwtUtil.createJWT(email, role.getAuthority(), staff.getRestaurant().getId());
+        } else
+            jwt = jwtUtil.createJWT(email, role.getAuthority(), null);
+
+        String token = "Bearer " + jwt;
+        return new HashMap<String, String>() {{
+            put("token", token);
+        }};
+    }
+
+    @Override
+    public HashMap<String, String> login(String email, String password, Integer restaurantId) {
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
+        if (restaurantOptional.isPresent()) {
+            Restaurant restaurant = restaurantOptional.get();
+            String effectiveEmail = email + "_" + restaurant.getRestaurantDetail().getSubDomain();
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(effectiveEmail, password));
             GrantedAuthority role = authentication.getAuthorities().stream().findFirst().get();
             in.timesinternet.foodbooking.entity.User user = userRepository.findByEmail(email).get();
-            String jwt ;
-            if (user instanceof Staff ) {
-                Staff staff= (Staff)user;
-
-                jwt = jwtUtil.createJWT(email, role.getAuthority(),staff.getRestaurant().getId());
-            }
-            else if(user instanceof Customer)
-            {
-                Customer customer= (Customer) user;
-                jwt = jwtUtil.createJWT(email, role.getAuthority(),customer.getRestaurant().getId());
-            }
-            else
-                jwt= jwtUtil.createJWT(email, role.getAuthority(), null);
-
+            String jwt;
+            Customer customer = (Customer) user;
+            jwt = jwtUtil.createJWT(email, role.getAuthority(), customer.getRestaurant().getId());
             String token = "Bearer " + jwt;
             return new HashMap<String, String>() {{
                 put("token", token);
             }};
         } else
-            throw new RuntimeException("invalid credentials");
+            throw new RuntimeException("restaurant with given id not found");
+
+
     }
 
     @Override
@@ -76,7 +94,7 @@ public class UserServiceImpl implements UserService {
             List<GrantedAuthority> roles
                     = new ArrayList<>();
             roles.add(new SimpleGrantedAuthority((user.getRole().toString())));
-                return new User(user.getEmail(), user.getPassword(), roles);
+            return new User(user.getEmail(), user.getPassword(), roles);
         } else
             throw new UsernameNotFoundException("user not found");
     }

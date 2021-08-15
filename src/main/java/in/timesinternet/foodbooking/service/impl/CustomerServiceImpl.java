@@ -33,6 +33,8 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setRestaurant(restaurant);
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         customer.setRole(Role.ROLE_CUSTOMER);
-        return customerRepository.save(customer);
+        customer.setActualEmail(customer.getEmail());
+        customer.setEmail(customer.getEmail()+"_"+restaurant.getRestaurantDetail().getSubDomain());
+       return customerRepository.save(customer);
     }
 }
