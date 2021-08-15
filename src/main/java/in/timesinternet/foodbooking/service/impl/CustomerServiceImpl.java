@@ -1,12 +1,14 @@
 package in.timesinternet.foodbooking.service.impl;
 
+import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
 import in.timesinternet.foodbooking.dto.request.CustomerDto;
 import in.timesinternet.foodbooking.dto.request.RestaurantResponseDto;
+import in.timesinternet.foodbooking.entity.Category;
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.entity.Restaurant;
-import in.timesinternet.foodbooking.entity.embeddable.Address;
 import in.timesinternet.foodbooking.entity.embeddable.RestaurantDetail;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
+import in.timesinternet.foodbooking.repository.CategoryRepository;
 import in.timesinternet.foodbooking.repository.CustomerRepository;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.service.CustomerService;
@@ -15,7 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -28,6 +33,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @Override
     public Customer createCustomer(CustomerDto customerDto) {
@@ -71,6 +79,26 @@ public class CustomerServiceImpl implements CustomerService {
         {
           throw new RuntimeException("restaurant not found");
         }
+    }
+
+    @Override
+    public List<CategoryUpdateDto> getRestaurantCategory(Integer restaurantId)
+    {
+        List<Category> listCategory = categoryRepository.findAllByRestaurantId(restaurantId);
+
+        List<CategoryUpdateDto> listCategoryUpdateDto = new ArrayList<CategoryUpdateDto>();
+
+        for (Category category : listCategory)
+        {
+            CategoryUpdateDto categoryUpdateDto = new CategoryUpdateDto();
+            categoryUpdateDto.setId(category.getId());
+            categoryUpdateDto.setName(category.getName());
+            categoryUpdateDto.setIsAvailable(category.getIsAvailable());
+
+            listCategoryUpdateDto.add(categoryUpdateDto);
+        }
+
+        return  listCategoryUpdateDto;
     }
 
 
