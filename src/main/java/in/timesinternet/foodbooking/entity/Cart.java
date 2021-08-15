@@ -31,22 +31,25 @@ public class Cart {
     @UpdateTimestamp
     Date updatedAt;
 
-    Integer total;
+    Integer total=0;
 
     @Enumerated(EnumType.STRING)
-    CartStatus status;
+    CartStatus status = CartStatus.MUTABLE;
 
 //    relationships
 
     @ManyToOne
+    @JsonIgnore
     Customer customer;
 
     @ManyToOne
+    @JsonIgnore
     Restaurant restaurant;
 
-    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     List<CartItem> cartItemList = new ArrayList<>();
+
     public void addCartItem(CartItem cartItem) {
         cartItemList.add(cartItem);
         cartItem.setCart(this);

@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,11 +29,14 @@ public class CartItem {
     @UpdateTimestamp
     Date updatedAt;
 
+    @JsonIgnore
     Integer price;
+
     Integer quantity;
 
     //relationship
     @ManyToOne
+    @JsonIgnore
     Cart cart;
 
     @ManyToOne

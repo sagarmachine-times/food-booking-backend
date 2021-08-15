@@ -71,10 +71,10 @@ public class UserServiceImpl implements UserService {
             String effectiveEmail = email + "_" + restaurant.getRestaurantDetail().getSubDomain();
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(effectiveEmail, password));
             GrantedAuthority role = authentication.getAuthorities().stream().findFirst().get();
-            in.timesinternet.foodbooking.entity.User user = userRepository.findByEmail(email).get();
+            in.timesinternet.foodbooking.entity.User user = userRepository.findByEmail(effectiveEmail).get();
             String jwt;
             Customer customer = (Customer) user;
-            jwt = jwtUtil.createJWT(email, role.getAuthority(), customer.getRestaurant().getId());
+            jwt = jwtUtil.createJWT(effectiveEmail, role.getAuthority(), customer.getRestaurant().getId());
             String token = "Bearer " + jwt;
             return new HashMap<String, String>() {{
                 put("token", token);
