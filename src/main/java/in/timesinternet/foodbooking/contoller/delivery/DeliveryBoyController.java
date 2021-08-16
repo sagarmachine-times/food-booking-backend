@@ -30,7 +30,7 @@ public class DeliveryBoyController {
     UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<HashMap<String, String>> loginDeliveryBoy(@RequestBody @Valid LoginDto loginDto, BindingResult bindingResult){
+    public ResponseEntity<HashMap<String, Object>> loginDeliveryBoy(@RequestBody @Valid LoginDto loginDto, BindingResult bindingResult){
         bindingResultService.validate(bindingResult);
         return  ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword()));
     }

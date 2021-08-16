@@ -39,7 +39,7 @@ public class CustomerController {
 
 
     @PostMapping(value = "/login")
-    ResponseEntity<HashMap<String,String>> loginCustomer(@RequestBody LoginDto loginDto, @RequestParam Integer restaurantId){
+    ResponseEntity<HashMap<String,Object>> loginCustomer(@RequestBody LoginDto loginDto, @RequestParam Integer restaurantId){
         return ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword(),  restaurantId));
     }
 

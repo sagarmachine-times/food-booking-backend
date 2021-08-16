@@ -55,7 +55,7 @@ public class AdminController {
 
     @ApiOperation(value = "admin login", notes = "response - jwt token ")
     @PostMapping(value = "/login")
-    ResponseEntity<HashMap<String, String>> login(@RequestBody @Valid LoginDto loginDto, BindingResult bindingResult) {
+    ResponseEntity<HashMap<String, Object>> login(@RequestBody @Valid LoginDto loginDto, BindingResult bindingResult) {
         bindingResultService.validate(bindingResult);
         return ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword()));
     }

@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public HashMap<String, String> login(String email, String password) {
+    public HashMap<String, Object> login(String email, String password) {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         GrantedAuthority role = authentication.getAuthorities().stream().findFirst().get();
@@ -58,13 +58,14 @@ public class UserServiceImpl implements UserService {
             jwt = jwtUtil.createJWT(email, role.getAuthority(), null);
 
         String token = "Bearer " + jwt;
-        return new HashMap<String, String>() {{
+        return new HashMap<String, Object>() {{
             put("token", token);
+            put("user",user);
         }};
     }
 
     @Override
-    public HashMap<String, String> login(String email, String password, Integer restaurantId) {
+    public HashMap<String, Object> login(String email, String password, Integer restaurantId) {
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
         if (restaurantOptional.isPresent()) {
             Restaurant restaurant = restaurantOptional.get();
@@ -76,8 +77,9 @@ public class UserServiceImpl implements UserService {
             Customer customer = (Customer) user;
             jwt = jwtUtil.createJWT(effectiveEmail, role.getAuthority(), customer.getRestaurant().getId());
             String token = "Bearer " + jwt;
-            return new HashMap<String, String>() {{
+            return new HashMap<String, Object>() {{
                 put("token", token);
+                put("user",customer);
             }};
         } else
             throw new RuntimeException("restaurant with given id not found");

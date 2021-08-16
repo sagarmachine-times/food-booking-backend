@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
-    HashMap<String,String> login(String email, String password);
+    HashMap<String,Object> login(String email, String password);
 
-    HashMap<String,String> login(String email, String password, Integer restaurantId);
+    HashMap<String,Object> login(String email, String password, Integer restaurantId);
 }
