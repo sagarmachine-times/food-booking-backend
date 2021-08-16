@@ -49,12 +49,10 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getRestaurantDetail(subDomain));
     }
 
-    @GetMapping(value="/restaurant/category/{restaurantId}")
-    ResponseEntity<List<CategoryUpdateDto>> getRestaurantCategory(@PathVariable Integer restaurantId)
-    {
-        return ResponseEntity.ok(customerService.getRestaurantCategory(restaurantId));
+    @GetMapping("")
+    ResponseEntity<Customer> getCustomer(HttpServletRequest httpServletRequest){
+        String userEmail =(String) httpServletRequest.getAttribute("userEmail");
+        return ResponseEntity.ok(customerService.getCustomer(userEmail));
     }
-
-
 
 }

@@ -53,6 +53,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public Cart getCurrentCart(String email) {
+        Customer customer = customerRepository.findByEmail(email).get();
+        return customer.getCurrentCart();
+    }
+
+    @Override
     public void updateCartStatus(CartStatus cartStatus, String email) {
 
     }

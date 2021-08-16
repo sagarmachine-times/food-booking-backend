@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
 
@@ -71,6 +73,11 @@ public class RestaurantServiceImpl implements RestaurantService {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.map(restaurantUpdateDto, restaurant.getRestaurantDetail());
         return restaurantRepository.save(restaurant);
+    }
+
+    @Override
+    public List<Restaurant> getAllRestaurant() {
+        return restaurantRepository.findAll();
     }
 
 

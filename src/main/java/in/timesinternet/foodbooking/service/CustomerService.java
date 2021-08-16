@@ -14,7 +14,8 @@ public interface CustomerService {
 
     RestaurantResponseDto getRestaurantDetail(String subDomain);
 
-    List<CategoryUpdateDto> getRestaurantCategory(Integer restaurantId);
-
+    Customer getCustomer(String email);
+    Customer getCustomer(Integer id);
+    List<Customer> getAllCustomer(Integer restaurantId);
 
 }

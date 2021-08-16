@@ -13,10 +13,8 @@ import in.timesinternet.foodbooking.service.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,12 +53,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public RestaurantResponseDto getRestaurantDetail(String subDomain)
-    {
+    public RestaurantResponseDto getRestaurantDetail(String subDomain) {
         Optional<Restaurant> restaurantOptional = restaurantRepository.findByRestaurantDetailSubDomain(subDomain);
 
-        if (restaurantOptional.isPresent())
-        {
+        if (restaurantOptional.isPresent()) {
             RestaurantResponseDto restaurantResponseDto = new RestaurantResponseDto();
 
             Restaurant restaurant = restaurantOptional.get();
@@ -78,33 +74,31 @@ public class CustomerServiceImpl implements CustomerService {
 
             restaurantResponseDto.setLogo(restaurant.getLogo());
 
-            return  restaurantResponseDto;
-        }
-        else
-        {
-          throw new RuntimeException("restaurant not found");
+            return restaurantResponseDto;
+        } else {
+            throw new RuntimeException("restaurant not found");
         }
     }
 
     @Override
-    public List<CategoryUpdateDto> getRestaurantCategory(Integer restaurantId)
-    {
-        List<Category> listCategory = categoryRepository.findAllByRestaurantId(restaurantId);
-
-        List<CategoryUpdateDto> listCategoryUpdateDto = new ArrayList<CategoryUpdateDto>();
-
-        for (Category category : listCategory)
-        {
-            CategoryUpdateDto categoryUpdateDto = new CategoryUpdateDto();
-            categoryUpdateDto.setId(category.getId());
-            categoryUpdateDto.setName(category.getName());
-            categoryUpdateDto.setIsAvailable(category.getIsAvailable());
-
-            listCategoryUpdateDto.add(categoryUpdateDto);
-        }
-
-        return  listCategoryUpdateDto;
+    public Customer getCustomer(String email) {
+        return customerRepository.findByEmail(email).get();
     }
 
+    @Override
+    public Customer getCustomer(Integer customerId) {
+        return customerRepository.findById(customerId).get();
+    }
+
+    @Override
+    public List<Customer> getAllCustomer(Integer restaurantId) {
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
+        if(restaurantOptional.isPresent()) {
+            Restaurant restaurant=  restaurantOptional.get();
+            return restaurant.getCustomerList();
+        }
+        else
+            throw new RuntimeException("restaurant not found");
+    }
 
 }

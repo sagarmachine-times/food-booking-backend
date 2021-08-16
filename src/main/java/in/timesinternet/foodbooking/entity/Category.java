@@ -34,7 +34,7 @@ public class Category implements Serializable {
     @UpdateTimestamp
     Date updatedAt;
 
-    Boolean isAvailable=true;
+    Boolean isAvailable = true;
 
 
     //relationships
@@ -42,9 +42,10 @@ public class Category implements Serializable {
     @JsonIgnore
     Restaurant restaurant;
 
-    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<Item> itemList = new ArrayList<>();
+
     public void addItem(Item item) {
         itemList.add(item);
         item.setCategory(this);

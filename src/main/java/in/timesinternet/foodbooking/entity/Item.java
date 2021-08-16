@@ -50,7 +50,6 @@ public class Item {
     Restaurant restaurant;
 
     @ManyToOne
-    @JsonIgnore
     Category category;
 
     @OneToOne(cascade = CascadeType.ALL)

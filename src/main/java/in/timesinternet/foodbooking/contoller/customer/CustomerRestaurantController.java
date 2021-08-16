@@ -1,5 +1,6 @@
 package in.timesinternet.foodbooking.contoller.customer;
 
+import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
 import in.timesinternet.foodbooking.entity.Category;
 import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.Item;

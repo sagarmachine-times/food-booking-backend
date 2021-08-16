@@ -2,6 +2,7 @@ package in.timesinternet.foodbooking.contoller.admin;
 
 
 import in.timesinternet.foodbooking.dto.request.RestaurantDto;
+import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.service.RestaurantService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/restaurant")
@@ -19,6 +21,7 @@ public class AdminRestaurantController {
 
     @Autowired
     RestaurantService restaurantService;
+
 
     @Autowired
     BindingResultService bindingResultService;
@@ -28,6 +31,12 @@ public class AdminRestaurantController {
     Object addRestaurant(@RequestBody @Valid RestaurantDto restaurantDto, BindingResult bindingResult) {
         bindingResultService.validate(bindingResult);
        return restaurantService.createRestaurant(restaurantDto);
+    }
+
+    @GetMapping(value = "")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    List<Restaurant> getAllRestaurant() {
+        return restaurantService.getAllRestaurant();
     }
 
 }
