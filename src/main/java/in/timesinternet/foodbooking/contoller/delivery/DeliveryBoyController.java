@@ -1,11 +1,13 @@
 package in.timesinternet.foodbooking.contoller.delivery;
 
 import in.timesinternet.foodbooking.dto.request.DeliveryBoyDto;
+import in.timesinternet.foodbooking.dto.request.DeliveryBoyUpdateDto;
 import in.timesinternet.foodbooking.dto.request.LoginDto;
 import in.timesinternet.foodbooking.entity.DeliveryBoy;
 import in.timesinternet.foodbooking.service.DeliveryBoyService;
 import in.timesinternet.foodbooking.service.UserService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -31,6 +33,11 @@ public class DeliveryBoyController {
     public ResponseEntity<HashMap<String, String>> loginDeliveryBoy(@RequestBody @Valid LoginDto loginDto, BindingResult bindingResult){
         bindingResultService.validate(bindingResult);
         return  ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword()));
+    }
+    @PatchMapping("/{deliveryBoyId}")
+    public ResponseEntity<DeliveryBoy>UpdateDeliveryBoy(@RequestBody DeliveryBoyUpdateDto deliveryBoyUpdateDto, @PathVariable Integer deliveryBoyId)
+    {
+        return ResponseEntity.ok(deliveryBoyService.UpdateDeliveryBoy(deliveryBoyUpdateDto,deliveryBoyId));
     }
 
 }

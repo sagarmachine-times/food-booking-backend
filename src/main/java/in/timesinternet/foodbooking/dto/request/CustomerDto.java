@@ -1,5 +1,7 @@
 package in.timesinternet.foodbooking.dto.request;
 
+import in.timesinternet.foodbooking.entity.embeddable.Address;
+import in.timesinternet.foodbooking.entity.embeddable.Contact;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +28,8 @@ public class CustomerDto {
     @NotNull(message = "lastName can't be null")
     String lastName;
 
+    Address address;
+    Contact contact;
     @NotNull(message = "restaurantId can't be null")
     Integer restaurantId;
 }

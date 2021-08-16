@@ -104,7 +104,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<Coupon> GetAllCoupon(Integer restaurantId)
+    public List<Coupon> getAllCoupon(Integer restaurantId)
     {
 
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);

@@ -4,14 +4,17 @@ import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
 import in.timesinternet.foodbooking.dto.request.CustomerDto;
 import in.timesinternet.foodbooking.dto.request.LoginDto;
 import in.timesinternet.foodbooking.dto.request.RestaurantResponseDto;
+import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.service.CustomerService;
 import in.timesinternet.foodbooking.service.UserService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +54,7 @@ public class CustomerController {
     {
         return ResponseEntity.ok(customerService.getRestaurantCategory(restaurantId));
     }
+
 
 
 }

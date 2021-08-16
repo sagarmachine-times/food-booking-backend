@@ -8,12 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/delivery_boy")
@@ -30,6 +28,19 @@ public class AdminDeliveryBoyController {
     ResponseEntity<DeliveryBoy> createDeliveryBoy(@RequestBody @Valid DeliveryBoyDto deliveryBoyDto, BindingResult bindingResult){
         bindingResultService.validate(bindingResult);
         return  ResponseEntity.ok(deliveryBoyService.createDeliveryBoy(deliveryBoyDto));
+    }
+
+    @GetMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    ResponseEntity<List<DeliveryBoy>>getAllDeliveryBoy()
+    {
+        return ResponseEntity.ok(deliveryBoyService.getAllDeliveryBoy());
+    }
+    @DeleteMapping("/{deliveryBoyId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    ResponseEntity<DeliveryBoy>deleteDeliveryBoy(@PathVariable Integer deliveryBoyId)
+    {
+        return ResponseEntity.ok(deliveryBoyService.deleteDeliveryBoy(deliveryBoyId));
     }
 
 }
