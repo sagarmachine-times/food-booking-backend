@@ -140,10 +140,10 @@ public class  StaffRestaurantController {
     }
     @GetMapping("/coupon")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<List<Coupon>>GetAllCoupon(HttpServletRequest request)
+    ResponseEntity<List<Coupon>>getAllCoupon(HttpServletRequest request)
     {
         Integer restaurantId=(Integer) request.getAttribute("restaurantId");
-        return ResponseEntity.ok(couponService.GetAllCoupon(restaurantId));
+        return ResponseEntity.ok(couponService.getAllCoupon(restaurantId));
     }
 
 }

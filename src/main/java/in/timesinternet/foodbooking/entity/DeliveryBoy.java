@@ -22,7 +22,7 @@ import java.util.List;
 public class DeliveryBoy extends  User {
 
     @Enumerated(EnumType.STRING)
-    DeliveryBoyStatus deliveryBoyStatus;
+    DeliveryBoyStatus deliveryBoyStatus=DeliveryBoyStatus.AVAILABLE;
 
     //relationship
     @OneToMany

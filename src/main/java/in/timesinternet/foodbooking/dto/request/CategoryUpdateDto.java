@@ -13,4 +13,5 @@ public class CategoryUpdateDto {
     private Integer id;
     private String name;
     private Boolean isAvailable;
+
 }

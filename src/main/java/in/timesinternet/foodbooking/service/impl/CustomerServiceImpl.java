@@ -2,11 +2,8 @@ package in.timesinternet.foodbooking.service.impl;
 
 import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
 import in.timesinternet.foodbooking.dto.request.CustomerDto;
-import in.timesinternet.foodbooking.entity.Cart;
+import in.timesinternet.foodbooking.entity.*;
 import in.timesinternet.foodbooking.dto.request.RestaurantResponseDto;
-import in.timesinternet.foodbooking.entity.Category;
-import in.timesinternet.foodbooking.entity.Customer;
-import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.embeddable.RestaurantDetail;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
 import in.timesinternet.foodbooking.repository.CategoryRepository;
@@ -16,6 +13,7 @@ import in.timesinternet.foodbooking.service.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
