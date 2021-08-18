@@ -10,6 +10,7 @@ import in.timesinternet.foodbooking.repository.CategoryRepository;
 import in.timesinternet.foodbooking.repository.ImageRepository;
 import in.timesinternet.foodbooking.repository.ItemRepository;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
+import in.timesinternet.foodbooking.service.CategoryService;
 import in.timesinternet.foodbooking.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,9 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     ImageRepository imageRepository;
 
+    @Autowired
+    CategoryService categoryService;
+
     @Override
     public Item createItem(ItemDto itemDto,Integer restaurantId)
     {
@@ -39,14 +43,13 @@ public class ItemServiceImpl implements ItemService {
         Integer imageId = itemDto.getImageId();
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
-        Optional<Image> imageOptional = imageRepository.findById(imageId);
 
 
         if (categoryOptional.isPresent() && restaurantOptional.isPresent())
         {
             Category category = categoryOptional.get();
             Restaurant restaurant = restaurantOptional.get();
-            Image image = imageOptional.get();
+
 
             Item item = new Item();
             item.setName(itemDto.getName());
@@ -54,8 +57,11 @@ public class ItemServiceImpl implements ItemService {
             item.setSellingPrice(itemDto.getSellingPrice());
             item.setItemType(itemDto.getItemType());
 
-            if (image != null)
+            if (imageId != null) {
+                Optional<Image> imageOptional = imageRepository.findById(imageId);
+                Image image = imageOptional.get();
                 item.setImage(image);
+            }
 
             category.addItem(item);
             restaurant.addItem(item);
@@ -154,5 +160,18 @@ public class ItemServiceImpl implements ItemService {
         else{
             throw new RuntimeException(" item not found");
         }
+    }
+
+    @Override
+    public Item getItem(Integer itemId) {
+        Optional<Item> itemOptional = itemRepository.findById(itemId);
+        if(itemOptional.isPresent())
+            return  itemOptional.get();
+        throw  new RuntimeException("item not found with id "+itemId);
+    }
+
+    @Override
+    public List<Item> getItemByCategory(Integer categoryId) {
+        return categoryService.getCategory(categoryId).getItemList();
     }
 }

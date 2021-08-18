@@ -24,14 +24,14 @@ public class Customer extends User {
     String actualEmail;
     //relationship
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     Cart currentCart;
 
     @ManyToOne
     @JsonIgnore
     Restaurant restaurant;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Cart> cartList = new ArrayList<>();
 
     public void addCart(Cart cart) {

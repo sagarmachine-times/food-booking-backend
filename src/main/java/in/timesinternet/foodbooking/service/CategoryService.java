@@ -15,4 +15,5 @@ public interface CategoryService {
 
     Category updateCategory(CategoryUpdateDto categoryUpdateDto, Integer restaurantId);
 
+    Category getCategory(Integer categoryId);
 }

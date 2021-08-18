@@ -19,6 +19,9 @@ public interface CustomerService {
     Customer getCustomer(Integer id);
     List<Customer> getAllCustomer(Integer restaurantId);
 
+<<<<<<< HEAD
     Customer updateCustomerProfile(CustomerUpdateDto customerUpdateDto, String userEmail);
+=======
+>>>>>>> a4201142fbc6ee8dc9e4a121d22bead7532e3576
 
 }

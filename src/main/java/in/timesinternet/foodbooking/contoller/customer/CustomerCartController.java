@@ -1,7 +1,9 @@
 package in.timesinternet.foodbooking.contoller.customer;
 
 import in.timesinternet.foodbooking.dto.request.CartDto;
+import in.timesinternet.foodbooking.dto.request.CartItemUpdateDto;
 import in.timesinternet.foodbooking.entity.Cart;
+import in.timesinternet.foodbooking.entity.CartItem;
 import in.timesinternet.foodbooking.service.CartService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +38,26 @@ public class CustomerCartController {
     ResponseEntity<Cart> getCart(HttpServletRequest request){
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.getCurrentCart(userEmail));
+    }
+
+    @PutMapping("/cart_item")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    ResponseEntity<CartItem> updateCartItemQuantity(@RequestBody CartItemUpdateDto cartItemUpdateDto, HttpServletRequest request){
+        String userEmail = (String) request.getAttribute("userEmail");
+        return ResponseEntity.ok(cartService.updateCartItemQuantity(cartItemUpdateDto, userEmail));
+    }
+
+    @PutMapping("/cart_item/{itemId}")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    ResponseEntity<CartItem> addItemToCart(@PathVariable Integer itemId, HttpServletRequest request){
+        String userEmail = (String) request.getAttribute("userEmail");
+        return ResponseEntity.ok(cartService.addItemToCart(itemId, userEmail));
+    }
+
+    @DeleteMapping("/cart_item/{cartItemId}")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    ResponseEntity<CartItem> deleteCartItem(@PathVariable Integer cartItemId, HttpServletRequest request){
+        String userEmail = (String) request.getAttribute("userEmail");
+        return ResponseEntity.ok(cartService.deleteCartItem(cartItemId, userEmail));
     }
 }
