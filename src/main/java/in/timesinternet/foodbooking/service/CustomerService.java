@@ -2,6 +2,7 @@ package in.timesinternet.foodbooking.service;
 
 import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
 import in.timesinternet.foodbooking.dto.request.CustomerDto;
+import in.timesinternet.foodbooking.dto.request.CustomerUpdateDto;
 import in.timesinternet.foodbooking.dto.request.RestaurantResponseDto;
 import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.Customer;
@@ -18,5 +19,9 @@ public interface CustomerService {
     Customer getCustomer(Integer id);
     List<Customer> getAllCustomer(Integer restaurantId);
 
+<<<<<<< HEAD
+    Customer updateCustomerProfile(CustomerUpdateDto customerUpdateDto, String userEmail);
+=======
+>>>>>>> a4201142fbc6ee8dc9e4a121d22bead7532e3576
 
 }

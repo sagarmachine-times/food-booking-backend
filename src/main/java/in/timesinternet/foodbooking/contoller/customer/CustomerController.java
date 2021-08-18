@@ -1,9 +1,6 @@
 package in.timesinternet.foodbooking.contoller.customer;
 
-import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
-import in.timesinternet.foodbooking.dto.request.CustomerDto;
-import in.timesinternet.foodbooking.dto.request.LoginDto;
-import in.timesinternet.foodbooking.dto.request.RestaurantResponseDto;
+import in.timesinternet.foodbooking.dto.request.*;
 import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.service.CustomerService;
@@ -53,6 +50,13 @@ public class CustomerController {
     ResponseEntity<Customer> getCustomer(HttpServletRequest httpServletRequest){
         String userEmail =(String) httpServletRequest.getAttribute("userEmail");
         return ResponseEntity.ok(customerService.getCustomer(userEmail));
+    }
+
+    @PutMapping(value="/updateProfile")
+    ResponseEntity<Customer> updateCustomerProfile(@RequestBody CustomerUpdateDto customerUpdateDto, HttpServletRequest httpServletRequest )
+    {
+        String userEmail =(String) httpServletRequest.getAttribute("userEmail");
+        return ResponseEntity.ok(customerService.updateCustomerProfile(customerUpdateDto, userEmail));
     }
 
 }

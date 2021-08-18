@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.service.impl;
 
 import in.timesinternet.foodbooking.dto.request.CustomerDto;
+import in.timesinternet.foodbooking.dto.request.CustomerUpdateDto;
 import in.timesinternet.foodbooking.entity.*;
 import in.timesinternet.foodbooking.dto.request.RestaurantResponseDto;
 import in.timesinternet.foodbooking.entity.embeddable.RestaurantDetail;
@@ -14,6 +15,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import in.timesinternet.foodbooking.entity.embeddable.*;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +37,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     CategoryRepository categoryRepository;
 
+<<<<<<< HEAD
+//    @Autowired
+//    CustomerService customerService;
+=======
     @Autowired
     CartRepository cartRepository;
+>>>>>>> a4201142fbc6ee8dc9e4a121d22bead7532e3576
 
     @Override
     public Customer createCustomer(CustomerDto customerDto) {
@@ -88,6 +96,35 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+<<<<<<< HEAD
+    public Customer getCustomer(String email)
+    {
+        Optional<Customer> customerOptional = customerRepository.findByEmail(email);
+
+        if (customerOptional.isPresent())
+        {
+            return customerOptional.get();
+        }
+        else
+        {
+            throw new RuntimeException("customer not found");
+        }
+    }
+
+    @Override
+    public Customer getCustomer(Integer customerId)
+    {
+        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+
+        if (customerOptional.isPresent())
+        {
+            return customerOptional.get();
+        }
+        else
+        {
+            throw new RuntimeException("customer not found");
+        }
+=======
     public Customer getCustomer(String email) {
 
         Optional<Customer> customerOptional = customerRepository.findByEmail(email);
@@ -104,6 +141,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerOptional.isPresent())
             return customerOptional.get();
         throw new RuntimeException("Customer not found with id " + customerId);
+>>>>>>> a4201142fbc6ee8dc9e4a121d22bead7532e3576
     }
 
     @Override
@@ -114,6 +152,25 @@ public class CustomerServiceImpl implements CustomerService {
             return restaurant.getCustomerList();
         } else
             throw new RuntimeException("restaurant not found");
+    }
+
+    @Override
+    public Customer updateCustomerProfile(CustomerUpdateDto customerUpdateDto, String userEmail)
+    {
+      Customer customer = getCustomer(userEmail);
+
+//    customer.setEmail(customerUpdateDto.getEmail());
+      customer.setPassword(passwordEncoder.encode(customerUpdateDto.getPassword()));
+      customer.setFirstName(customerUpdateDto.getFirstName());
+      customer.setLastName(customerUpdateDto.getLastName());
+
+      Address addr2 = customerUpdateDto.getAddress();
+      customer.setAddress(addr2);
+      Contact ct2 = customerUpdateDto.getContact();
+      customer.setContact(ct2);
+
+      customerRepository.save(customer);
+      return  customer;
     }
 
 }
