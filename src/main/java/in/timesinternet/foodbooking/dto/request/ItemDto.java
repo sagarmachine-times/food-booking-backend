@@ -31,7 +31,6 @@ public class ItemDto {
     @NotNull(message = "type can't be null")
     Integer categoryId;
 
-    @NotNull(message = "type can't be null")
     Integer imageId;
 
 }

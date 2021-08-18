@@ -18,4 +18,5 @@ public interface CustomerService {
     Customer getCustomer(Integer id);
     List<Customer> getAllCustomer(Integer restaurantId);
 
+
 }

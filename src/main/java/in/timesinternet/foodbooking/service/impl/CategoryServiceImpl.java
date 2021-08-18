@@ -86,4 +86,12 @@ public class CategoryServiceImpl implements CategoryService {
         } else
             throw new RuntimeException("category not found");
     }
+
+    @Override
+    public Category getCategory(Integer categoryId) {
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+        if(categoryOptional.isPresent())
+            return  categoryOptional.get();
+        throw  new RuntimeException("category not found with id "+categoryId);
+    }
 }

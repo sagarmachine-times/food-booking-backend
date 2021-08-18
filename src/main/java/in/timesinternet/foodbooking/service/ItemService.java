@@ -16,4 +16,8 @@ public interface ItemService {
     Item deleteItem(Integer itemId, Integer restaurantId);
 
     Item updateItem(ItemUpdateDto itemUpdateDto, Integer restaurantId);
+
+    Item getItem(Integer itemId);
+
+    List<Item> getItemByCategory(Integer categoryId);
 }

@@ -2,10 +2,7 @@ package in.timesinternet.foodbooking.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,6 +14,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class CartItem {
 
     @Id
@@ -41,4 +39,10 @@ public class CartItem {
 
     @ManyToOne
     Item item;
+
+    @Override
+    public int hashCode() {
+        System.out.println("HASH CODE---> "+ this.item.id);
+        return this.item.id;
+    }
 }

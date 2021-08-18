@@ -1,11 +1,11 @@
 package in.timesinternet.foodbooking.service.impl;
 
-import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
 import in.timesinternet.foodbooking.dto.request.CustomerDto;
 import in.timesinternet.foodbooking.entity.*;
 import in.timesinternet.foodbooking.dto.request.RestaurantResponseDto;
 import in.timesinternet.foodbooking.entity.embeddable.RestaurantDetail;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
+import in.timesinternet.foodbooking.repository.CartRepository;
 import in.timesinternet.foodbooking.repository.CategoryRepository;
 import in.timesinternet.foodbooking.repository.CustomerRepository;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
@@ -34,6 +34,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    CartRepository cartRepository;
+
     @Override
     public Customer createCustomer(CustomerDto customerDto) {
         ModelMapper modelMapper = new ModelMapper();
@@ -47,9 +50,13 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setEmail(customer.getEmail() + "_" + restaurant.getRestaurantDetail().getSubDomain());
 
         Cart cart = new Cart();
+        cart.setRestaurant(restaurant);
+        customer = customerRepository.save(customer);
         customer.setCurrentCart(cart);
-        customer.getCartList().add(customer.getCurrentCart());
-        return customerRepository.save(customer);
+        customer.addCart(customer.getCurrentCart());
+        cartRepository.save(cart);
+        customer = customerRepository.save(customer);
+        return customer;
     }
 
     @Override
@@ -82,22 +89,30 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer getCustomer(String email) {
-        return customerRepository.findByEmail(email).get();
+
+        Optional<Customer> customerOptional = customerRepository.findByEmail(email);
+        if (customerOptional.isPresent())
+            return customerOptional.get();
+        throw new RuntimeException("Customer not found with email " + email);
     }
 
     @Override
     public Customer getCustomer(Integer customerId) {
-        return customerRepository.findById(customerId).get();
+
+
+        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        if (customerOptional.isPresent())
+            return customerOptional.get();
+        throw new RuntimeException("Customer not found with id " + customerId);
     }
 
     @Override
     public List<Customer> getAllCustomer(Integer restaurantId) {
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
-        if(restaurantOptional.isPresent()) {
-            Restaurant restaurant=  restaurantOptional.get();
+        if (restaurantOptional.isPresent()) {
+            Restaurant restaurant = restaurantOptional.get();
             return restaurant.getCustomerList();
-        }
-        else
+        } else
             throw new RuntimeException("restaurant not found");
     }
 

@@ -38,9 +38,9 @@ public class CustomerRestaurantController {
     }
 
 
-    @GetMapping("/{restaurantId}/category")
-    ResponseEntity<List<Category>> getAllCategory(@PathVariable Integer restaurantId)
-    {
+        @GetMapping("/{restaurantId}/category")
+        ResponseEntity<List<Category>> getAllCategory(@PathVariable Integer restaurantId)
+        {
 
         return ResponseEntity.ok(categoryService.getAllCategory(restaurantId));
     }
@@ -49,5 +49,12 @@ public class CustomerRestaurantController {
     {
 
         return ResponseEntity.ok(itemService.getAllItem(restaurantId));
+    }
+
+    @GetMapping("/category/{categoryId}/item")
+    ResponseEntity<List<Item>> getItem(@PathVariable Integer categoryId)
+    {
+
+        return ResponseEntity.ok(itemService.getItemByCategory(categoryId));
     }
 }
