@@ -5,6 +5,8 @@ import in.timesinternet.foodbooking.dto.request.UpdateCouponDto;
 import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.Image;
 import in.timesinternet.foodbooking.entity.Restaurant;
+import in.timesinternet.foodbooking.exception.NotFoundException;
+import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.repository.CouponRepository;
 import in.timesinternet.foodbooking.repository.ImageRepository;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
@@ -44,7 +46,7 @@ public class CouponServiceImpl implements CouponService {
         }
         else
         {
-            throw new RuntimeException("Runtime");
+            throw new NotFoundException(" either restaurant or image is not found");
         }
     }
     @Override
@@ -71,11 +73,11 @@ public class CouponServiceImpl implements CouponService {
                return couponRepository.save(coupon);
 
             } else {
-                throw new RuntimeException("You are not authorised to update this coupon");
+                throw new UnauthorizedException("You are not authorised to update this coupon");
             }
         }
         else {
-            throw new RuntimeException(" Coupon does not exist of Id "+ couponId);
+            throw new NotFoundException(" Coupon does not exist of Id "+ couponId);
         }
     }
     @Override
@@ -95,11 +97,11 @@ public class CouponServiceImpl implements CouponService {
                  return coupon;
 
             } else {
-                throw new RuntimeException("You are not authorised to update this coupon");
+                throw new UnauthorizedException("You are not authorised to update this coupon");
             }
         }
         else {
-            throw new RuntimeException(" Coupon does not exist of Id "+ couponId);
+            throw new NotFoundException(" Coupon does not exist of Id "+ couponId);
         }
     }
 
@@ -112,7 +114,7 @@ public class CouponServiceImpl implements CouponService {
             Restaurant restaurant = optionalRestaurant.get();
             return restaurant.getCouponList();
         } else {
-            throw new RuntimeException("This Restaurant does not exist");
+            throw new NotFoundException("This restaurant is not found");
         }
     }
 }

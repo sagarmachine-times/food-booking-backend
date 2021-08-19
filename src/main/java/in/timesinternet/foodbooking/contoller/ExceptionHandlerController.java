@@ -2,6 +2,7 @@ package in.timesinternet.foodbooking.contoller;
 
 import in.timesinternet.foodbooking.exception.InvalidRequestBodyException;
 import in.timesinternet.foodbooking.exception.NotFoundException;
+import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.exception.UserAlreadyExistException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 public class ExceptionHandlerController {
 
     @ExceptionHandler(value ={InvalidRequestBodyException.class, UserAlreadyExistException.class,
-            NotFoundException.class})
+            NotFoundException.class, UnauthorizedException.class})
     public ResponseEntity<HashMap<String,String>> runTimeExceptionHandler(RuntimeException runtimeException){
 
         return ResponseEntity.badRequest().body(new HashMap<String, String>(){{put("message",runtimeException.getMessage());}});

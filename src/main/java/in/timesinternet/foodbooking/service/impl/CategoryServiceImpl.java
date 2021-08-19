@@ -4,6 +4,8 @@ import in.timesinternet.foodbooking.dto.request.CategoryDto;
 import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
 import in.timesinternet.foodbooking.entity.Category;
 import in.timesinternet.foodbooking.entity.Restaurant;
+import in.timesinternet.foodbooking.exception.NotFoundException;
+import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.repository.CategoryRepository;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.service.CategoryService;
@@ -34,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
             return categoryRepository.save(category);
 
         } else
-            throw new RuntimeException("restaurant not found with id " + restaurantId);
+            throw new NotFoundException("restaurant not found with id " + restaurantId);
     }
 
 
@@ -58,9 +60,9 @@ public class CategoryServiceImpl implements CategoryService {
                 categoryRepository.deleteById(categoryId);
                 return categoryOptional.get();
             } else
-                throw new RuntimeException("unauthorised access for deleting category");
+                throw new UnauthorizedException("unauthorised access for deleting category");
         } else
-            throw new RuntimeException("category not found ");
+            throw new NotFoundException("category not found ");
     }
 
     @Override
@@ -82,9 +84,9 @@ public class CategoryServiceImpl implements CategoryService {
                 categoryRepository.save(category);
                 return category;
             } else
-                throw new RuntimeException("authorised access for updating category");
+                throw new UnauthorizedException("authorised access for updating category");
         } else
-            throw new RuntimeException("category not found");
+            throw new NotFoundException("category not found");
     }
 
     @Override
@@ -92,6 +94,7 @@ public class CategoryServiceImpl implements CategoryService {
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
         if(categoryOptional.isPresent())
             return  categoryOptional.get();
-        throw  new RuntimeException("category not found with id "+categoryId);
+        else
+            throw  new NotFoundException("category not found with id "+categoryId);
     }
 }

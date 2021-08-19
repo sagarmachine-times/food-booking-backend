@@ -4,11 +4,14 @@ import in.timesinternet.foodbooking.dto.request.StaffDto;
 import in.timesinternet.foodbooking.dto.request.StaffUpdateDto;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Staff;
+import in.timesinternet.foodbooking.exception.UnauthorizedException;
+import in.timesinternet.foodbooking.exception.UserAlreadyExistException;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.repository.StaffRepository;
 import in.timesinternet.foodbooking.service.StaffService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +40,16 @@ public class StaffServiceImpl implements StaffService {
         Staff newStaff = modelMapper.map(staffDto, Staff.class);
         newStaff.setPassword(passwordEncoder.encode("123"));
         restaurant.addStaff(newStaff);
-        restaurantRepository.save(restaurant);
-        return restaurant.getStaffList();
+
+        try
+        {
+            restaurantRepository.save(restaurant);
+            return restaurant.getStaffList();
+        }
+        catch (DataIntegrityViolationException dataIntegrityViolationException)
+        {
+            throw new UserAlreadyExistException(" staff member with following details already exists ");
+        }
     }
 
     @Override
@@ -59,7 +70,7 @@ public class StaffServiceImpl implements StaffService {
         Staff currentStaff = staffRepository.findByEmail(userEmail);
         Staff staff = staffRepository.findById(staffId).get();
         if (!staff.getRestaurant().getId().equals(currentStaff.getRestaurant().getId()))
-            throw new RuntimeException("authorized");
+            throw new UnauthorizedException("authorized access for deleting the staff");
         staffRepository.deleteById(staffId);
         return staff;
     }

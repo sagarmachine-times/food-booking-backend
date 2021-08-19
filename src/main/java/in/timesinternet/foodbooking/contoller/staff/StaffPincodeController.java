@@ -4,12 +4,15 @@ import in.timesinternet.foodbooking.dto.request.AvalibilityDto;
 import in.timesinternet.foodbooking.dto.request.PincodeDto;
 import in.timesinternet.foodbooking.entity.Serviceability;
 import in.timesinternet.foodbooking.service.PincodeService;
+import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,6 +21,9 @@ public class StaffPincodeController {
 
     @Autowired
     PincodeService pincodeService;
+
+    @Autowired
+    BindingResultService bindingResultService;
 
     @GetMapping("")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
@@ -29,9 +35,10 @@ public class StaffPincodeController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<List<Serviceability>> addPincode(@RequestBody List<PincodeDto> pincodeDto, HttpServletRequest request) {
+    ResponseEntity<List<Serviceability>> addPincode(@RequestBody @Valid List<PincodeDto> pincodeDto, HttpServletRequest request,
+                                                    BindingResult bindingResult) {
+        bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
-
         return ResponseEntity.ok(pincodeService.addPincode(pincodeDto, restaurantId));
     }
 
@@ -46,7 +53,9 @@ public class StaffPincodeController {
 
     @PatchMapping("")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Serviceability> updatePincode(@RequestBody AvalibilityDto avalibilityDto, HttpServletRequest request) {
+    ResponseEntity<Serviceability> updatePincode(@RequestBody @Valid AvalibilityDto avalibilityDto, HttpServletRequest request,
+                                                 BindingResult bindingResult) {
+        bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(pincodeService.updatePincode(avalibilityDto, restaurantId));
     }

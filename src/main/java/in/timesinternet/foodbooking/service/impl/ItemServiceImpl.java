@@ -6,6 +6,8 @@ import in.timesinternet.foodbooking.entity.Category;
 import in.timesinternet.foodbooking.entity.Item;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Image;
+import in.timesinternet.foodbooking.exception.NotFoundException;
+import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.repository.CategoryRepository;
 import in.timesinternet.foodbooking.repository.ImageRepository;
 import in.timesinternet.foodbooking.repository.ItemRepository;
@@ -69,7 +71,7 @@ public class ItemServiceImpl implements ItemService {
             return itemRepository.save(item);
         }
         else{
-            throw new RuntimeException("restaurant or category not found with id ");
+            throw new NotFoundException("either restaurant or category is not fouund ");
         }
     }
 
@@ -95,11 +97,11 @@ public class ItemServiceImpl implements ItemService {
                 return  item;
             }
             else{
-                throw new RuntimeException("unauthorized access for deleting the item");
+                throw new UnauthorizedException("unauthorized access for deleting the item");
             }
         }
         else{
-            throw new RuntimeException("item not found");
+            throw new NotFoundException("item is not found");
         }
     }
 
@@ -154,11 +156,11 @@ public class ItemServiceImpl implements ItemService {
             }
             else
             {
-                throw  new RuntimeException(" unauthorised access for updating the item");
+                throw  new UnauthorizedException(" unauthorised access for updating the item");
             }
         }
         else{
-            throw new RuntimeException(" item not found");
+            throw new NotFoundException(" item is not found");
         }
     }
 
@@ -167,7 +169,8 @@ public class ItemServiceImpl implements ItemService {
         Optional<Item> itemOptional = itemRepository.findById(itemId);
         if(itemOptional.isPresent())
             return  itemOptional.get();
-        throw  new RuntimeException("item not found with id "+itemId);
+        else
+            throw  new NotFoundException("item is not found for given id ");
     }
 
     @Override

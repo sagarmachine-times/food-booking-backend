@@ -5,6 +5,7 @@ import in.timesinternet.foodbooking.entity.DeliveryBoy;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Staff;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
+import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.repository.UserRepository;
 import in.timesinternet.foodbooking.security.JWTUtil;
@@ -82,7 +83,7 @@ public class UserServiceImpl implements UserService {
                 put("user",customer);
             }};
         } else
-            throw new RuntimeException("restaurant with given id not found");
+            throw new NotFoundException("given restaurant is not found ");
 
 
     }

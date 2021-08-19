@@ -31,7 +31,8 @@ public class CustomerController {
     BindingResultService bindingResultService;
 
     @PostMapping(value = "")
-    ResponseEntity<Customer> registerCustomer(@RequestBody @Valid CustomerDto customerDto){
+    ResponseEntity<Customer> registerCustomer(@RequestBody @Valid CustomerDto customerDto, BindingResult bindingResult){
+        bindingResultService.validate(bindingResult);
         return ResponseEntity.ok(customerService.createCustomer(customerDto));
     }
 

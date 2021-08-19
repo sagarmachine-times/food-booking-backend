@@ -6,6 +6,8 @@ import in.timesinternet.foodbooking.entity.*;
 import in.timesinternet.foodbooking.dto.request.RestaurantResponseDto;
 import in.timesinternet.foodbooking.entity.embeddable.RestaurantDetail;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
+import in.timesinternet.foodbooking.exception.NotFoundException;
+import in.timesinternet.foodbooking.exception.UserAlreadyExistException;
 import in.timesinternet.foodbooking.repository.CartRepository;
 import in.timesinternet.foodbooking.repository.CategoryRepository;
 import in.timesinternet.foodbooking.repository.CustomerRepository;
@@ -13,6 +15,7 @@ import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.service.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import in.timesinternet.foodbooking.entity.embeddable.*;
@@ -60,8 +63,16 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setCurrentCart(cart);
         customer.addCart(customer.getCurrentCart());
         cartRepository.save(cart);
-        customer = customerRepository.save(customer);
-        return customer;
+
+        try
+        {
+            customer = customerRepository.save(customer);
+            return customer;
+        }
+        catch (DataIntegrityViolationException dataIntegrityViolationException)
+        {
+            throw new UserAlreadyExistException("Customer with given details :- "+customer.getEmail()+" already exits");
+        }
     }
 
     @Override
@@ -87,8 +98,9 @@ public class CustomerServiceImpl implements CustomerService {
             restaurantResponseDto.setLogo(restaurant.getLogo());
 
             return restaurantResponseDto;
-        } else {
-            throw new RuntimeException("restaurant not found");
+        } else
+        {
+            throw new NotFoundException("restaurant is not found with given subdomain :- "+subDomain);
         }
     }
 
@@ -103,7 +115,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         else
         {
-            throw new RuntimeException("customer not found");
+            throw new NotFoundException("customer is not found");
         }
     }
 
@@ -114,7 +126,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerOptional.isPresent()) {
             return customerOptional.get();
         } else {
-            throw new RuntimeException("customer not found");
+            throw new NotFoundException("customer is not found");
         }
     }
 
@@ -127,7 +139,7 @@ public class CustomerServiceImpl implements CustomerService {
             Restaurant restaurant = restaurantOptional.get();
             return restaurant.getCustomerList();
         } else
-            throw new RuntimeException("restaurant not found");
+            throw new NotFoundException("restaurant is not found");
     }
 
     @Override

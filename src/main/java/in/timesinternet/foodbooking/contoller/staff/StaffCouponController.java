@@ -10,14 +10,17 @@ import in.timesinternet.foodbooking.entity.Serviceability;
 import in.timesinternet.foodbooking.repository.ImageRepository;
 import in.timesinternet.foodbooking.service.CouponService;
 import in.timesinternet.foodbooking.service.PincodeService;
+import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import in.timesinternet.foodbooking.util.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -33,6 +36,9 @@ public class StaffCouponController {
     @Autowired
     CouponService couponService;
 
+    @Autowired
+    BindingResultService bindingResultService;
+
     @PostMapping("/image")
     ResponseEntity<Image> uploadImage(@RequestParam MultipartFile couponImage) {
         return ResponseEntity.ok(imageRepository.save(imageService.uploadImage(couponImage)));
@@ -40,14 +46,18 @@ public class StaffCouponController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Coupon> addCoupon(@RequestBody CouponDto couponDto, HttpServletRequest request) {
+    ResponseEntity<Coupon> addCoupon(@RequestBody @Valid CouponDto couponDto, HttpServletRequest request,
+                                     BindingResult bindingResult) {
+        bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(couponService.addCoupon(couponDto, restaurantId));
     }
 
     @PatchMapping("/{couponId}")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Coupon> updateCoupon(@RequestBody UpdateCouponDto updateCouponDto, @PathVariable Integer couponId, HttpServletRequest request) {
+    ResponseEntity<Coupon> updateCoupon(@RequestBody @Valid UpdateCouponDto updateCouponDto, @PathVariable Integer couponId,
+                                        HttpServletRequest request, BindingResult bindingResult) {
+        bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(couponService.updateCoupon(updateCouponDto, couponId, restaurantId));
     }

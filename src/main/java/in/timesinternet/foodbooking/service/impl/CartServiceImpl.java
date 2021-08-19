@@ -5,6 +5,7 @@ import in.timesinternet.foodbooking.dto.request.CartItemDto;
 import in.timesinternet.foodbooking.dto.request.CartItemUpdateDto;
 import in.timesinternet.foodbooking.entity.*;
 import in.timesinternet.foodbooking.entity.enumeration.CartStatus;
+import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.repository.*;
 import in.timesinternet.foodbooking.service.CartService;
 import in.timesinternet.foodbooking.service.CustomerService;
@@ -86,16 +87,16 @@ public class CartServiceImpl implements CartService {
 
         if (customer.getId().equals(cartItem.getCart().getCustomer().getId())) {
             if (customer.getCurrentCart().getStatus().equals(CartStatus.IMMUTABLE))
-                throw new RuntimeException("cart is immutable");
+                throw new UnauthorizedException("cart is immutable");
             if (cartItemUpdateDto.getQuantity() < 0)
-                throw new RuntimeException("invalid request quantity can't be negative");
+                throw new UnauthorizedException("invalid request quantity can't be negative");
             if (cartItemUpdateDto.getQuantity() == 0)
                 deleteCartItem(cartItemUpdateDto.getCartItemId(), userEmail);
             else
                 cartItem.setQuantity(cartItemUpdateDto.getQuantity());
             return cartItemRepository.save(cartItem);
         } else
-            throw new RuntimeException("unauthorized request cart doesn't belongs to you");
+            throw new UnauthorizedException("unauthorized request cart doesn't belongs to you");
     }
 
     @Override
@@ -103,11 +104,11 @@ public class CartServiceImpl implements CartService {
         Item item = itemService.getItem(itemId);
         Customer customer = customerService.getCustomer(userEmail);
         if (customer.getCurrentCart().getStatus().equals(CartStatus.IMMUTABLE))
-            throw new RuntimeException("cart is immutable");
+            throw new UnauthorizedException("cart is immutable");
         if (!customer.getCurrentCart().getRestaurant().getId().equals(customer.getRestaurant().getId()))
-            throw new RuntimeException("item does not belong to restaurant "+customer.getRestaurant().getId());
+            throw new UnauthorizedException("item does not belong to restaurant "+customer.getRestaurant().getId());
         if (customer.getCurrentCart().getCartItemList().parallelStream().anyMatch(existingCartItem ->existingCartItem.getItem().getId().equals(itemId)))
-            throw new RuntimeException("item already exist");
+            throw new UnauthorizedException("item already exist");
         CartItem cartItem = new CartItem();
         cartItem.setItem(item);
 
@@ -121,19 +122,19 @@ public class CartServiceImpl implements CartService {
         CartItem cartItem = getCartItem(cartItemId);
         Customer customer = customerService.getCustomer(userEmail);
         if (customer.getCurrentCart().getStatus().equals(CartStatus.IMMUTABLE))
-            throw new RuntimeException("cart is immutable");
+            throw new UnauthorizedException("cart is immutable");
         if (cartItem.getCart().getCustomer().getId().equals(customer.getId()) && cartItem.getCart().getId().equals(customer.getCurrentCart().getId())) {
             cartItemRepository.deleteById(cartItemId);
             return cartItem;
         }
         else
-            throw new RuntimeException("unauthorized request cart dont belong to you");
+            throw new UnauthorizedException("unauthorized request cart dont belong to you");
     }
 
     private CartItem getCartItem(Integer id) {
         Optional<CartItem> cartItemOptional = cartItemRepository.findById(id);
         if (cartItemOptional.isPresent())
             return cartItemOptional.get();
-        throw new RuntimeException(("cart item not found with id " + id));
+        throw new UnauthorizedException(("cart item not found with id " + id));
     }
 }
