@@ -42,7 +42,9 @@ public class CustomerCartController {
 
     @PutMapping("/cart_item")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<CartItem> updateCartItemQuantity(@RequestBody CartItemUpdateDto cartItemUpdateDto, HttpServletRequest request){
+    ResponseEntity<CartItem> updateCartItemQuantity(@RequestBody @Valid CartItemUpdateDto cartItemUpdateDto,
+                                                    HttpServletRequest request, BindingResult bindingResult){
+        bindingResultService.validate(bindingResult);
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.updateCartItemQuantity(cartItemUpdateDto, userEmail));
     }
