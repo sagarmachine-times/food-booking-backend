@@ -37,13 +37,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     CategoryRepository categoryRepository;
 
-<<<<<<< HEAD
 //    @Autowired
 //    CustomerService customerService;
-=======
     @Autowired
     CartRepository cartRepository;
->>>>>>> a4201142fbc6ee8dc9e4a121d22bead7532e3576
 
     @Override
     public Customer createCustomer(CustomerDto customerDto) {
@@ -96,7 +93,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-<<<<<<< HEAD
     public Customer getCustomer(String email)
     {
         Optional<Customer> customerOptional = customerRepository.findByEmail(email);
@@ -112,37 +108,17 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer getCustomer(Integer customerId)
-    {
+    public Customer getCustomer(Integer customerId) {
         Optional<Customer> customerOptional = customerRepository.findById(customerId);
 
-        if (customerOptional.isPresent())
-        {
+        if (customerOptional.isPresent()) {
             return customerOptional.get();
-        }
-        else
-        {
+        } else {
             throw new RuntimeException("customer not found");
         }
-=======
-    public Customer getCustomer(String email) {
-
-        Optional<Customer> customerOptional = customerRepository.findByEmail(email);
-        if (customerOptional.isPresent())
-            return customerOptional.get();
-        throw new RuntimeException("Customer not found with email " + email);
     }
 
-    @Override
-    public Customer getCustomer(Integer customerId) {
 
-
-        Optional<Customer> customerOptional = customerRepository.findById(customerId);
-        if (customerOptional.isPresent())
-            return customerOptional.get();
-        throw new RuntimeException("Customer not found with id " + customerId);
->>>>>>> a4201142fbc6ee8dc9e4a121d22bead7532e3576
-    }
 
     @Override
     public List<Customer> getAllCustomer(Integer restaurantId) {
