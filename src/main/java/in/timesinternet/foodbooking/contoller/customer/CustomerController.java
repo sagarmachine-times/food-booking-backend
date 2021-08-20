@@ -47,12 +47,14 @@ public class CustomerController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     ResponseEntity<Customer> getCustomer(HttpServletRequest httpServletRequest){
         String userEmail =(String) httpServletRequest.getAttribute("userEmail");
         return ResponseEntity.ok(customerService.getCustomer(userEmail));
     }
 
     @PutMapping(value="/updateProfile")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     ResponseEntity<Customer> updateCustomerProfile(@RequestBody CustomerUpdateDto customerUpdateDto, HttpServletRequest httpServletRequest )
     {
         String userEmail =(String) httpServletRequest.getAttribute("userEmail");

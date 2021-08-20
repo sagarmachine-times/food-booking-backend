@@ -115,4 +115,12 @@ public class CouponServiceImpl implements CouponService {
             throw new RuntimeException("This Restaurant does not exist");
         }
     }
+
+    @Override
+    public Coupon getCoupon(Integer couponId) {
+        Optional<Coupon> couponOptional = couponRepository.findById(couponId);
+        if (couponOptional.isPresent())
+             return  couponOptional.get();
+        throw  new RuntimeException("coupon doesn't exist");
+    }
 }

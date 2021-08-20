@@ -27,14 +27,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     JWTUtil jwtUtil;
-
     @Autowired
     UserService userService;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("Authentication Filter");
         String authorization = httpServletRequest.getHeader("Authorization");
         if (authorization != null && authorization.startsWith("Bearer")) {
             String jwtToken = authorization.substring(7);
@@ -44,7 +41,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             role.add(new SimpleGrantedAuthority(((String)claims.get("role"))));
             httpServletRequest.setAttribute("restaurantId", claims.get("restaurantId"));
             httpServletRequest.setAttribute("userEmail", claims.get("userEmail"));
-            System.out.println(claims.getSubject());
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(claims.getSubject(),null, role);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
             SecurityContext context = SecurityContextHolder.createEmptyContext();

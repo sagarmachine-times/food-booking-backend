@@ -2,8 +2,10 @@ package in.timesinternet.foodbooking.contoller.customer;
 
 import in.timesinternet.foodbooking.dto.request.CartDto;
 import in.timesinternet.foodbooking.dto.request.CartItemUpdateDto;
+import in.timesinternet.foodbooking.dto.request.CartStatusUpdateDto;
 import in.timesinternet.foodbooking.entity.Cart;
 import in.timesinternet.foodbooking.entity.CartItem;
+import in.timesinternet.foodbooking.entity.enumeration.CartStatus;
 import in.timesinternet.foodbooking.service.CartService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/customer/cart")
@@ -59,5 +62,12 @@ public class CustomerCartController {
     ResponseEntity<CartItem> deleteCartItem(@PathVariable Integer cartItemId, HttpServletRequest request){
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.deleteCartItem(cartItemId, userEmail));
+    }
+
+    @PutMapping("/status")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    ResponseEntity<Cart> updateCartStatus(@RequestBody CartStatusUpdateDto cartStatusUpdateDto, HttpServletRequest request){
+        String userEmail = (String) request.getAttribute("userEmail");
+        return ResponseEntity.ok(cartService.updateCartStatus(cartStatusUpdateDto.getStatus(), userEmail));
     }
 }

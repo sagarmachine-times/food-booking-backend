@@ -15,4 +15,6 @@ public interface CouponService {
     Coupon deleteCoupon(Integer couponId, Integer restaurantId);
 
     List<Coupon> getAllCoupon(Integer restaurantId);
+
+    Coupon getCoupon(Integer couponId);
 }

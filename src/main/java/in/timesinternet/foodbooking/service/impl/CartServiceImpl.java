@@ -69,8 +69,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void updateCartStatus(CartStatus cartStatus, String email) {
-
+    public Cart updateCartStatus(CartStatus cartStatus, String email) {
+        Customer customer = customerService.getCustomer(email);
+        Cart currentCart = customer.getCurrentCart();
+        if(cartStatus.equals(CartStatus.IMMUTABLE))
+        for(CartItem cartItem:currentCart.getCartItemList())
+         cartItem.setPrice(cartItem.getItem().getSellingPrice());
+        currentCart.setStatus(cartStatus);
+        return cartRepository.save(currentCart);
     }
 
     @Override
@@ -128,6 +134,21 @@ public class CartServiceImpl implements CartService {
         }
         else
             throw new RuntimeException("unauthorized request cart dont belong to you");
+    }
+
+    @Override
+    public Cart addNewCart(String userEmail) {
+     Customer customer = customerService.getCustomer(userEmail);
+     if(customer.getCurrentCart().getStatus().equals(CartStatus.MUTABLE))
+         throw  new RuntimeException("invalid request");
+        Cart cart = new Cart();
+        cart.setRestaurant(customer.getRestaurant());
+        customer = customerRepository.save(customer);
+        customer.setCurrentCart(cart);
+        customer.addCart(customer.getCurrentCart());
+        cartRepository.save(cart);
+        customerRepository.save(customer);
+        return cart;
     }
 
     private CartItem getCartItem(Integer id) {

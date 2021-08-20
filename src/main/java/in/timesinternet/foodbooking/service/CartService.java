@@ -9,8 +9,11 @@ import in.timesinternet.foodbooking.entity.enumeration.CartStatus;
 public interface CartService {
 
     Cart updateCart(CartDto cartDto, String email);
+
     Cart getCurrentCart(String email);
-    void updateCartStatus(CartStatus cartStatus, String email);
+
+    Cart updateCartStatus(CartStatus cartStatus, String email);
+
     Object applyCouponOnCart(Integer cartId, String email);
 
     CartItem updateCartItemQuantity(CartItemUpdateDto cartItemUpdateDto, String userEmail);
@@ -18,4 +21,6 @@ public interface CartService {
     CartItem addItemToCart(Integer itemId, String userEmail);
 
     CartItem deleteCartItem(Integer cartItemId, String userEmail);
+
+    Cart addNewCart(String userEmail);
 }

@@ -27,7 +27,6 @@ public class CartItem {
     @UpdateTimestamp
     Date updatedAt;
 
-    @JsonIgnore
     Integer price;
 
     Integer quantity;
@@ -42,7 +41,6 @@ public class CartItem {
 
     @Override
     public int hashCode() {
-        System.out.println("HASH CODE---> "+ this.item.id);
         return this.item.id;
     }
 }

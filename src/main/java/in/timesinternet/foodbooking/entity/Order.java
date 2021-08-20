@@ -34,11 +34,16 @@ public class Order {
     Date updatedAt;
 
     Integer total;
-    Integer deliveryCharge;
-    Integer discount;
+    Integer deliveryCharge = 0;
+    Integer discount = 0;
+
+    @Enumerated(value = EnumType.STRING)
     OrderStatus status;
+
+    @Enumerated(value = EnumType.STRING)
     OrderType type;
-    Boolean isCouponApplied;
+
+    Boolean isCouponApplied = false;
 
     @Embedded
     Contact contact;
@@ -49,9 +54,11 @@ public class Order {
 
     //relationship
     @ManyToOne
+            @JsonIgnore
     Restaurant restaurant;
 
     @ManyToOne
+    @JsonIgnore
     Customer customer;
 
     @ManyToOne
