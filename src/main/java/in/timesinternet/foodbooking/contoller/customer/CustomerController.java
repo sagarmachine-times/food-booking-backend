@@ -4,6 +4,7 @@ import in.timesinternet.foodbooking.dto.request.*;
 import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.entity.embeddable.Address;
+import in.timesinternet.foodbooking.entity.embeddable.AddressContact;
 import in.timesinternet.foodbooking.service.CustomerService;
 import in.timesinternet.foodbooking.service.UserService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
@@ -71,14 +72,14 @@ public class CustomerController {
 
     @PostMapping(value = "/address")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<List<Address>> addAddress(@RequestBody Address address, HttpServletRequest httpServletRequest){
+    ResponseEntity<List<AddressContact>> addAddress(@RequestBody AddressContact address, HttpServletRequest httpServletRequest){
         String userEmail =(String) httpServletRequest.getAttribute("userEmail");
         return ResponseEntity.ok(customerService.addAddress(address, userEmail));
     }
 
     @GetMapping(value = "/address")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<List<Address>> getAddresses(HttpServletRequest httpServletRequest){
+    ResponseEntity<List<AddressContact>> getAddresses(HttpServletRequest httpServletRequest){
         String userEmail =(String) httpServletRequest.getAttribute("userEmail");
         return ResponseEntity.ok(customerService.getAddresses(userEmail));
     }

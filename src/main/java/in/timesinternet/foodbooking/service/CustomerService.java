@@ -7,6 +7,7 @@ import in.timesinternet.foodbooking.dto.request.RestaurantResponseDto;
 import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.entity.embeddable.Address;
+import in.timesinternet.foodbooking.entity.embeddable.AddressContact;
 
 import java.util.List;
 
@@ -19,8 +20,8 @@ public interface CustomerService {
     Customer getCustomer(String email);
     Customer getCustomer(Integer id);
     List<Customer> getAllCustomer(Integer restaurantId);
-    List<Address> addAddress(Address address, String userEmail);
-    List<Address> getAddresses(String userEmail);
+    List<AddressContact> addAddress(AddressContact addressContact, String userEmail);
+    List<AddressContact> getAddresses(String userEmail);
     Customer updateCustomerProfile(CustomerUpdateDto customerUpdateDto, String userEmail);
 
 

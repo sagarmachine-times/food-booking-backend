@@ -2,6 +2,7 @@ package in.timesinternet.foodbooking.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.timesinternet.foodbooking.entity.embeddable.Address;
+import in.timesinternet.foodbooking.entity.embeddable.AddressContact;
 import in.timesinternet.foodbooking.repository.CartRepository;
 import in.timesinternet.foodbooking.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class Customer extends User {
 
     @CollectionTable
     @ElementCollection
-    private List<Address> addressList= new ArrayList<>();
+    private List<AddressContact> addressList= new ArrayList<>();
     //relationship
 
     @OneToOne(cascade = CascadeType.REMOVE)

@@ -54,8 +54,8 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setRole(Role.ROLE_CUSTOMER);
         customer.setActualEmail(customer.getEmail());
         customer.setEmail(customer.getEmail() + "_" + restaurant.getRestaurantDetail().getSubDomain());
-        if (customerDto.getAddress() != null)
-            customer.getAddressList().add(customerDto.getAddress());
+//        if (customerDto.getAddress() != null)
+//            customer.getAddressList().add(customerDto.getAddress());
 
         Cart cart = new Cart();
         cart.setRestaurant(restaurant);
@@ -144,7 +144,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Address> addAddress(Address address, String userEmail) {
+    public List<AddressContact> addAddress(AddressContact address, String userEmail) {
         Customer customer = getCustomer(userEmail);
         customer.getAddressList().add(address);
         customerRepository.save(customer);
@@ -153,7 +153,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public List<Address> getAddresses(String userEmail) {
+    public List<AddressContact> getAddresses(String userEmail) {
         Customer customer = getCustomer(userEmail);
         return customer.getAddressList();
     }
