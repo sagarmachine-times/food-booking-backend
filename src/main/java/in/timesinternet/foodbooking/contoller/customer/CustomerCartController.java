@@ -1,5 +1,6 @@
 package in.timesinternet.foodbooking.contoller.customer;
 
+import in.timesinternet.foodbooking.dto.request.ApplyCouponResponseDto;
 import in.timesinternet.foodbooking.dto.request.CartDto;
 import in.timesinternet.foodbooking.dto.request.CartItemUpdateDto;
 import in.timesinternet.foodbooking.entity.Cart;
@@ -61,5 +62,12 @@ public class CustomerCartController {
     ResponseEntity<CartItem> deleteCartItem(@PathVariable Integer cartItemId, HttpServletRequest request){
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.deleteCartItem(cartItemId, userEmail));
+    }
+
+    @PostMapping(value="/applyCoupon")
+    ResponseEntity<ApplyCouponResponseDto> addCouponOnCurrentCart(HttpServletRequest request, @RequestParam String couponName)
+    {
+        String userEmail = (String) request.getAttribute("userEmail");
+        return ResponseEntity.ok(cartService.addCouponOnCurrentCart(userEmail, couponName));
     }
 }

@@ -1,5 +1,6 @@
 package in.timesinternet.foodbooking.service;
 
+import in.timesinternet.foodbooking.dto.request.ApplyCouponResponseDto;
 import in.timesinternet.foodbooking.dto.request.CartDto;
 import in.timesinternet.foodbooking.dto.request.CartItemUpdateDto;
 import in.timesinternet.foodbooking.entity.Cart;
@@ -18,4 +19,6 @@ public interface CartService {
     CartItem addItemToCart(Integer itemId, String userEmail);
 
     CartItem deleteCartItem(Integer cartItemId, String userEmail);
+
+    ApplyCouponResponseDto addCouponOnCurrentCart(String email, String couponName);
 }
