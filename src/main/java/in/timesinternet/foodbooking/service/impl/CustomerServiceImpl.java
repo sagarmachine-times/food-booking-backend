@@ -148,6 +148,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = getCustomer(userEmail);
         customer.getAddressList().add(address);
         customerRepository.save(customer);
+        System.out.println(customer.getAddressList());
         return customer.getAddressList();
     }
 
