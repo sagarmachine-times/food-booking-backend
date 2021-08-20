@@ -12,8 +12,5 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestaurantUpdateDto {
-    Date openingDate;
-    Date closingDate;
     Address address;
-    RestaurantStatus status;
 }
