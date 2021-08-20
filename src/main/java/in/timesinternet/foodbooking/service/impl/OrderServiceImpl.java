@@ -5,6 +5,7 @@ import in.timesinternet.foodbooking.dto.request.OrderDto;
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.entity.Order;
 import in.timesinternet.foodbooking.entity.Payment;
+import in.timesinternet.foodbooking.entity.enumeration.CartStatus;
 import in.timesinternet.foodbooking.entity.enumeration.OrderStatus;
 import in.timesinternet.foodbooking.entity.enumeration.PaymentMode;
 import in.timesinternet.foodbooking.entity.enumeration.PaymentStatus;
@@ -50,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
         order.setType(orderDto.getOrderType());
         order.setRestaurant(customer.getRestaurant());
         order.setCart(customer.getCurrentCart());
-        cartService.addNewCart(userEmail);
+
 
         //create and associate payment
         Payment payment = new Payment();
@@ -61,8 +62,10 @@ public class OrderServiceImpl implements OrderService {
         try {
             validateOrder();
             order.setStatus(OrderStatus.PENDING);
+            cartService.addNewCart(userEmail);
 
         } catch (RuntimeException exception) {
+            cartService.updateCartStatus(CartStatus.MUTABLE, userEmail);
             order.setStatus(OrderStatus.DECLINE);
         }
         order = orderRepository.save(order);
