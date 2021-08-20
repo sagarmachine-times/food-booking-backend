@@ -70,7 +70,7 @@ public class Order {
     @OneToOne
     Package pack;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     Payment payment;
 
 }

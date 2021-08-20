@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import in.timesinternet.foodbooking.entity.embeddable.Address;
 import in.timesinternet.foodbooking.repository.CartRepository;
 import in.timesinternet.foodbooking.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,10 @@ import java.util.List;
 public class Customer extends User {
 
     String actualEmail;
+
+    @CollectionTable
+    @ElementCollection
+    private List<Address> addressList= new ArrayList<>();
     //relationship
 
     @OneToOne(cascade = CascadeType.REMOVE)

@@ -4,7 +4,10 @@ import in.timesinternet.foodbooking.dto.request.OrderDto;
 import in.timesinternet.foodbooking.entity.CartItem;
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.entity.Order;
+import in.timesinternet.foodbooking.entity.Payment;
 import in.timesinternet.foodbooking.entity.enumeration.OrderStatus;
+import in.timesinternet.foodbooking.entity.enumeration.PaymentMode;
+import in.timesinternet.foodbooking.entity.enumeration.PaymentStatus;
 import in.timesinternet.foodbooking.repository.OrderRepository;
 import in.timesinternet.foodbooking.service.CartService;
 import in.timesinternet.foodbooking.service.CouponService;
@@ -48,6 +51,11 @@ public class OrderServiceImpl implements OrderService {
         cartService.addNewCart(userEmail);
 
         //create and associate payment
+        Payment payment = new Payment();
+        payment.setStatus(PaymentStatus.PENDING);
+        payment.setMode(PaymentMode.COD);
+
+        order.setPayment(payment);
         try {
             validateOrder();
             order.setStatus(OrderStatus.PENDING);
