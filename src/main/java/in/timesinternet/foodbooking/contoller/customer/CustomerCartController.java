@@ -44,7 +44,7 @@ public class CustomerCartController {
 
     @PutMapping("/cart_item")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<CartItem> updateCartItemQuantity(@RequestBody @Valid CartItemUpdateDto cartItemUpdateDto,
+    ResponseEntity<Cart> updateCartItemQuantity(@RequestBody @Valid CartItemUpdateDto cartItemUpdateDto,
                                                     HttpServletRequest request, BindingResult bindingResult){
         bindingResultService.validate(bindingResult);
         String userEmail = (String) request.getAttribute("userEmail");
@@ -53,14 +53,14 @@ public class CustomerCartController {
 
     @PutMapping("/cart_item/{itemId}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<CartItem> addItemToCart(@PathVariable Integer itemId, HttpServletRequest request){
+    ResponseEntity<Cart> addItemToCart(@PathVariable Integer itemId, HttpServletRequest request){
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.addItemToCart(itemId, userEmail));
     }
 
     @DeleteMapping("/cart_item/{cartItemId}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<CartItem> deleteCartItem(@PathVariable Integer cartItemId, HttpServletRequest request){
+    ResponseEntity<Cart> deleteCartItem(@PathVariable Integer cartItemId, HttpServletRequest request){
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.deleteCartItem(cartItemId, userEmail));
     }

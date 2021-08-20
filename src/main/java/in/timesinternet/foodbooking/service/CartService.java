@@ -17,11 +17,11 @@ public interface CartService {
 
     Object applyCouponOnCart(Integer cartId, String email);
 
-    CartItem updateCartItemQuantity(CartItemUpdateDto cartItemUpdateDto, String userEmail);
+    Cart updateCartItemQuantity(CartItemUpdateDto cartItemUpdateDto, String userEmail);
 
-    CartItem addItemToCart(Integer itemId, String userEmail);
+    Cart addItemToCart(Integer itemId, String userEmail);
 
-    CartItem deleteCartItem(Integer cartItemId, String userEmail);
+    Cart deleteCartItem(Integer cartItemId, String userEmail);
 
     Cart addNewCart(String userEmail);
 
