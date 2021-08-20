@@ -7,11 +7,13 @@ import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Staff;
 import in.timesinternet.foodbooking.entity.embeddable.RestaurantDetail;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
+import in.timesinternet.foodbooking.exception.UserAlreadyExistException;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.service.RestaurantService;
 import in.timesinternet.foodbooking.util.ImageService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +51,15 @@ public class RestaurantServiceImpl implements RestaurantService {
         staff.setLastName("owner");
 
         restaurant.addStaff(staff);
-        return restaurantRepository.save(restaurant);
+
+        try
+        {
+            return restaurantRepository.save(restaurant);
+        }
+        catch (DataIntegrityViolationException dataIntegrityViolationException)
+        {
+            throw new UserAlreadyExistException("Restaurants with given details already exists");
+        }
     }
 
     @Override

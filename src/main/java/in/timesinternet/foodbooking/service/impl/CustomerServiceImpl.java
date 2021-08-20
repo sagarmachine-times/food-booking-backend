@@ -6,6 +6,8 @@ import in.timesinternet.foodbooking.entity.*;
 import in.timesinternet.foodbooking.dto.request.RestaurantResponseDto;
 import in.timesinternet.foodbooking.entity.embeddable.RestaurantDetail;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
+import in.timesinternet.foodbooking.exception.NotFoundException;
+import in.timesinternet.foodbooking.exception.UserAlreadyExistException;
 import in.timesinternet.foodbooking.repository.CartRepository;
 import in.timesinternet.foodbooking.repository.CategoryRepository;
 import in.timesinternet.foodbooking.repository.CustomerRepository;
@@ -13,6 +15,7 @@ import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.service.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import in.timesinternet.foodbooking.entity.embeddable.*;
@@ -20,8 +23,6 @@ import in.timesinternet.foodbooking.entity.embeddable.*;
 
 import java.util.List;
 import java.util.Optional;
-
-
 
 
 @Service
@@ -38,15 +39,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     CategoryRepository categoryRepository;
-
     @Autowired
     CartRepository cartRepository;
-
-
 
     @Override
     public Customer createCustomer(CustomerDto customerDto) {
         ModelMapper modelMapper = new ModelMapper();
+
 
         Restaurant restaurant = restaurantRepository.findById(customerDto.getRestaurantId()).get();
         Customer customer = modelMapper.map(customerDto, Customer.class);
@@ -55,8 +54,8 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setRole(Role.ROLE_CUSTOMER);
         customer.setActualEmail(customer.getEmail());
         customer.setEmail(customer.getEmail() + "_" + restaurant.getRestaurantDetail().getSubDomain());
-        if(customerDto.getAddress()!=null)
-        customer.getAddressList().add(customerDto.getAddress());
+        if (customerDto.getAddress() != null)
+            customer.getAddressList().add(customerDto.getAddress());
 
         Cart cart = new Cart();
         cart.setRestaurant(restaurant);
@@ -64,8 +63,13 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setCurrentCart(cart);
         customer.addCart(customer.getCurrentCart());
         cartRepository.save(cart);
-        customer = customerRepository.save(customer);
-        return customer;
+
+        try {
+            customer = customerRepository.save(customer);
+            return customer;
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            throw new UserAlreadyExistException("Customer with given details :- " + customer.getEmail() + " already exits");
+        }
     }
 
     @Override
@@ -92,12 +96,11 @@ public class CustomerServiceImpl implements CustomerService {
 
             return restaurantResponseDto;
         } else {
-            throw new RuntimeException("restaurant not found");
+            throw new NotFoundException("restaurant is not found with given subdomain :- " + subDomain);
         }
     }
 
     @Override
-
     public Customer getCustomer(String email) {
         Optional<Customer> customerOptional = customerRepository.findByEmail(email);
 
@@ -109,58 +112,50 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
 
+    @Override
+    public Customer getCustomer(Integer customerId) {
 
-        @Override
-        public Customer getCustomer (Integer customerId){
 
+        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        if (customerOptional.isPresent())
+            return customerOptional.get();
+        throw new RuntimeException("Customer not found with id " + customerId);
+    }
 
-            Optional<Customer> customerOptional = customerRepository.findById(customerId);
-            if (customerOptional.isPresent())
-                return customerOptional.get();
-            throw new RuntimeException("Customer not found with id " + customerId);
-        }
+    @Override
+    public List<Customer> getAllCustomer(Integer restaurantId) {
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
+        if (restaurantOptional.isPresent()) {
+            Restaurant restaurant = restaurantOptional.get();
+            return restaurant.getCustomerList();
+        } else
+            throw new RuntimeException("restaurant not found");
+    }
 
-        @Override
-        public List<Customer> getAllCustomer (Integer restaurantId){
-            Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
-            if (restaurantOptional.isPresent()) {
-                Restaurant restaurant = restaurantOptional.get();
-                return restaurant.getCustomerList();
-            } else
-                throw new RuntimeException("restaurant not found");
-        }
-
-        @Override
-        public Customer updateCustomerProfile (CustomerUpdateDto customerUpdateDto, String userEmail)
-        {
-            Customer customer = getCustomer(userEmail);
-
-//    customer.setEmail(customerUpdateDto.getEmail());
-            customer.setPassword(passwordEncoder.encode(customerUpdateDto.getPassword()));
-            customer.setFirstName(customerUpdateDto.getFirstName());
-            customer.setLastName(customerUpdateDto.getLastName());
-
-            Address addr2 = customerUpdateDto.getAddress();
-            customer.setAddress(addr2);
-            Contact ct2 = customerUpdateDto.getContact();
-            customer.setContact(ct2);
-
-            customerRepository.save(customer);
-            return customer;
-        }
+    @Override
+    public Customer updateCustomerProfile(CustomerUpdateDto customerUpdateDto, String userEmail) {
+        Customer customer = getCustomer(userEmail);
+        customer.setPassword(passwordEncoder.encode(customerUpdateDto.getPassword()));
+        customer.setFirstName(customerUpdateDto.getFirstName());
+        customer.setLastName(customerUpdateDto.getLastName());
+        customer.setAddress(customerUpdateDto.getAddress());
+        customer.setContact(customerUpdateDto.getContact());
+        return customerRepository.save(customer);
+    }
 
     @Override
     public List<Address> addAddress(Address address, String userEmail) {
         Customer customer = getCustomer(userEmail);
         customer.getAddressList().add(address);
         customerRepository.save(customer);
-        return  customer.getAddressList();
+        return customer.getAddressList();
     }
+
 
     @Override
     public List<Address> getAddresses(String userEmail) {
         Customer customer = getCustomer(userEmail);
-        return  customer.getAddressList();
+        return customer.getAddressList();
     }
 
 }

@@ -19,10 +19,9 @@ public interface CustomerService {
     Customer getCustomer(String email);
     Customer getCustomer(Integer id);
     List<Customer> getAllCustomer(Integer restaurantId);
+    List<Address> addAddress(Address address, String userEmail);
+    List<Address> getAddresses(String userEmail);
     Customer updateCustomerProfile(CustomerUpdateDto customerUpdateDto, String userEmail);
 
-    List<Address> addAddress(Address address, String userEmail);
-
-    List<Address> getAddresses(String userEmail);
 
 }

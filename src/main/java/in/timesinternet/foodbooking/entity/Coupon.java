@@ -3,6 +3,7 @@ package in.timesinternet.foodbooking.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,11 +27,15 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(nullable = false)
+    @Column(unique = true)
     String name;
 
     Integer value;
+
+    @JsonFormat( pattern = "dd-MM-yyyy")
     Date startingDate;
+
+    @JsonFormat( pattern = "dd-MM-yyyy")
     Date endingDate;
     Integer minimumCartValue;
     Integer maxDiscount;

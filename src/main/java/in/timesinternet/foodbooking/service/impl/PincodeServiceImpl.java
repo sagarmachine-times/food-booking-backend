@@ -4,6 +4,8 @@ import in.timesinternet.foodbooking.dto.request.PincodeDto;
 import in.timesinternet.foodbooking.dto.request.AvalibilityDto;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Serviceability;
+import in.timesinternet.foodbooking.exception.NotFoundException;
+import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.repository.ServiceabilityRepository;
 import in.timesinternet.foodbooking.service.PincodeService;
@@ -42,7 +44,7 @@ public class PincodeServiceImpl implements PincodeService {
             }
             return restaurant.getPincodeList();
         } else {
-            throw new RuntimeException("This Restaurant does not exist");
+            throw new NotFoundException("This Restaurant is  not found");
         }
 
 
@@ -57,7 +59,7 @@ public class PincodeServiceImpl implements PincodeService {
             Restaurant restaurant = optionalRestaurant.get();
             return restaurant.getPincodeList();
         } else {
-            throw new RuntimeException("This Restaurant does not exist");
+            throw new NotFoundException("This Restaurant is not found");
         }
 
     }
@@ -72,7 +74,7 @@ public class PincodeServiceImpl implements PincodeService {
                 serviceabilityRepository.deleteById(pincodeId);
                 return serviceability;
             } else {
-                throw new RuntimeException("You are not authorised to delete this Pincode");
+                throw new UnauthorizedException("You are not authorised to delete this Pincode");
             }
         } else {
             throw new RuntimeException(" This pincode Does not exits in your restaurant");
@@ -90,10 +92,10 @@ public class PincodeServiceImpl implements PincodeService {
                 serviceabilityRepository.save(serviceability);
                 return serviceability;
             } else {
-                throw new RuntimeException("You are not authorised to change the Avalibility of pincode");
+                throw new UnauthorizedException("You are not authorised to change the Avalibility of pincode");
             }
         } else {
-            throw new RuntimeException(" You are not authorised");
+            throw new UnauthorizedException(" You are not authorised");
         }
 
     }

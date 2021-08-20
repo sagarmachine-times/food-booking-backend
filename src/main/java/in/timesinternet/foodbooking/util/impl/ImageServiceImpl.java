@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.util.impl;
 
 import in.timesinternet.foodbooking.entity.Image;
+import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.util.ImageService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +30,7 @@ public class ImageServiceImpl implements ImageService {
             map.add("image", Base64.getEncoder().encodeToString(file.getBytes()));
 
         } catch (Exception ex) {
-            throw new RuntimeException("image was not saved try a different image");
+            throw new NotFoundException("image was not saved try a different image");
         }
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);

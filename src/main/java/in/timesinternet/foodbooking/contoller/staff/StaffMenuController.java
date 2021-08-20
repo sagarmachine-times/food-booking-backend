@@ -89,8 +89,10 @@ public class StaffMenuController {
 
     @PatchMapping("/category")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Category> updateCategory(@RequestBody CategoryUpdateDto categoryUpdateDto, HttpServletRequest request)
+    ResponseEntity<Category> updateCategory(@RequestBody @Valid CategoryUpdateDto categoryUpdateDto, HttpServletRequest request,
+                                             BindingResult bindingResult)
     {
+        bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(categoryService.updateCategory( categoryUpdateDto, restaurantId));
     }
@@ -104,8 +106,9 @@ public class StaffMenuController {
 
     @PostMapping("/item")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Item> createItem(@RequestBody @Valid ItemDto itemDto, HttpServletRequest request)
+    ResponseEntity<Item> createItem(@RequestBody @Valid ItemDto itemDto, HttpServletRequest request, BindingResult bindingResult)
     {
+        bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(itemService.createItem(itemDto, restaurantId));
     }
@@ -128,8 +131,10 @@ public class StaffMenuController {
 
     @PatchMapping("/item")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Item> updateItem(@RequestBody ItemUpdateDto itemUpdateDto, HttpServletRequest request)
+    ResponseEntity<Item> updateItem(@RequestBody @Valid ItemUpdateDto itemUpdateDto, HttpServletRequest request,
+                                    BindingResult bindingResult)
     {
+        bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(itemService.updateItem( itemUpdateDto, restaurantId));
     }

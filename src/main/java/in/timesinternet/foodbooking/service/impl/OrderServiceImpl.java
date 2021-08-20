@@ -1,7 +1,7 @@
 package in.timesinternet.foodbooking.service.impl;
 
+import in.timesinternet.foodbooking.dto.request.ApplyCouponResponseDto;
 import in.timesinternet.foodbooking.dto.request.OrderDto;
-import in.timesinternet.foodbooking.entity.CartItem;
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.entity.Order;
 import in.timesinternet.foodbooking.entity.Payment;
@@ -35,16 +35,18 @@ public class OrderServiceImpl implements OrderService {
     public Order createOrder(OrderDto orderDto, String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
         Order order = new Order();
-        if (orderDto.getCoupon() != null) {
-            //validate coupon
-            order.setCoupon(couponService.getCoupon(orderDto.getCoupon()));
+        if (orderDto.getCouponName() != null) {
+            ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(orderDto.getCouponName(), userEmail);
+            order.setCoupon(couponService.getCoupon(applyCouponResponseDto.getCouponId()));
+            order.setIsCouponApplied(true);
+            order.setDiscount(applyCouponResponseDto.getDiscountedValue());
         }
 
         order.setCustomer(customer);
         order.setAddress(orderDto.getAddress());
         order.setContact(orderDto.getContact());
         order.setType(order.getType());
-        order.setTotal(customer.getCurrentCart().getTotal());
+        order.setTotal(customer.getCurrentCart().getTotal()-order.getDiscount());
         order.setType(orderDto.getOrderType());
         order.setRestaurant(customer.getRestaurant());
         order.setCart(customer.getCurrentCart());

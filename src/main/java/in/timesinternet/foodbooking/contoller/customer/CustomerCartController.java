@@ -1,11 +1,11 @@
 package in.timesinternet.foodbooking.contoller.customer;
 
+import in.timesinternet.foodbooking.dto.request.ApplyCouponResponseDto;
 import in.timesinternet.foodbooking.dto.request.CartDto;
 import in.timesinternet.foodbooking.dto.request.CartItemUpdateDto;
 import in.timesinternet.foodbooking.dto.request.CartStatusUpdateDto;
 import in.timesinternet.foodbooking.entity.Cart;
 import in.timesinternet.foodbooking.entity.CartItem;
-import in.timesinternet.foodbooking.entity.enumeration.CartStatus;
 import in.timesinternet.foodbooking.service.CartService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/customer/cart")
@@ -45,7 +44,9 @@ public class CustomerCartController {
 
     @PutMapping("/cart_item")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<CartItem> updateCartItemQuantity(@RequestBody CartItemUpdateDto cartItemUpdateDto, HttpServletRequest request){
+    ResponseEntity<CartItem> updateCartItemQuantity(@RequestBody @Valid CartItemUpdateDto cartItemUpdateDto,
+                                                    HttpServletRequest request, BindingResult bindingResult){
+        bindingResultService.validate(bindingResult);
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.updateCartItemQuantity(cartItemUpdateDto, userEmail));
     }
@@ -66,8 +67,14 @@ public class CustomerCartController {
 
     @PutMapping("/status")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<Cart> updateCartStatus(@RequestBody CartStatusUpdateDto cartStatusUpdateDto, HttpServletRequest request){
+    ResponseEntity<Cart> updateCartStatus(@RequestBody CartStatusUpdateDto cartStatusUpdateDto, HttpServletRequest request) {
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.updateCartStatus(cartStatusUpdateDto.getStatus(), userEmail));
+    }
+    @PostMapping(value="/applyCoupon")
+    ResponseEntity<ApplyCouponResponseDto> addCouponOnCurrentCart(HttpServletRequest request, @RequestParam String couponName)
+    {
+        String userEmail = (String) request.getAttribute("userEmail");
+        return ResponseEntity.ok(cartService.addCouponOnCurrentCart(userEmail, couponName));
     }
 }

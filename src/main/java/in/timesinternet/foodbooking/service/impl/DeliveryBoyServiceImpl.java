@@ -5,10 +5,13 @@ import in.timesinternet.foodbooking.dto.request.DeliveryBoyUpdateDto;
 import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.DeliveryBoy;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
+import in.timesinternet.foodbooking.exception.NotFoundException;
+import in.timesinternet.foodbooking.exception.UserAlreadyExistException;
 import in.timesinternet.foodbooking.repository.DeliveryBoyRepository;
 import in.timesinternet.foodbooking.service.DeliveryBoyService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +33,15 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         deliveryBoy.setPassword("123");
         deliveryBoy.setPassword(passwordEncoder.encode(deliveryBoy.getPassword()));
         deliveryBoy.setRole(Role.ROLE_DELIVERY_BOY);
-        return deliveryBoyRepository.save(deliveryBoy);
+
+        try
+        {
+            return deliveryBoyRepository.save(deliveryBoy);
+        }
+        catch (DataIntegrityViolationException dataIntegrityViolationException)
+        {
+            throw new UserAlreadyExistException("delivery boy with the given email "+deliveryBoyDto.getEmail()+" already exits");
+        }
     }
 
     @Override
@@ -47,7 +58,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             return deliveryBoy;
         }
         else {
-            throw new RuntimeException("DeliveryBoy with Id: "+deliveryBoyId+" Does not Exist");
+            throw new NotFoundException("DeliveryBoy with Id: "+deliveryBoyId+" is not found");
         }
     }
 
@@ -61,7 +72,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             return deliveryBoy;
         }
         else {
-            throw new RuntimeException("DeliveryBoy with Id: "+deliveryBoyId+" Does not Exist");
+            throw new NotFoundException("DeliveryBoy with Id: "+deliveryBoyId+" is not found");
         }
     }
     @Override
@@ -79,7 +90,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
         }
         else {
-            throw new RuntimeException("This deliveryBoy does not exist");
+            throw new NotFoundException("DeliveryBoy with Id: "+deliveryBoyId+" is not found");
         }
 
     }

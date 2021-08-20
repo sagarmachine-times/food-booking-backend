@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,9 +42,19 @@ public class AdminController {
     @ApiOperation(value = "create admin", notes = "restricted")
     @PostMapping(value = "", consumes = {"application/json"})
 //    @PreAuthorize("hasRole('ROLE_SUPER')")
-    Admin createAdmin(@RequestBody @Valid AdminDto adminDto, BindingResult bindingResult) {
+    ResponseEntity<Admin> createAdmin(@RequestBody @Valid AdminDto adminDto, BindingResult bindingResult) {
+
         bindingResultService.validate(bindingResult);
-        return adminService.createAdmin(adminDto);
+
+//        if (bindingResult.hasErrors()) {
+////            List<String> errorMessages = new ArrayList<>();
+////            bindingResult.getAllErrors().forEach( objectError -> errorMessages.add(objectError.getDefaultMessage()) );
+////
+////            return ResponseEntity.badRequest().body(new HashMap<String, List<String>>() {{
+////                put("message", errorMessages);
+////            }});
+//        }
+        return ResponseEntity.ok(adminService.createAdmin(adminDto));
     }
 
     @ApiOperation(value = "get all admins", notes = "role - ADMIN")

@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDto {
-    Integer coupon;
+    String couponName;
     OrderType orderType=OrderType.DELIVERY;
     Address address;
     Contact contact;

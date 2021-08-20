@@ -10,6 +10,7 @@ import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,13 +32,17 @@ public class CustomerController {
     BindingResultService bindingResultService;
 
     @PostMapping(value = "")
-    ResponseEntity<Customer> registerCustomer(@RequestBody @Valid CustomerDto customerDto){
+    ResponseEntity<Customer> registerCustomer(@RequestBody @Valid CustomerDto customerDto, BindingResult bindingResult){
+        bindingResultService.validate(bindingResult);
         return ResponseEntity.ok(customerService.createCustomer(customerDto));
     }
 
 
     @PostMapping(value = "/login")
-    ResponseEntity<HashMap<String,Object>> loginCustomer(@RequestBody LoginDto loginDto, @RequestParam Integer restaurantId){
+    ResponseEntity<HashMap<String,Object>> loginCustomer(@RequestBody @Valid LoginDto loginDto,
+                                                         @RequestParam Integer restaurantId, BindingResult bindingResult){
+
+        bindingResultService.validate(bindingResult);
         return ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword(),  restaurantId));
     }
 
@@ -56,8 +61,10 @@ public class CustomerController {
 
     @PutMapping(value="/updateProfile")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<Customer> updateCustomerProfile(@RequestBody CustomerUpdateDto customerUpdateDto, HttpServletRequest httpServletRequest )
+    ResponseEntity<Customer> updateCustomerProfile(@RequestBody @Valid CustomerUpdateDto customerUpdateDto,
+                                                   HttpServletRequest httpServletRequest, BindingResult bindingResult )
     {
+        bindingResultService.validate(bindingResult);
         String userEmail =(String) httpServletRequest.getAttribute("userEmail");
         return ResponseEntity.ok(customerService.updateCustomerProfile(customerUpdateDto, userEmail));
     }
