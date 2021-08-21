@@ -14,8 +14,10 @@ import in.timesinternet.foodbooking.service.CartService;
 import in.timesinternet.foodbooking.service.CouponService;
 import in.timesinternet.foodbooking.service.CustomerService;
 import in.timesinternet.foodbooking.service.OrderService;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -76,4 +78,11 @@ public class OrderServiceImpl implements OrderService {
         //throw exception is invalid order request
     }
 
+    @Override
+    public List<Order> getAllOrdersOfCustomerForRestaurant(String userEmail)
+    {
+        Customer customer = customerService.getCustomer(userEmail);
+
+        return orderRepository.getOrderByCustomer(customer);
+    }
 }
