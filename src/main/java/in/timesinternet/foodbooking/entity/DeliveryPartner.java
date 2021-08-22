@@ -1,5 +1,6 @@
 package in.timesinternet.foodbooking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,8 +30,10 @@ public class DeliveryPartner {
     Date updatedAt;
 
     @OneToMany(mappedBy = "deliveryPartner")
-    List<PackageDelivery>packageDeliveryList= new ArrayList<>();
-    public void addPackageDelivery(PackageDelivery packageDelivery){
+    @JsonIgnore
+    List<PackageDelivery> packageDeliveryList = new ArrayList<>();
+
+    public void addPackageDelivery(PackageDelivery packageDelivery) {
         packageDelivery.setDeliveryPartner(this);
         packageDeliveryList.add(packageDelivery);
     }

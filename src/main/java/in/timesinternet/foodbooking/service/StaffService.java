@@ -10,9 +10,12 @@ public interface StaffService {
 
     List<Staff> createStaff(Integer restaurantId, StaffDto staffDto);
 
-    List<Staff> getStaff(Integer restaurantId);
+    List<Staff> getStaffList(Integer restaurantId);
 
     Staff updateStaff(String userEmail, StaffUpdateDto staffUpdateDto);
 
     Staff deleteStaff(String userEmail, Integer staffId);
+
+    Staff getStaff(Integer staffId);
+    Staff getStaff(String email);
 }

@@ -4,6 +4,7 @@ import in.timesinternet.foodbooking.dto.request.StaffDto;
 import in.timesinternet.foodbooking.dto.request.StaffUpdateDto;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Staff;
+import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.exception.UserAlreadyExistException;
 import in.timesinternet.foodbooking.repository.RestaurantRepository;
@@ -53,13 +54,13 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<Staff> getStaff(Integer restaurantId) {
+    public List<Staff> getStaffList(Integer restaurantId) {
         return restaurantRepository.findById(restaurantId).get().getStaffList();
     }
 
     @Override
     public Staff updateStaff(String userEmail, StaffUpdateDto staffUpdateDto) {
-        Staff staff = staffRepository.findByEmail(userEmail);
+        Staff staff = getStaff(userEmail);
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.map(staffUpdateDto, staff);
         return staffRepository.save(staff);
@@ -67,12 +68,28 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Staff deleteStaff(String userEmail, Integer staffId) {
-        Staff currentStaff = staffRepository.findByEmail(userEmail);
+        Staff currentStaff = getStaff(userEmail);
         Staff staff = staffRepository.findById(staffId).get();
         if (!staff.getRestaurant().getId().equals(currentStaff.getRestaurant().getId()))
             throw new UnauthorizedException("authorized access for deleting the staff");
         staffRepository.deleteById(staffId);
         return staff;
+    }
+
+    @Override
+    public Staff getStaff(Integer staffId) {
+        Optional<Staff> staffOptional = staffRepository.findById(staffId);
+        if(staffOptional.isPresent())
+             return  staffOptional.get();
+        throw  new NotFoundException("staff not found with id "+staffId);
+    }
+
+    @Override
+    public Staff getStaff(String email) {
+        Optional<Staff> staffOptional = staffRepository.findByEmail(email);
+        if(staffOptional.isPresent())
+            return  staffOptional.get();
+        throw  new NotFoundException("staff not found with email "+email);
     }
 
 

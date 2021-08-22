@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.timesinternet.foodbooking.entity.enumeration.PackageDeliveryStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,8 +36,11 @@ public class PackageDelivery {
     @ManyToOne
     DeliveryPartner deliveryPartner;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonIgnore
     Package pack;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    PackageDeliveryDetail packageDeliveryDetail;
 
 }

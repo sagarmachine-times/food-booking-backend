@@ -56,7 +56,7 @@ public class StaffController {
     @PreAuthorize("hasRole('ROLE_OWNER')")
     ResponseEntity<List<Staff>> getAllStaff(HttpServletRequest request) {
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
-        return ResponseEntity.ok(staffService.getStaff(restaurantId));
+        return ResponseEntity.ok(staffService.getStaffList(restaurantId));
     }
 
     @PatchMapping(value = "")

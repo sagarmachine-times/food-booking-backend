@@ -54,7 +54,7 @@ public class Order {
 
     //relationship
     @ManyToOne
-            @JsonIgnore
+    @JsonIgnore
     Restaurant restaurant;
 
     @ManyToOne
@@ -67,7 +67,7 @@ public class Order {
     @OneToOne
     Cart cart;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     Package pack;
 
     @OneToOne(cascade = CascadeType.ALL)

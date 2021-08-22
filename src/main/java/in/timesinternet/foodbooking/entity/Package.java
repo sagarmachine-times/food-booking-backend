@@ -39,7 +39,7 @@ public class Package {
     @JsonIgnore
     Order order;
 
-    @OneToMany(mappedBy = "pack")
+    @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL)
     List<PackageDelivery> packageDeliveryList= new ArrayList<>();
     public void addPackageDelivery(PackageDelivery packageDelivery){
         packageDelivery.setPack(this);
