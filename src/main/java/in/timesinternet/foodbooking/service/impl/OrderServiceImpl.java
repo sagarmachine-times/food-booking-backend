@@ -14,7 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
+import in.timesinternet.foodbooking.dto.request.ApplyCouponResponseDto;
+import in.timesinternet.foodbooking.dto.request.OrderDto;
+import in.timesinternet.foodbooking.entity.Customer;
+import in.timesinternet.foodbooking.entity.Order;
+import in.timesinternet.foodbooking.entity.Payment;
+import in.timesinternet.foodbooking.entity.enumeration.CartStatus;
+import in.timesinternet.foodbooking.entity.enumeration.OrderStatus;
+import in.timesinternet.foodbooking.entity.enumeration.PaymentMode;
+import in.timesinternet.foodbooking.entity.enumeration.PaymentStatus;
+import in.timesinternet.foodbooking.repository.OrderRepository;
+import in.timesinternet.foodbooking.service.CartService;
+import in.timesinternet.foodbooking.service.CouponService;
+import in.timesinternet.foodbooking.service.CustomerService;
+import in.timesinternet.foodbooking.service.OrderService;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -75,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
         order.setType(orderDto.getOrderType());
         order.setRestaurant(customer.getRestaurant());
         order.setCart(customer.getCurrentCart());
-        cartService.addNewCart(userEmail);
+
 
         //create and associate payment
         Payment payment = new Payment();
@@ -86,9 +99,11 @@ public class OrderServiceImpl implements OrderService {
         try {
             validateOrder();
             order.setStatus(OrderStatus.PENDING);
+            cartService.addNewCart(userEmail);
 
         } catch (RuntimeException exception) {
             order.setStatus(OrderStatus.DECLINED);
+            cartService.updateCartStatus(CartStatus.MUTABLE, userEmail);
         }
         order = orderRepository.save(order);
         return order;
@@ -199,4 +214,11 @@ public class OrderServiceImpl implements OrderService {
         //throw exception is invalid order request
     }
 
+    @Override
+    public List<Order> getAllOrdersOfCustomerForRestaurant(String userEmail)
+    {
+        Customer customer = customerService.getCustomer(userEmail);
+
+        return orderRepository.getOrderByCustomer(customer);
+    }
 }
