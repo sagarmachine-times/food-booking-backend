@@ -4,6 +4,7 @@ import in.timesinternet.foodbooking.dto.request.*;
 import in.timesinternet.foodbooking.entity.*;
 import in.timesinternet.foodbooking.entity.Package;
 import in.timesinternet.foodbooking.entity.enumeration.*;
+import in.timesinternet.foodbooking.exception.InvalidRequestException;
 import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.repository.*;
 import in.timesinternet.foodbooking.service.*;
@@ -14,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import in.timesinternet.foodbooking.dto.request.ApplyCouponResponseDto;
 import in.timesinternet.foodbooking.dto.request.OrderDto;
 import in.timesinternet.foodbooking.entity.Customer;
 import in.timesinternet.foodbooking.entity.Order;
 import in.timesinternet.foodbooking.entity.Payment;
-import in.timesinternet.foodbooking.entity.enumeration.CartStatus;
 import in.timesinternet.foodbooking.entity.enumeration.OrderStatus;
 import in.timesinternet.foodbooking.entity.enumeration.PaymentMode;
 import in.timesinternet.foodbooking.entity.enumeration.PaymentStatus;
@@ -97,9 +98,9 @@ public class OrderServiceImpl implements OrderService {
 
         order.setPayment(payment);
 //        try {
-            validateOrder();
-            order.setStatus(OrderStatus.PENDING);
-            cartService.addNewCart(userEmail);
+        validateOrder();
+        order.setStatus(OrderStatus.PENDING);
+        cartService.addNewCart(userEmail);
 
 //        } catch (RuntimeException exception) {
 //            order.setStatus(OrderStatus.DECLINED);
@@ -129,21 +130,34 @@ public class OrderServiceImpl implements OrderService {
                 return approveOrder(order);
             case CANCELED:
                 return cancelOrder(order);
+            case PREPARING:
+                return preparingOrder(order);
             default:
-                throw new RuntimeException("invalid request");
+                throw new InvalidRequestException("invalid request status " + orderStatusDto.getOrderStatus().toString() + " doesn't exist");
         }
+    }
+
+    Order preparingOrder(Order order) {
+        if (!order.getStatus().equals(OrderStatus.APPROVED))
+            throw new InvalidRequestException("invalid request order can't be preparing since it is" + order.getStatus().toString());
+        order.setStatus(OrderStatus.PREPARING);
+        order.getNext().add(OrderStatus.PREPARING.toString());
+        return orderRepository.save(order);
     }
 
     @Transactional
     Order declineOrder(Order order) {
+        if (!order.getStatus().equals(OrderStatus.PENDING))
+            throw new InvalidRequestException("invalid request order can't be decline since it is" + order.getStatus().toString());
+
         //update current cart
         Customer customer = order.getCustomer();
-        CartDto cartDto= new CartDto();
-        List<CartItemDto> cartItemDtoList= new ArrayList<>();
-        for(CartItem cartItem:order.getCart().getCartItemList())
+        CartDto cartDto = new CartDto();
+        List<CartItemDto> cartItemDtoList = new ArrayList<>();
+        for (CartItem cartItem : order.getCart().getCartItemList())
             cartItemDtoList.add(new CartItemDto(cartItem.getItem().getId(), cartItem.getQuantity()));
         cartDto.setCartItemList(cartItemDtoList);
-        cartService.updateCart(cartDto,customer.getEmail());
+        cartService.updateCart(cartDto, customer.getEmail());
         //set order declined
         order.setStatus(OrderStatus.DECLINED);
         return orderRepository.save(order);
@@ -157,8 +171,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     Order approveOrder(Order order) {
 
-        if(!order.getStatus().equals(OrderStatus.PENDING))
-             throw  new RuntimeException("invalid request");
+        if (!order.getStatus().equals(OrderStatus.PENDING))
+            throw new InvalidRequestException("invalid request order can't be approved since it is" + order.getStatus().toString());
 
         //set order accepted
         order.setStatus(OrderStatus.APPROVED);
@@ -179,9 +193,9 @@ public class OrderServiceImpl implements OrderService {
             packageDelivery.setPack(pack);
             pack.addPackageDelivery(packageDelivery);
             packageDelivery.setStatus(PackageDeliveryStatus.UNASSIGNED);
-            PackageDelivery packageDeliverySaved=packageDeliveryRepository.save(packageDelivery);
-             Package packSaved=packageRepository.save(pack);
-            order=orderRepository.save(order);
+            PackageDelivery packageDeliverySaved = packageDeliveryRepository.save(packageDelivery);
+            Package packSaved = packageRepository.save(pack);
+            order = orderRepository.save(order);
             Runnable assignDeliveryBoy = () -> {
 //                try {
 //                    Thread.sleep(2000);
@@ -192,11 +206,11 @@ public class OrderServiceImpl implements OrderService {
                 DeliveryPartner deliveryPartner = deliveryPartnerRepositiory.findAll().get(0);
                 packageDeliverySaved.setDeliveryPartner(deliveryPartner);
                 packageDeliverySaved.setStatus(PackageDeliveryStatus.ASSIGNED);
-               InHousePackageDeliveryDetail inHousePackageDeliveryDetail = new InHousePackageDeliveryDetail();
-               inHousePackageDeliveryDetail.setDeliveryBoy(deliveryBoy);
-               deliveryBoy.addInHousePackageDeliveryDetail(inHousePackageDeliveryDetail);
-               packageDelivery.setPackageDeliveryDetail(inHousePackageDeliveryDetail);
-               
+                InHousePackageDeliveryDetail inHousePackageDeliveryDetail = new InHousePackageDeliveryDetail();
+                inHousePackageDeliveryDetail.setDeliveryBoy(deliveryBoy);
+                deliveryBoy.addInHousePackageDeliveryDetail(inHousePackageDeliveryDetail);
+                packageDelivery.setPackageDeliveryDetail(inHousePackageDeliveryDetail);
+
 //                packageRepository.save(packSaved);
 //                packageDeliveryRepository.save(packageDeliverySaved);
             };
@@ -210,6 +224,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         order.getNext().add(OrderStatus.PACKED.toString());
+        order.getNext().add(OrderStatus.PREPARING.toString());
 //        order.getNext().add(OrderStatus.CANCELED.toString());
 
         return orderRepository.findById(order.getId()).get();
@@ -233,8 +248,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrdersOfCustomerForRestaurant(String userEmail)
-    {
+    public List<Order> getAllOrdersOfCustomerForRestaurant(String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
 
         return orderRepository.getOrderByCustomer(customer);
