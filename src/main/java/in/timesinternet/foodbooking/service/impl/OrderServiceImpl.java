@@ -156,6 +156,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     Order approveOrder(Order order) {
+
+        if(!order.getStatus().equals(OrderStatus.PENDING))
+             throw  new RuntimeException("invalid request");
+
         //set order accepted
         order.setStatus(OrderStatus.APPROVED);
 
@@ -192,8 +196,8 @@ public class OrderServiceImpl implements OrderService {
                inHousePackageDeliveryDetail.setDeliveryBoy(deliveryBoy);
                deliveryBoy.addInHousePackageDeliveryDetail(inHousePackageDeliveryDetail);
                packageDelivery.setPackageDeliveryDetail(inHousePackageDeliveryDetail);
-                packageRepository.save(packSaved);
-                packageDeliveryRepository.save(packageDeliverySaved);
+//                packageRepository.save(packSaved);
+//                packageDeliveryRepository.save(packageDeliverySaved);
             };
             //schedule different thread to assign delivery boy
             Thread assignDeliveryBoyThread = new Thread(assignDeliveryBoy);
