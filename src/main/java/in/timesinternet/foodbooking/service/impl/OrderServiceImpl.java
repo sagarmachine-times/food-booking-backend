@@ -96,16 +96,20 @@ public class OrderServiceImpl implements OrderService {
         payment.setMode(PaymentMode.COD);
 
         order.setPayment(payment);
-        try {
+//        try {
             validateOrder();
             order.setStatus(OrderStatus.PENDING);
             cartService.addNewCart(userEmail);
 
-        } catch (RuntimeException exception) {
-            order.setStatus(OrderStatus.DECLINED);
-            cartService.updateCartStatus(CartStatus.MUTABLE, userEmail);
-        }
+//        } catch (RuntimeException exception) {
+//            order.setStatus(OrderStatus.DECLINED);
+//            cartService.updateCartStatus(CartStatus.MUTABLE, userEmail);
+//        }
         order = orderRepository.save(order);
+        order.getNext().add(OrderStatus.DECLINED.toString());
+        order.getNext().add(OrderStatus.APPROVED.toString());
+//        order.getNext().add(OrderStatus.CANCELED.toString());
+
         return order;
     }
 
@@ -160,6 +164,7 @@ public class OrderServiceImpl implements OrderService {
         pack.setOrder(order);
         order.setPack(pack);
         pack.setStatus(PackageStatus.NOT_READY);
+        pack.getNext().add(PackageStatus.READY.toString());
         //if order delivery
 
         if (order.getType().equals(OrderType.DELIVERY)) {
@@ -174,11 +179,11 @@ public class OrderServiceImpl implements OrderService {
              Package packSaved=packageRepository.save(pack);
             order=orderRepository.save(order);
             Runnable assignDeliveryBoy = () -> {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 DeliveryBoy deliveryBoy = deliveryBoyRepository.findAll().get(0);
                 DeliveryPartner deliveryPartner = deliveryPartnerRepositiory.findAll().get(0);
                 packageDeliverySaved.setDeliveryPartner(deliveryPartner);
@@ -193,8 +198,16 @@ public class OrderServiceImpl implements OrderService {
             //schedule different thread to assign delivery boy
             Thread assignDeliveryBoyThread = new Thread(assignDeliveryBoy);
             assignDeliveryBoyThread.start();
+            try {
+                assignDeliveryBoyThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        return order;
+        order.getNext().add(OrderStatus.PACKED.toString());
+//        order.getNext().add(OrderStatus.CANCELED.toString());
+
+        return orderRepository.findById(order.getId()).get();
     }
 
 

@@ -13,7 +13,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "`order`")
@@ -72,5 +74,8 @@ public class Order {
 
     @OneToOne(cascade = CascadeType.ALL)
     Payment payment;
+
+    @Transient
+    List<String> next= new ArrayList<>();
 
 }

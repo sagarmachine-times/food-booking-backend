@@ -31,6 +31,7 @@ public class Package {
     @UpdateTimestamp
     Date updatedAt;
 
+    @Enumerated(EnumType.STRING)
     PackageStatus status;
 
     //relationship
@@ -45,5 +46,8 @@ public class Package {
         packageDelivery.setPack(this);
         packageDeliveryList.add(packageDelivery);
     }
+
+    @Transient
+    List<String> next= new ArrayList<>();
 
 }

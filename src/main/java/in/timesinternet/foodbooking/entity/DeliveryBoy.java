@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.timesinternet.foodbooking.entity.enumeration.DeliveryBoyStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,15 +17,17 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeliveryBoy extends  User {
+public class DeliveryBoy extends User {
 
     @Enumerated(EnumType.STRING)
-    DeliveryBoyStatus deliveryBoyStatus=DeliveryBoyStatus.AVAILABLE;
+    DeliveryBoyStatus deliveryBoyStatus = DeliveryBoyStatus.AVAILABLE;
 
     //relationship
-    @OneToMany(fetch = FetchType.EAGER)
-    List<InHousePackageDeliveryDetail> inHousePackageDeliveryDetailList= new ArrayList<>();
-    public void addInHousePackageDeliveryDetail(InHousePackageDeliveryDetail inHousePackageDeliveryDetail){
+    @OneToMany(mappedBy = "deliveryBoy", fetch = FetchType.EAGER)
+    @JsonIgnore
+    List<InHousePackageDeliveryDetail> inHousePackageDeliveryDetailList = new ArrayList<>();
+
+    public void addInHousePackageDeliveryDetail(InHousePackageDeliveryDetail inHousePackageDeliveryDetail) {
         inHousePackageDeliveryDetail.setDeliveryBoy(this);
         inHousePackageDeliveryDetailList.add(inHousePackageDeliveryDetail);
     }
