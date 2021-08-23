@@ -84,8 +84,8 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setAddress(orderDto.getAddress());
         order.setContact(orderDto.getContact());
-        if(order.getAddress().getPincode()==null)
-             throw new InvalidRequestException("pincode is required :)");
+        if (order.getAddress().getPincode() == null)
+            throw new InvalidRequestException("pincode is required :)");
         if (orderDto.getCouponName() != null) {
             ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(orderDto.getCouponName(), userEmail);
             order.setCoupon(couponService.getCoupon(applyCouponResponseDto.getCouponId()));
@@ -160,7 +160,7 @@ public class OrderServiceImpl implements OrderService {
         if (!order.getStatus().equals(OrderStatus.APPROVED))
             throw new InvalidRequestException("invalid request order can't be preparing since it is" + order.getStatus().toString());
         order.setStatus(OrderStatus.PREPARING);
-        order.getNext().add(OrderStatus.PREPARING.toString());
+        order.getNext().add(OrderStatus.PACKED.toString());
         return orderRepository.save(order);
     }
 
@@ -185,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
 
     private Order packOrder(Order order) {
 
-        if (order.getStatus().equals(OrderStatus.APPROVED)) {
+        if (order.getStatus().equals(OrderStatus.APPROVED)||order.getStatus().equals(OrderStatus.PREPARING)) {
             order.setStatus(OrderStatus.PACKED);
             PackageStatusDto packageStatusDto = new PackageStatusDto();
             packageStatusDto.setPackageStatus(PackageStatus.READY);
@@ -194,8 +194,9 @@ public class OrderServiceImpl implements OrderService {
             Package pack = packageService.updatePackageStatus(packageStatusDto);
             order.setPack(pack);
             return orderRepository.save(order);
+
         } else {
-            throw new RuntimeException(" invalid request ");
+            throw new InvalidRequestException("order can't be packed as it is "+order.getStatus().toString());
         }
     }
 
