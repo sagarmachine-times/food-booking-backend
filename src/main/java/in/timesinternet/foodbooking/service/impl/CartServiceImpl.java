@@ -101,7 +101,6 @@ public class CartServiceImpl implements CartService {
         Customer customer = customerService.getCustomer(userEmail);
         CartItem cartItem = getCartItem(cartItemUpdateDto.getCartItemId());
         Cart currentCart = customer.getCurrentCart();
-        currentCart.setTotal(currentCart.getTotal() - (cartItem.getQuantity() * cartItem.getItem().getSellingPrice()));
         if (customer.getId().equals(cartItem.getCart().getCustomer().getId())) {
             if (customer.getCurrentCart().getStatus().equals(CartStatus.IMMUTABLE))
                 throw new UnauthorizedException("cart is immutable");
@@ -110,8 +109,10 @@ public class CartServiceImpl implements CartService {
             if (cartItemUpdateDto.getQuantity() == 0)
                 return deleteCartItem(cartItemUpdateDto.getCartItemId(), userEmail);
             else {
+                currentCart.setTotal(currentCart.getTotal() - (cartItem.getQuantity() * cartItem.getItem().getSellingPrice()));
+                currentCart.setTotal(currentCart.getTotal() + (cartItemUpdateDto.getQuantity() * cartItem.getItem().getSellingPrice()));
                 cartItem.setQuantity(cartItemUpdateDto.getQuantity());
-                currentCart.setTotal(currentCart.getTotal() + (cartItem.getQuantity() * cartItem.getItem().getSellingPrice()));
+
                 return cartRepository.save(currentCart);
             }
         } else
@@ -143,6 +144,10 @@ public class CartServiceImpl implements CartService {
         CartItem cartItem = getCartItem(cartItemId);
         Customer customer = customerService.getCustomer(userEmail);
         Cart currentCart = customer.getCurrentCart();
+        System.out.println("------------------");
+        System.out.println(currentCart.getTotal());
+        System.out.println(cartItem.getItem().getSellingPrice());
+        System.out.println(cartItem.getQuantity());
         if (customer.getCurrentCart().getStatus().equals(CartStatus.IMMUTABLE))
             throw new UnauthorizedException("cart is immutable");
         if (cartItem.getCart().getCustomer().getId().equals(customer.getId()) && cartItem.getCart().getId().equals(customer.getCurrentCart().getId())) {
@@ -190,6 +195,8 @@ public class CartServiceImpl implements CartService {
             if (couponOptional.isPresent()) {
                 Coupon coupon = couponOptional.get();
 
+                if (!coupon.getRestaurant().getId().equals(customer.getRestaurant().getId()))
+                    throw new NotFoundException("no coupon is found with name " + couponName + " in restaurant " + customer.getRestaurant().getId());
                 ApplyCouponResponseDto applyCouponResponseDto = new ApplyCouponResponseDto();
                 applyCouponResponseDto.setOldTotal(currentCart.getTotal());
 
@@ -199,7 +206,7 @@ public class CartServiceImpl implements CartService {
 
 
                 if (cartValue < minCartValue)
-                    throw new InvalidRequestException("minimum cart value required is "+cartValue);
+                    throw new InvalidRequestException("minimum cart value required is " + minCartValue);
 
                 int discountPercentage = coupon.getValue();
                 int maxDiscountValue = coupon.getMaxDiscount();
@@ -207,9 +214,9 @@ public class CartServiceImpl implements CartService {
                 discountedValue = Math.min(discountedValue, maxDiscountValue);
 
 
-                applyCouponResponseDto.setNewTotal(cartValue-discountedValue);
+                applyCouponResponseDto.setNewTotal(cartValue - discountedValue);
                 applyCouponResponseDto.setDiscount(discountedValue);
-                applyCouponResponseDto.setMessage("you have saved "+discountedValue);
+                applyCouponResponseDto.setMessage("you have saved " + discountedValue);
                 applyCouponResponseDto.setCouponId(coupon.getId());
                 return applyCouponResponseDto;
             } else {

@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
         if (order.getAddress().getPincode() == null)
             throw new InvalidRequestException("pincode is required :)");
         if (orderDto.getCouponName() != null) {
-            ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(orderDto.getCouponName(), userEmail);
+            ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(userEmail,orderDto.getCouponName());
             order.setCoupon(couponService.getCoupon(applyCouponResponseDto.getCouponId()));
             order.setIsCouponApplied(true);
             order.setDiscount(applyCouponResponseDto.getDiscount());
