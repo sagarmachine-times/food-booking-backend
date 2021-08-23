@@ -181,7 +181,7 @@ public class OrderServiceImpl implements OrderService {
         }
         else
         {
-            throw new RuntimeException(" invalid request ");
+            throw new InvalidRequestException(" invalid request for packing order ");
         }
     }
 
