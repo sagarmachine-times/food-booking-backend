@@ -167,7 +167,7 @@ public class CartServiceImpl implements CartService {
     public Cart addNewCart(String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
         if (customer.getCurrentCart().getStatus().equals(CartStatus.MUTABLE))
-            throw new InvalidRequestException("invalid request cart is immutable");
+            throw new InvalidRequestException("invalid request cart is mutable");
         Cart cart = new Cart();
         cart.setRestaurant(customer.getRestaurant());
         customer = customerRepository.save(customer);
