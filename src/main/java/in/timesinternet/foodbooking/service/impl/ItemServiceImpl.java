@@ -6,6 +6,7 @@ import in.timesinternet.foodbooking.entity.Category;
 import in.timesinternet.foodbooking.entity.Item;
 import in.timesinternet.foodbooking.entity.Restaurant;
 import in.timesinternet.foodbooking.entity.Image;
+import in.timesinternet.foodbooking.exception.AlreadyExistException;
 import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.repository.CategoryRepository;
@@ -39,16 +40,17 @@ public class ItemServiceImpl implements ItemService {
     CategoryService categoryService;
 
     @Override
-    public Item createItem(ItemDto itemDto,Integer restaurantId)
-    {
-        Integer categoryId = itemDto.getCategoryId();
-        Integer imageId = itemDto.getImageId();
-        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
-        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
+    public Item createItem(ItemDto itemDto,Integer restaurantId) {
 
 
-        if (categoryOptional.isPresent() && restaurantOptional.isPresent())
-        {
+        if (itemRepository.existByNameAndRestaurantId(itemDto.getName(), restaurantId)) {
+            throw new AlreadyExistException("Item already exist");
+        } else {
+            Integer categoryId = itemDto.getCategoryId();
+            Integer imageId = itemDto.getImageId();
+            Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+            Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
+        if (categoryOptional.isPresent() && restaurantOptional.isPresent()) {
             Category category = categoryOptional.get();
             Restaurant restaurant = restaurantOptional.get();
 
@@ -66,13 +68,14 @@ public class ItemServiceImpl implements ItemService {
             }
 
             category.addItem(item);
+
             restaurant.addItem(item);
 
             return itemRepository.save(item);
-        }
-        else{
+        } else {
             throw new NotFoundException("either restaurant or category is not fouund ");
         }
+    }
     }
 
     @Override

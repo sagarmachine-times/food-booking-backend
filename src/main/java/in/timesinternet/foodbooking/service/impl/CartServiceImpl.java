@@ -6,6 +6,7 @@ import in.timesinternet.foodbooking.dto.request.CartItemDto;
 import in.timesinternet.foodbooking.dto.request.CartItemUpdateDto;
 import in.timesinternet.foodbooking.entity.*;
 import in.timesinternet.foodbooking.entity.enumeration.CartStatus;
+import in.timesinternet.foodbooking.exception.AlreadyExistException;
 import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.repository.*;
@@ -69,7 +70,10 @@ public class CartServiceImpl implements CartService {
             }
         }
         currentCart.setTotal(total);
-        return cartRepository.save(currentCart);
+
+            return cartRepository.save(currentCart);
+
+
     }
 
     @Override
@@ -86,6 +90,7 @@ public class CartServiceImpl implements CartService {
             for (CartItem cartItem : currentCart.getCartItemList())
                 cartItem.setPrice(cartItem.getItem().getSellingPrice());
         currentCart.setStatus(cartStatus);
+
         return cartRepository.save(currentCart);
     }
 

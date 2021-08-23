@@ -37,7 +37,9 @@ public class PincodeServiceImpl implements PincodeService {
 
                 Serviceability serviceability = new Serviceability();
                 serviceability.setDeliveryCharge(i);
+
                 serviceability.setPincode(pincodeDto1.getPincode());
+                
                 restaurant.addPincode(serviceability);
                 serviceabilityRepository.save(serviceability);
                 i++;
