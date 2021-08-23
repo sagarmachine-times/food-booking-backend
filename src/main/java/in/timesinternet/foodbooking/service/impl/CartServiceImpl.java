@@ -6,6 +6,7 @@ import in.timesinternet.foodbooking.dto.request.CartItemDto;
 import in.timesinternet.foodbooking.dto.request.CartItemUpdateDto;
 import in.timesinternet.foodbooking.entity.*;
 import in.timesinternet.foodbooking.entity.enumeration.CartStatus;
+import in.timesinternet.foodbooking.exception.InvalidRequestException;
 import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.repository.*;
@@ -156,7 +157,7 @@ public class CartServiceImpl implements CartService {
     public Cart addNewCart(String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
         if (customer.getCurrentCart().getStatus().equals(CartStatus.MUTABLE))
-            throw new RuntimeException("invalid request");
+            throw new InvalidRequestException("invalid request cart is immutable");
         Cart cart = new Cart();
         cart.setRestaurant(customer.getRestaurant());
         customer = customerRepository.save(customer);
