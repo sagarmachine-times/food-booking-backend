@@ -12,5 +12,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestaurantUpdateDto {
+
     Address address;
 }

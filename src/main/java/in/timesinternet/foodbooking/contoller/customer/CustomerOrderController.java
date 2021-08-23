@@ -33,7 +33,9 @@ public class CustomerOrderController {
         return ResponseEntity.ok(orderService.createOrder(orderDto, userEmail));
     }
 
-    ResponseEntity<Order>updateOrder(@RequestBody @Valid UpdateOrderDto updateOrderDto, BindingResult bindingResult, HttpServletRequest httpServletRequest)
+    @PatchMapping
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    ResponseEntity<Order> updateOrder(@RequestBody @Valid UpdateOrderDto updateOrderDto, BindingResult bindingResult, HttpServletRequest httpServletRequest)
     {
         bindingResultService.validate((bindingResult));
         String userEmail=(String) httpServletRequest.getAttribute("userEmail");
