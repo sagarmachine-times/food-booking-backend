@@ -76,6 +76,19 @@ public class Order {
     Payment payment;
 
     @Transient
-    List<String> next= new ArrayList<>();
+    List<String> next = new ArrayList<>();
+
+    @PostLoad
+    void updateNext() {
+        switch (status) {
+            case APPROVED:next.add(OrderStatus.PACKED.toString());
+            next.add(OrderStatus.PREPARING.toString());
+            break;
+            case PENDING:next.add(OrderStatus.DECLINED.toString());
+            next.add(OrderStatus.APPROVED.toString());
+            break;
+            case PREPARING:next.add(OrderStatus.PACKED.toString());
+        }
+    }
 
 }

@@ -53,7 +53,7 @@ public class PincodeServiceImpl implements PincodeService {
 
 
     @Override
-    public List<Serviceability> getPincode(Integer restaurantId) {
+    public List<Serviceability> getPincodeList(Integer restaurantId) {
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
         if (optionalRestaurant.isPresent()) {
             Restaurant restaurant = optionalRestaurant.get();
@@ -98,6 +98,14 @@ public class PincodeServiceImpl implements PincodeService {
             throw new UnauthorizedException(" You are not authorised");
         }
 
+    }
+
+    @Override
+    public Serviceability getPincode(Integer pincode, Integer restaurantId) {
+        Optional<Serviceability> serviceabilityOptional = serviceabilityRepository.findByPincodeAndRestaurantId(pincode, restaurantId);
+        if(serviceabilityOptional.isPresent())
+        return serviceabilityOptional.get();
+        throw new NotFoundException("pincode "+pincode+" is not serviceable");
     }
 
 }

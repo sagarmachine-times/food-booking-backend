@@ -29,7 +29,7 @@ public class StaffPincodeController {
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
     ResponseEntity<List<Serviceability>> getPincode(HttpServletRequest request) {
         Integer resturantId = (Integer) request.getAttribute("restaurantId");
-        return ResponseEntity.ok(pincodeService.getPincode(resturantId));
+        return ResponseEntity.ok(pincodeService.getPincodeList(resturantId));
 
     }
 

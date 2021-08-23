@@ -69,6 +69,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     PackageRepository packageRepository;
 
+    @Autowired
+    PincodeService pincodeService;
+
     @Override
     @Transactional
     public Order createOrder(OrderDto orderDto, String userEmail) {
@@ -80,7 +83,15 @@ public class OrderServiceImpl implements OrderService {
             order.setIsCouponApplied(true);
             order.setDiscount(applyCouponResponseDto.getDiscountedValue());
         }
-
+        Integer pincode=order.getAddress().getPincode();
+        Serviceability serviceability= null;
+        try {
+            serviceability= pincodeService.getPincode(pincode, order.getRestaurant().getId());
+        }catch (NotFoundException ex){
+            throw new InvalidRequestException("pincode "+pincode+" is not servicable");
+        }
+        order.setDeliveryCharge(serviceability.getDeliveryCharge());
+        order.setTotal((customer.getCurrentCart().getTotal()+order.getDeliveryCharge()) - order.getDiscount());
         order.setCustomer(customer);
         order.setAddress(orderDto.getAddress());
         order.setContact(orderDto.getContact());
@@ -194,7 +205,7 @@ public class OrderServiceImpl implements OrderService {
             pack.addPackageDelivery(packageDelivery);
             packageDelivery.setStatus(PackageDeliveryStatus.UNASSIGNED);
             PackageDelivery packageDeliverySaved = packageDeliveryRepository.save(packageDelivery);
-            Package packSaved = packageRepository.save(pack);
+             packageRepository.save(pack);
             order = orderRepository.save(order);
             Runnable assignDeliveryBoy = () -> {
 //                try {
@@ -202,6 +213,7 @@ public class OrderServiceImpl implements OrderService {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
+
                 DeliveryBoy deliveryBoy = deliveryBoyRepository.findAll().get(0);
                 DeliveryPartner deliveryPartner = deliveryPartnerRepositiory.findAll().get(0);
                 packageDeliverySaved.setDeliveryPartner(deliveryPartner);
