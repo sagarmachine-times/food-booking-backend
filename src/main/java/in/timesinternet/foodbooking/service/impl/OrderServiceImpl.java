@@ -68,6 +68,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     PackageRepository packageRepository;
 
+    @Autowired
+    PackageService packageService;
+
     @Override
     @Transactional
     public Order createOrder(OrderDto orderDto, String userEmail) {
@@ -151,7 +154,21 @@ public class OrderServiceImpl implements OrderService {
 
 
     private Order packOrder(Order order) {
-        return null;
+
+        if (order.getStatus().equals(OrderStatus.APPROVED)) {
+            order.setStatus(OrderStatus.PACKED);
+            PackageStatusDto packageStatusDto = new PackageStatusDto();
+            packageStatusDto.setPackageStatus(PackageStatus.READY);
+            packageStatusDto.setPackageId(order.getPack().getId());
+
+            Package pack = packageService.updatePackageStatus(packageStatusDto);
+            order.setPack(pack);
+            return orderRepository.save(order);
+        }
+        else
+        {
+            throw new RuntimeException(" invalid request ");
+        }
     }
 
     @Transactional

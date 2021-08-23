@@ -1,5 +1,5 @@
 package in.timesinternet.foodbooking.contoller.staff;
-;
+
 import in.timesinternet.foodbooking.dto.request.OrderStatusDto;
 import in.timesinternet.foodbooking.entity.Order;
 import in.timesinternet.foodbooking.service.OrderService;
@@ -23,6 +23,13 @@ public class StaffOrderController {
     @PutMapping("/orderId/status")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
     ResponseEntity<Order> updateOrderStatus(@RequestBody OrderStatusDto orderStatusDto, HttpServletRequest request){
+        String userEmail =(String)request.getAttribute("userEmail");
+        return  ResponseEntity.ok(orderService.updateOrderStatus(orderStatusDto, userEmail));
+    }
+
+    @PutMapping("/packOrder")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
+    ResponseEntity<Order> updateOrderWithPackageStatus(@RequestBody OrderStatusDto orderStatusDto, HttpServletRequest request){
         String userEmail =(String)request.getAttribute("userEmail");
         return  ResponseEntity.ok(orderService.updateOrderStatus(orderStatusDto, userEmail));
     }
