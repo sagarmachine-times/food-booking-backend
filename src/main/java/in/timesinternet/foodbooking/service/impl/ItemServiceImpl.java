@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     public Item createItem(ItemDto itemDto,Integer restaurantId) {
 
 
-        if (itemRepository.existByNameAndRestaurantId(itemDto.getName(), restaurantId)) {
+        if (itemRepository.existByNameAndCategoryRestaurantId(itemDto.getName(), restaurantId)) {
             throw new AlreadyExistException("Item already exist");
         } else {
             Integer categoryId = itemDto.getCategoryId();
