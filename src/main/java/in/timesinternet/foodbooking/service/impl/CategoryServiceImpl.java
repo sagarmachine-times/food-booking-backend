@@ -4,6 +4,7 @@ import in.timesinternet.foodbooking.dto.request.CategoryDto;
 import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
 import in.timesinternet.foodbooking.entity.Category;
 import in.timesinternet.foodbooking.entity.Restaurant;
+import in.timesinternet.foodbooking.exception.AlreadyExistException;
 import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.repository.CategoryRepository;
@@ -12,6 +13,7 @@ import in.timesinternet.foodbooking.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.rmi.AlreadyBoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +35,13 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = new Category();
             category.setName(categoryDto.getName());
             restaurant.addCategory(category);
-            return categoryRepository.save(category);
+            try {
+                return categoryRepository.save(category);
+            }
+            catch (AlreadyExistException e)
+            {
+                throw new AlreadyExistException("Category with this name exists in the restaurant ");
+            }
 
         } else
             throw new NotFoundException("restaurant not found with id " + restaurantId);
