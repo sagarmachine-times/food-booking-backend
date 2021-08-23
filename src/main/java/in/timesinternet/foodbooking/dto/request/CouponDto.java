@@ -32,7 +32,7 @@ public class CouponDto {
     @NotNull(message = "Ending Date can't be Null")
     private Date endingDate;
 
-    @NotNull(message = "minimumCart value can't be null")
+    @NotNull(message = "Cart value can't be null")
     private Integer minimumCartValue;
     @NotNull(message = "Maxperuser can't be null")
     private Integer maxPerUser;

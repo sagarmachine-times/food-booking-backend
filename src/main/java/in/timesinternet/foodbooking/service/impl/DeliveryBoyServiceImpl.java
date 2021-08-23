@@ -93,8 +93,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             ModelMapper modelMapper=new ModelMapper();
 
            modelMapper.map(deliveryBoyUpdateDto,deliveryBoy);
-            deliveryBoyRepository.save(deliveryBoy);
-            return deliveryBoy;
+
+
+               deliveryBoyRepository.save(deliveryBoy);
+               return deliveryBoy;
+
+
 
         }
         else {
