@@ -90,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
             ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(orderDto.getCouponName(), userEmail);
             order.setCoupon(couponService.getCoupon(applyCouponResponseDto.getCouponId()));
             order.setIsCouponApplied(true);
-            order.setDiscount(applyCouponResponseDto.getDiscountedValue());
+            order.setDiscount(applyCouponResponseDto.getDiscount());
         }
         Integer pincode = order.getAddress().getPincode();
         Serviceability serviceability = null;

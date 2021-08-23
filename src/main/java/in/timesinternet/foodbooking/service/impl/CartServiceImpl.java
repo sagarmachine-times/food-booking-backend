@@ -108,7 +108,7 @@ public class CartServiceImpl implements CartService {
             if (cartItemUpdateDto.getQuantity() < 0)
                 throw new UnauthorizedException("invalid request quantity can't be negative");
             if (cartItemUpdateDto.getQuantity() == 0)
-                return  deleteCartItem(cartItemUpdateDto.getCartItemId(), userEmail);
+                return deleteCartItem(cartItemUpdateDto.getCartItemId(), userEmail);
             else {
                 cartItem.setQuantity(cartItemUpdateDto.getQuantity());
                 currentCart.setTotal(currentCart.getTotal() + (cartItem.getQuantity() * cartItem.getItem().getSellingPrice()));
@@ -146,7 +146,7 @@ public class CartServiceImpl implements CartService {
         if (customer.getCurrentCart().getStatus().equals(CartStatus.IMMUTABLE))
             throw new UnauthorizedException("cart is immutable");
         if (cartItem.getCart().getCustomer().getId().equals(customer.getId()) && cartItem.getCart().getId().equals(customer.getCurrentCart().getId())) {
-            currentCart.setTotal(currentCart.getTotal()-(cartItem.getItem().getSellingPrice()*cartItem.getQuantity()));
+            currentCart.setTotal(currentCart.getTotal() - (cartItem.getItem().getSellingPrice() * cartItem.getQuantity()));
             cartItemRepository.deleteById(cartItemId);
             return cartRepository.save(currentCart);
         } else
@@ -184,41 +184,32 @@ public class CartServiceImpl implements CartService {
             Customer customer = customerOptional.get();
             Cart currentCart = customer.getCurrentCart();
 
+            couponName = couponName.toUpperCase().trim();
             Optional<Coupon> couponOptional = couponRepository.findByName(couponName);
 
             if (couponOptional.isPresent()) {
                 Coupon coupon = couponOptional.get();
 
                 ApplyCouponResponseDto applyCouponResponseDto = new ApplyCouponResponseDto();
-                applyCouponResponseDto.setOldTotalValue(currentCart.getTotal());
+                applyCouponResponseDto.setOldTotal(currentCart.getTotal());
 
                 String message = "";
-                int totalValue = currentCart.getTotal();
+                int cartValue = currentCart.getTotal();
                 int minCartValue = coupon.getMinimumCartValue();
+
+
+                if (cartValue < minCartValue)
+                    throw new InvalidRequestException("minimum cart value required is "+cartValue);
+
                 int discountPercentage = coupon.getValue();
                 int maxDiscountValue = coupon.getMaxDiscount();
-                int newTotalValue = totalValue;
-                int discountedValue = maxDiscountValue;
-                int changeInTotal = (discountPercentage * totalValue) / 100;
+                int discountedValue = (discountPercentage * cartValue) / 100;
+                discountedValue = Math.min(discountedValue, maxDiscountValue);
 
-                if (totalValue < minCartValue) {
-                    newTotalValue = totalValue;
-                    discountedValue = 0;
-                    message = "Add items of value " + (minCartValue - totalValue) + " or more to apply the coupons";
-                } else {
-                    if (changeInTotal <= maxDiscountValue) {
-                        newTotalValue = newTotalValue - changeInTotal;
-                        discountedValue = changeInTotal;
-                        message = "Coupon applied. You have saved the Rs." + discountedValue + " of your order";
-                    } else {
-                        newTotalValue = newTotalValue - maxDiscountValue;
-                        message = "Coupon applied. You have saved the Rs." + discountedValue + " of your order";
-                    }
-                }
 
-                applyCouponResponseDto.setNewTotalValue(newTotalValue);
-                applyCouponResponseDto.setDiscountedValue(discountedValue);
-                applyCouponResponseDto.setMessage(message);
+                applyCouponResponseDto.setNewTotal(cartValue-discountedValue);
+                applyCouponResponseDto.setDiscount(discountedValue);
+                applyCouponResponseDto.setMessage("you have saved "+discountedValue);
                 applyCouponResponseDto.setCouponId(coupon.getId());
                 return applyCouponResponseDto;
             } else {

@@ -12,6 +12,7 @@ import in.timesinternet.foodbooking.service.PincodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,20 +25,22 @@ public class PincodeServiceImpl implements PincodeService {
     ServiceabilityRepository serviceabilityRepository;
 
     @Override
-    public List<Serviceability> addPincode(List<PincodeDto> pincodeDto, Integer restaurantId) {
+    public List<Serviceability> addPincode(List<PincodeDto> pincodeDtoList, Integer restaurantId) {
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
         if (optionalRestaurant.isPresent()) {
 
             int i = 100;
             Restaurant restaurant = optionalRestaurant.get();
-            for (PincodeDto pincodeDto1 : pincodeDto) {
+            HashSet<Integer> pincodeValues = new HashSet<>();
 
+            for (PincodeDto pincodeDto : pincodeDtoList) {
+                if (pincodeValues.contains(pincodeDto.getPincode()))
+                    continue;
+                pincodeValues.add(pincodeDto.getPincode());
                 // Print all elements of ArrayList
-
-
                 Serviceability serviceability = new Serviceability();
                 serviceability.setDeliveryCharge(i);
-                serviceability.setPincode(pincodeDto1.getPincode());
+                serviceability.setPincode(pincodeDto.getPincode());
                 restaurant.addPincode(serviceability);
                 serviceabilityRepository.save(serviceability);
                 i++;
@@ -46,9 +49,6 @@ public class PincodeServiceImpl implements PincodeService {
         } else {
             throw new NotFoundException("This Restaurant is  not found");
         }
-
-
-        //restaurant.getpincode();
     }
 
 
@@ -81,9 +81,10 @@ public class PincodeServiceImpl implements PincodeService {
         }
 
     }
-    public Serviceability updatePincode(AvalibilityDto avalibilityDto, Integer restaurantId)
-    {   System.out.println(avalibilityDto);
-        Optional<Serviceability>  optionalServiceability= serviceabilityRepository.findById(avalibilityDto.getId());
+
+    public Serviceability updatePincode(AvalibilityDto avalibilityDto, Integer restaurantId) {
+        System.out.println(avalibilityDto);
+        Optional<Serviceability> optionalServiceability = serviceabilityRepository.findById(avalibilityDto.getId());
         if (optionalServiceability.isPresent()) {
             Serviceability serviceability = optionalServiceability.get();
             Restaurant restaurant = serviceability.getRestaurant();
@@ -103,9 +104,9 @@ public class PincodeServiceImpl implements PincodeService {
     @Override
     public Serviceability getPincode(Integer pincode, Integer restaurantId) {
         Optional<Serviceability> serviceabilityOptional = serviceabilityRepository.findByPincodeAndRestaurantId(pincode, restaurantId);
-        if(serviceabilityOptional.isPresent())
-        return serviceabilityOptional.get();
-        throw new NotFoundException("pincode "+pincode+" is not serviceable");
+        if (serviceabilityOptional.isPresent())
+            return serviceabilityOptional.get();
+        throw new NotFoundException("pincode " + pincode + " is not serviceable");
     }
 
 }
