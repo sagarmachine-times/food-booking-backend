@@ -72,6 +72,11 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     PincodeService pincodeService;
 
+    @Autowired
+    PackageService packageService;
+    @Autowired
+    RestaurantService restaurantService;
+
     @Override
     @Transactional
     public Order createOrder(OrderDto orderDto, String userEmail) {
@@ -83,15 +88,15 @@ public class OrderServiceImpl implements OrderService {
             order.setIsCouponApplied(true);
             order.setDiscount(applyCouponResponseDto.getDiscountedValue());
         }
-        Integer pincode=order.getAddress().getPincode();
-        Serviceability serviceability= null;
+        Integer pincode = order.getAddress().getPincode();
+        Serviceability serviceability = null;
         try {
-            serviceability= pincodeService.getPincode(pincode, order.getRestaurant().getId());
-        }catch (NotFoundException ex){
-            throw new InvalidRequestException("pincode "+pincode+" is not servicable");
+            serviceability = pincodeService.getPincode(pincode, order.getRestaurant().getId());
+        } catch (NotFoundException ex) {
+            throw new InvalidRequestException("pincode " + pincode + " is not servicable");
         }
         order.setDeliveryCharge(serviceability.getDeliveryCharge());
-        order.setTotal((customer.getCurrentCart().getTotal()+order.getDeliveryCharge()) - order.getDiscount());
+        order.setTotal((customer.getCurrentCart().getTotal() + order.getDeliveryCharge()) - order.getDiscount());
         order.setCustomer(customer);
         order.setAddress(orderDto.getAddress());
         order.setContact(orderDto.getContact());
@@ -176,7 +181,19 @@ public class OrderServiceImpl implements OrderService {
 
 
     private Order packOrder(Order order) {
-        return null;
+
+        if (order.getStatus().equals(OrderStatus.APPROVED)) {
+            order.setStatus(OrderStatus.PACKED);
+            PackageStatusDto packageStatusDto = new PackageStatusDto();
+            packageStatusDto.setPackageStatus(PackageStatus.READY);
+            packageStatusDto.setPackageId(order.getPack().getId());
+
+            Package pack = packageService.updatePackageStatus(packageStatusDto);
+            order.setPack(pack);
+            return orderRepository.save(order);
+        } else {
+            throw new RuntimeException(" invalid request ");
+        }
     }
 
     @Transactional
@@ -205,7 +222,7 @@ public class OrderServiceImpl implements OrderService {
             pack.addPackageDelivery(packageDelivery);
             packageDelivery.setStatus(PackageDeliveryStatus.UNASSIGNED);
             PackageDelivery packageDeliverySaved = packageDeliveryRepository.save(packageDelivery);
-             packageRepository.save(pack);
+            packageRepository.save(pack);
             order = orderRepository.save(order);
             Runnable assignDeliveryBoy = () -> {
 //                try {
@@ -260,9 +277,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrdersOfCustomerForRestaurant(String userEmail) {
+    public Order updateOrder(UpdateOrderDto updateOrderDto, String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
+        Order order = getOrder(updateOrderDto.getOrderId());
 
-        return orderRepository.getOrderByCustomer(customer);
+        order.setAddress(updateOrderDto.getAddress());
+        order.setContact(updateOrderDto.getContact());
+        return order;
     }
+
+    @Override
+    public List<Order> getAllOrder(String userEmail) {
+        Customer customer = customerService.getCustomer(userEmail);
+        return customer.getOrderList();
+    }
+
+    @Override
+    public List<Order> getAllOrderByRestaurant(Integer restaurantId) {
+        Restaurant restaurant = restaurantService.getRestaurant(restaurantId);
+        return restaurant.getOrderList();
+    }
+
 }

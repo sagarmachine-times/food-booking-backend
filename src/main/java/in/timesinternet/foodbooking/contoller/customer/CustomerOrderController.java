@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.contoller.customer;
 
 import in.timesinternet.foodbooking.dto.request.OrderDto;
+import in.timesinternet.foodbooking.dto.request.UpdateOrderDto;
 import in.timesinternet.foodbooking.entity.Order;
 import in.timesinternet.foodbooking.service.OrderService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
@@ -32,14 +33,26 @@ public class CustomerOrderController {
         return ResponseEntity.ok(orderService.createOrder(orderDto, userEmail));
     }
 
-    @GetMapping("/getOrder")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<List<Order>> getAllOrdersOfCustomerForRestaurant(HttpServletRequest httpServletRequest)
+    ResponseEntity<Order>updateOrder(@RequestBody @Valid UpdateOrderDto updateOrderDto, BindingResult bindingResult, HttpServletRequest httpServletRequest)
     {
-        String userEmail = (String) httpServletRequest.getAttribute("userEmail");
-        return ResponseEntity.ok(orderService.getAllOrdersOfCustomerForRestaurant(userEmail));
+        bindingResultService.validate((bindingResult));
+        String userEmail=(String) httpServletRequest.getAttribute("userEmail");
+        return ResponseEntity.ok(orderService.updateOrder(updateOrderDto,userEmail));
     }
 
+    @GetMapping("/{orderId}")
+    ResponseEntity<Order> getOrder(@PathVariable Integer orderId)
+    {
 
+        return ResponseEntity.ok(orderService.getOrder(orderId));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    ResponseEntity<List<Order>> getAllOrder(HttpServletRequest request)
+    {
+        String userEmail = (String) request.getAttribute("userEmail");
+        return  ResponseEntity.ok(orderService.getAllOrder(userEmail));
+    }
 
 }

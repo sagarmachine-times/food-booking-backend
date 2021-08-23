@@ -20,4 +20,6 @@ public class UpdateCouponDto {
     private Integer totalUse;
     private String termsAndCondition;
     private Integer imageId;
+
+
 }

@@ -30,6 +30,7 @@ public class Coupon {
     @Column(unique = true)
     String name;
 
+    @Column(unique = true)
     Integer value;
 
     @JsonFormat( pattern = "dd-MM-yyyy")
