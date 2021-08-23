@@ -5,6 +5,7 @@ import in.timesinternet.foodbooking.dto.request.UpdateCouponDto;
 import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.Image;
 import in.timesinternet.foodbooking.entity.Restaurant;
+import in.timesinternet.foodbooking.exception.AlreadyExistException;
 import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.repository.CouponRepository;
@@ -13,7 +14,9 @@ import in.timesinternet.foodbooking.repository.RestaurantRepository;
 import in.timesinternet.foodbooking.service.CouponService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +44,14 @@ public class CouponServiceImpl implements CouponService {
            coupon.setBanner(image);
            coupon.setRestaurant(restaurant);
            // restaurant.addCoupon(coupon);
-           return couponRepository.save(coupon);
+            try {
+                return couponRepository.save(coupon);
+            }
+            catch (DataIntegrityViolationException e)
+            {
+                throw new AlreadyExistException("Coupon name should be unique");
+            }
+
 
         }
         else
@@ -70,7 +80,14 @@ public class CouponServiceImpl implements CouponService {
                 coupon.setStartingDate(updateCouponDto.getStartingDate());
                 coupon.setBanner(image);
 
-               return couponRepository.save(coupon);
+                try {
+                    return couponRepository.save(coupon);
+                }
+                catch (DataIntegrityViolationException e)
+                {
+                    throw new AlreadyExistException("Coupon name should be unique");
+                }
+
 
             } else {
                 throw new UnauthorizedException("You are not authorised to update this coupon");

@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,16 +31,27 @@ public class Coupon {
     @Column(unique = true)
     String name;
 
+    @Column(unique = true)
     Integer value;
 
+    @NotNull
     @JsonFormat( pattern = "dd-MM-yyyy")
     Date startingDate;
 
+    @NotNull
     @JsonFormat( pattern = "dd-MM-yyyy")
     Date endingDate;
+
+    @NotNull
     Integer minimumCartValue;
+
+    @NotNull
     Integer maxDiscount;
+
+    @NotNull
     Integer maxPerUser;
+
+    @NotNull
     Integer totalUse;
     String termsAndCondition;
 
