@@ -82,6 +82,10 @@ public class OrderServiceImpl implements OrderService {
     public Order createOrder(OrderDto orderDto, String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
         Order order = new Order();
+        order.setAddress(orderDto.getAddress());
+        order.setContact(orderDto.getContact());
+        if(order.getAddress().getPincode()==null)
+             throw new InvalidRequestException("pincode is required :)");
         if (orderDto.getCouponName() != null) {
             ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(orderDto.getCouponName(), userEmail);
             order.setCoupon(couponService.getCoupon(applyCouponResponseDto.getCouponId()));
@@ -91,15 +95,14 @@ public class OrderServiceImpl implements OrderService {
         Integer pincode = order.getAddress().getPincode();
         Serviceability serviceability = null;
         try {
-            serviceability = pincodeService.getPincode(pincode, order.getRestaurant().getId());
+            serviceability = pincodeService.getPincode(pincode, customer.getRestaurant().getId());
         } catch (NotFoundException ex) {
             throw new InvalidRequestException("pincode " + pincode + " is not servicable");
         }
         order.setDeliveryCharge(serviceability.getDeliveryCharge());
         order.setTotal((customer.getCurrentCart().getTotal() + order.getDeliveryCharge()) - order.getDiscount());
         order.setCustomer(customer);
-        order.setAddress(orderDto.getAddress());
-        order.setContact(orderDto.getContact());
+
         order.setType(order.getType());
         order.setTotal(customer.getCurrentCart().getTotal() - order.getDiscount());
         order.setType(orderDto.getOrderType());
