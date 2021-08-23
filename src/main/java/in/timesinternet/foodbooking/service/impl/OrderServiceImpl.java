@@ -8,6 +8,7 @@ import in.timesinternet.foodbooking.exception.InvalidRequestException;
 import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.repository.*;
 import in.timesinternet.foodbooking.service.*;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +72,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     PackageService packageService;
+    @Autowired
+    RestaurantService restaurantService;
 
     @Override
     @Transactional
@@ -270,4 +273,30 @@ public class OrderServiceImpl implements OrderService {
 
         return orderRepository.getOrderByCustomer(customer);
     }
+
+
+    @Override
+    public Order updateOrder(UpdateOrderDto updateOrderDto,String userEmail)
+    {
+        Customer customer = customerService.getCustomer(userEmail);
+        Order order = getOrder(updateOrderDto.getOrderId());
+
+        order.setAddress(updateOrderDto.getAddress());
+        order.setContact(updateOrderDto.getContact());
+        return order;
+    }
+    @Override
+    public List<Order> getAllOrder(String userEmail)
+    {
+        Customer customer = customerService.getCustomer(userEmail);
+        return customer.getOrderList();
+    }
+
+    @Override
+    public List<Order> getAllOrderByStaff(Integer restaurantId)
+    {
+        Restaurant restaurant= restaurantService.getRestaurant(restaurantId);
+        return restaurant.getOrderList();
+    }
+
 }
