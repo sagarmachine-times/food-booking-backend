@@ -19,6 +19,7 @@ public class UpdateCouponDto {
     private Date startingDate;
     @NotNull(message = "Ending date can't be null")
     private Date endingDate;
+    @NotNull(message = "Cart can't be null")
     private Integer minimumCartValue;
     @NotNull(message = "Max Discount can't be null")
     private Integer maxDiscount;
