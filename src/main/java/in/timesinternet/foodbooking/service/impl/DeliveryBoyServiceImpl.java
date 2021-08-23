@@ -93,8 +93,12 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             ModelMapper modelMapper=new ModelMapper();
 
            modelMapper.map(deliveryBoyUpdateDto,deliveryBoy);
-            deliveryBoyRepository.save(deliveryBoy);
-            return deliveryBoy;
+
+
+               deliveryBoyRepository.save(deliveryBoy);
+               return deliveryBoy;
+
+
 
         }
         else {
@@ -153,7 +157,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
     PackageDelivery onTheWayToPickPackage(PackageDelivery packageDelivery)
     {
-        
+
 
         if (!packageDelivery.getStatus().equals(PackageDeliveryStatus.ASSIGNED))
             throw new InvalidRequestException("invalid request for way to pickup ");
