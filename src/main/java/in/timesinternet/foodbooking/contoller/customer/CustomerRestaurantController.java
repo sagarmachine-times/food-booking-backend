@@ -4,10 +4,8 @@ import in.timesinternet.foodbooking.dto.request.CategoryUpdateDto;
 import in.timesinternet.foodbooking.entity.Category;
 import in.timesinternet.foodbooking.entity.Coupon;
 import in.timesinternet.foodbooking.entity.Item;
-import in.timesinternet.foodbooking.service.CategoryService;
-import in.timesinternet.foodbooking.service.CouponService;
-import in.timesinternet.foodbooking.service.CustomerService;
-import in.timesinternet.foodbooking.service.ItemService;
+import in.timesinternet.foodbooking.entity.Serviceability;
+import in.timesinternet.foodbooking.service.*;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +28,10 @@ public class CustomerRestaurantController {
     CouponService couponService;
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    PincodeService pincodeService;
+
     @GetMapping("/{restaurantId}/coupon")
     ResponseEntity<List<Coupon>> getAllCoupon(@PathVariable Integer restaurantId)
     {
@@ -56,5 +58,11 @@ public class CustomerRestaurantController {
     {
 
         return ResponseEntity.ok(itemService.getItemByCategory(categoryId));
+    }
+
+    @GetMapping("/{restaurantId}/pincode")
+    ResponseEntity<List<Serviceability>> getServiceablePincode(@PathVariable Integer restaurantId)
+    {
+        return ResponseEntity.ok(pincodeService.getPincode(restaurantId));
     }
 }
