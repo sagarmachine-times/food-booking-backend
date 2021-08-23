@@ -13,5 +13,5 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     Category deleteCategoryById(Integer categoryId);
 
-    Boolean existByNameAndRestaurantId(String name, Integer restaurantId);
+//    Boolean existByNameAndRestaurantId(String name, Integer restaurantId);
 }

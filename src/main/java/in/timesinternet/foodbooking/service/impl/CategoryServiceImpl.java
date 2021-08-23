@@ -29,10 +29,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category createCategory(CategoryDto categoryDto, Integer restaurantId) {
 
-        if(categoryRepository.existByNameAndRestaurantId(categoryDto.getName(), restaurantId))
-        {
-            throw new AlreadyExistException("category with this name already exits");
-        }
+//        if(categoryRepository.existByNameAndRestaurantId(categoryDto.getName(), restaurantId))
+//        {
+//            throw new AlreadyExistException("category with this name already exits");
+//        }
 
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
         if (restaurantOptional.isPresent()) {
