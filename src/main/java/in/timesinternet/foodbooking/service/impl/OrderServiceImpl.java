@@ -156,6 +156,7 @@ import in.timesinternet.foodbooking.service.OrderService;
         }
     }
 
+    @Transactional
     Order preparingOrder(Order order) {
         if (!order.getStatus().equals(OrderStatus.APPROVED))
             throw new InvalidRequestException("invalid request order can't be preparing since it is" + order.getStatus().toString());
@@ -183,7 +184,8 @@ import in.timesinternet.foodbooking.service.OrderService;
     }
 
 
-    private Order packOrder(Order order) {
+    @Transactional
+     Order packOrder(Order order) {
 
         if (order.getStatus().equals(OrderStatus.APPROVED)||order.getStatus().equals(OrderStatus.PREPARING)) {
             order.setStatus(OrderStatus.PACKED);
@@ -265,7 +267,8 @@ import in.timesinternet.foodbooking.service.OrderService;
     }
 
 
-    private Order cancelOrder(Order order) {
+    @Transactional
+     Order cancelOrder(Order order) {
         return null;
     }
 
@@ -277,11 +280,13 @@ import in.timesinternet.foodbooking.service.OrderService;
         throw new NotFoundException("order not found with id " + orderId);
     }
 
-    private void validateOrder() throws RuntimeException {
+    @Transactional
+     void validateOrder() throws RuntimeException {
         //throw exception is invalid order request
     }
 
     @Override
+    @Transactional
     public Order updateOrder(UpdateOrderDto updateOrderDto, String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
         Order order = getOrder(updateOrderDto.getOrderId());
@@ -304,6 +309,7 @@ import in.timesinternet.foodbooking.service.OrderService;
     }
 
     @Override
+    @Transactional
     public Order completeOrder(Integer orderId) {
 
         Order order = getOrder(orderId);

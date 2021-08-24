@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.ArrayList;
@@ -113,6 +114,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     }
 
     @Override
+    @Transactional
     public Order updatePackageDelivery(PackageDeliveryDto packageDeliveryDto, String userEmail) {
         DeliveryBoy deliveryBoy = getDeliveryBoy(userEmail);
         Optional<PackageDelivery> packageDeliveryOptional = packageDeliveryRepository.findById(packageDeliveryDto.getPackageDeliveryId());
@@ -154,6 +156,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         return orderList;
     }
 
+    @Transactional
     Order onTheWayToPickPackage(PackageDelivery packageDelivery) {
         if (!packageDelivery.getStatus().equals(PackageDeliveryStatus.ASSIGNED))
             throw new InvalidRequestException("invalid request package is " + packageDelivery.getStatus().toString());
@@ -162,6 +165,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         return packageDeliveryRepository.save(packageDelivery).getPack().getOrder();
     }
 
+    @Transactional
     Order pickedThePackage(PackageDelivery packageDelivery) {
         if (packageDelivery.getStatus().equals(PackageDeliveryStatus.ASSIGNED) || packageDelivery.getStatus().equals(PackageDeliveryStatus.ON_THE_WAY_TO_PICK)) {
             packageDelivery.setStatus(PackageDeliveryStatus.PICKED);
@@ -172,6 +176,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
     }
 
+    @Transactional
     Order onTheWayToDropPackage(PackageDelivery packageDelivery) {
         if (!(packageDelivery.getStatus().equals(PackageDeliveryStatus.PICKED) || packageDelivery.getStatus().equals(PackageDeliveryStatus.ASSIGNED) || packageDelivery.getStatus().equals(PackageDeliveryStatus.ON_THE_WAY_TO_PICK)))
             throw new InvalidRequestException("invalid request for package is " + packageDelivery.getStatus());
@@ -180,6 +185,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         return packageDeliveryRepository.save(packageDelivery).getPack().getOrder();
     }
 
+    @Transactional
     Order deliveredThePackage(PackageDelivery packageDelivery) {
         if (packageDelivery.getStatus().equals(PackageDeliveryStatus.PICKED) || packageDelivery.getStatus().equals(PackageDeliveryStatus.ON_THE_WAY_TO_DROP)) {
             packageDelivery.setStatus(PackageDeliveryStatus.DELIVERED);
@@ -191,6 +197,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         }
     }
 
+    @Transactional
     Order canceledThePackage(PackageDelivery packageDelivery) {
         if (packageDelivery.getStatus().equals(PackageDeliveryStatus.DELIVERED))
             throw new InvalidRequestException("invalid request for cancelling");
