@@ -47,6 +47,7 @@ public class ItemServiceImpl implements ItemService {
             throw new AlreadyExistException("Item already exist");
 
 
+
             Integer categoryId = itemDto.getCategoryId();
             Integer imageId = itemDto.getImageId();
             Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
