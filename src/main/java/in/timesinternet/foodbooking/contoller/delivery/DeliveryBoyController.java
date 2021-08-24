@@ -45,7 +45,7 @@ public class DeliveryBoyController {
         return ResponseEntity.ok(deliveryBoyService.UpdateDeliveryBoy(deliveryBoyUpdateDto,deliveryBoyId));
     }
 
-    @PutMapping("/package/status")
+    @PatchMapping("/package")
     @PreAuthorize("hasRole('ROLE_DELIVERY_BOY') ")
     public ResponseEntity<Order> updatePackageDelivery(@RequestBody @Valid PackageDeliveryDto packageDeliveryDto,
                                                                  BindingResult bindingResult, HttpServletRequest request)

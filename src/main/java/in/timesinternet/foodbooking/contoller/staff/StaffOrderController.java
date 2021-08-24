@@ -26,13 +26,6 @@ public class StaffOrderController {
         return  ResponseEntity.ok(orderService.updateOrderStatus(orderStatusDto, userEmail));
     }
 
-    @PutMapping("/packOrder")
-    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Order> updateOrderWithPackageStatus(@RequestBody OrderStatusDto orderStatusDto, HttpServletRequest request){
-        String userEmail =(String)request.getAttribute("userEmail");
-        return  ResponseEntity.ok(orderService.updateOrderStatus(orderStatusDto, userEmail));
-    }
-
     @GetMapping("/{orderId}")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
     ResponseEntity<Order> getOrderById(@PathVariable Integer orderId){
