@@ -47,7 +47,7 @@ public class DeliveryBoyController {
 
     @PutMapping("/package/status")
     @PreAuthorize("hasRole('ROLE_DELIVERY_BOY') ")
-    public ResponseEntity<PackageDelivery> updatePackageDelivery(@RequestBody @Valid PackageDeliveryDto packageDeliveryDto,
+    public ResponseEntity<Order> updatePackageDelivery(@RequestBody @Valid PackageDeliveryDto packageDeliveryDto,
                                                                  BindingResult bindingResult, HttpServletRequest request)
     {
         bindingResultService.validate(bindingResult);

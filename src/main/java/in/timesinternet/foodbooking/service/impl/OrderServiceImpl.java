@@ -31,7 +31,7 @@ import in.timesinternet.foodbooking.service.CustomerService;
 import in.timesinternet.foodbooking.service.OrderService;
 
 @Service
-public class OrderServiceImpl implements OrderService {
+ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OrderRepository orderRepository;
@@ -301,6 +301,15 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getAllOrderByRestaurant(Integer restaurantId) {
         Restaurant restaurant = restaurantService.getRestaurant(restaurantId);
         return restaurant.getOrderList();
+    }
+
+    @Override
+    public Order completeOrder(Integer orderId) {
+
+        Order order = getOrder(orderId);
+        order.setStatus(OrderStatus.COMPLETED);
+        order.getPayment().setStatus(PaymentStatus.PAID);
+        return orderRepository.save(order);
     }
 
 }

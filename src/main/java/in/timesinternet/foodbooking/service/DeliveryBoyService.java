@@ -23,7 +23,7 @@ public interface DeliveryBoyService {
 
     DeliveryBoy UpdateDeliveryBoy(DeliveryBoyUpdateDto deliveryBoyUpdateDto, Integer deliveryBoyId);
 
-    PackageDelivery updatePackageDelivery(PackageDeliveryDto packageDeliveryDto, String userEmail);
+    Order updatePackageDelivery(PackageDeliveryDto packageDeliveryDto, String userEmail);
 
     List<Order> getPackageList(String userEmail);
 
