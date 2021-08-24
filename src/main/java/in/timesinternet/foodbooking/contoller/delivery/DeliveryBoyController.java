@@ -39,7 +39,7 @@ public class DeliveryBoyController {
         return  ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword()));
     }
     @PatchMapping("/{deliveryBoyId}")
-    public ResponseEntity<DeliveryBoy>updateDeliveryBoy(@RequestBody @Valid DeliveryBoyUpdateDto deliveryBoyUpdateDto, @PathVariable Integer deliveryBoyId,BindingResult bindingResult)
+    public ResponseEntity<DeliveryBoy>updateDeliveryBoy(@RequestBody @Valid DeliveryBoyUpdateDto deliveryBoyUpdateDto,BindingResult bindingResult, @PathVariable Integer deliveryBoyId)
     {
         bindingResultService.validate(bindingResult);
         return ResponseEntity.ok(deliveryBoyService.UpdateDeliveryBoy(deliveryBoyUpdateDto,deliveryBoyId));
