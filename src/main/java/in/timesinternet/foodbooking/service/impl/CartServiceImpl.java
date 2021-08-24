@@ -68,6 +68,9 @@ public class CartServiceImpl implements CartService {
                 currentCart.addCartItem(cartItem);
                 total += cartItem.getQuantity() * cartItem.getPrice();
             }
+            else {
+                throw new NotFoundException("Item not found or available");
+            }
         }
         currentCart.setTotal(total);
 
