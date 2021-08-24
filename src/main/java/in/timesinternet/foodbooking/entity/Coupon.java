@@ -55,9 +55,11 @@ public class Coupon {
     Integer totalUse;
     String termsAndCondition;
 
+    @JsonFormat( pattern = "dd-MM-yyyy hh:mm:ss")
     @CreationTimestamp
     Date createdAt;
 
+    @JsonFormat( pattern = "dd-MM-yyyy hh:mm:ss")
     @UpdateTimestamp
     Date updatedAt;
 

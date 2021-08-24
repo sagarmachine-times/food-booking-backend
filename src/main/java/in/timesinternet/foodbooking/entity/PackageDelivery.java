@@ -1,6 +1,7 @@
 package in.timesinternet.foodbooking.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.timesinternet.foodbooking.entity.enumeration.OrderStatus;
 import in.timesinternet.foodbooking.entity.enumeration.PackageDeliveryStatus;
@@ -26,9 +27,11 @@ public class PackageDelivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
+    @JsonFormat( pattern = "dd-MM-yyyy hh:mm:ss")
     @CreationTimestamp
     Date createdAt;
 
+    @JsonFormat( pattern = "dd-MM-yyyy hh:mm:ss")
     @UpdateTimestamp
     Date updatedAt;
 

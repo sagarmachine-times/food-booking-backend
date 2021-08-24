@@ -50,6 +50,9 @@ public class CartServiceImpl implements CartService {
     @Autowired
     CouponService couponService;
 
+    @Autowired
+    OrderRepository orderRepository;
+
     @Override
     public Cart updateCart(CartDto cartDto, String email) {
         Customer customer = customerRepository.findByEmail(email).get();
@@ -211,6 +214,19 @@ public class CartServiceImpl implements CartService {
                 String message = "";
                 int cartValue = currentCart.getTotal();
                 int minCartValue = coupon.getMinimumCartValue();
+
+                int maxPerUser = coupon.getMaxPerUser();
+                int totalUse = coupon.getTotalUse();
+
+                int useDoneByCustomer = orderRepository.countByCouponIdAndCustomerId(coupon.getId(),customer.getId());
+
+                int useOfCoupon = orderRepository.countByCouponId(coupon.getId());
+
+                if (useDoneByCustomer >= maxPerUser)
+                    throw  new InvalidRequestException(" you cannot use this coupon, as you have already used it maximum number of times");
+
+                if (useOfCoupon >= totalUse)
+                    throw new InvalidRequestException(" this coupon cannot be used, as its threshold point is reached");
 
 
                 if (cartValue < minCartValue)

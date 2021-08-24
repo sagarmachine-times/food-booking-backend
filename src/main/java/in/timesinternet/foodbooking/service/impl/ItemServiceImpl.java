@@ -43,8 +43,9 @@ public class ItemServiceImpl implements ItemService {
     public Item createItem(ItemDto itemDto, Integer restaurantId) {
 
 
-        if (itemRepository.existsByNameAndCategoryRestaurantId(itemDto.getName(), restaurantId))
+        if (itemRepository.existsByNameAndCategoryRestaurantId(itemDto.getName(), restaurantId)) {
             throw new AlreadyExistException("Item already exist");
+        } else {
 
 
 
@@ -54,57 +55,61 @@ public class ItemServiceImpl implements ItemService {
             Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
 
 
-        if (categoryOptional.isPresent() && restaurantOptional.isPresent()) {
-            Category category = categoryOptional.get();
-            Restaurant restaurant = restaurantOptional.get();
+            if (categoryOptional.isPresent() && restaurantOptional.isPresent()) {
+                Category category = categoryOptional.get();
+                Restaurant restaurant = restaurantOptional.get();
 
 
-            Item item = new Item();
-            item.setName(itemDto.getName());
-            item.setActualPrice(itemDto.getActualPrice());
-            item.setSellingPrice(itemDto.getSellingPrice());
-            item.setItemType(itemDto.getItemType());
 
-            if (imageId != null) {
-                Optional<Image> imageOptional = imageRepository.findById(imageId);
-                Image image = imageOptional.get();
-                item.setImage(image);
-            }
+                Item item = new Item();
+                item.setName(itemDto.getName());
+                item.setActualPrice(itemDto.getActualPrice());
+                item.setSellingPrice(itemDto.getSellingPrice());
+                item.setItemType(itemDto.getItemType());
 
-            category.addItem(item);
+                if (imageId != null) {
+                    Optional<Image> imageOptional = imageRepository.findById(imageId);
+                    Image image = imageOptional.get();
+                    item.setImage(image);
+                }
 
-            restaurant.addItem(item);
+                category.addItem(item);
 
-            return itemRepository.save(item);
-        } else {
-            throw new NotFoundException("either restaurant or category is not fouund ");
-        }
+                restaurant.addItem(item);
 
-    }
-
-    @Override
-    public List<Item> getAllItem(Integer restaurantId) {
-        List<Item> allItem = itemRepository.findAllByRestaurantId(restaurantId);
-        return allItem;
-    }
-
-    @Override
-    public Item deleteItem(Integer itemId, Integer restaurantId) {
-        Optional<Item> itemOptional = itemRepository.findById(itemId);
-
-        if (itemOptional.isPresent()) {
-            Item item = itemOptional.get();
-
-            if (item.getRestaurant().getId() == restaurantId) {
-                itemRepository.deleteById(itemId);
-                return item;
+                return itemRepository.save(item);
             } else {
-                throw new UnauthorizedException("unauthorized access for deleting the item");
+                throw new NotFoundException("either restaurant or category is not fouund ");
             }
-        } else {
-            throw new NotFoundException("item is not found");
+
         }
     }
+
+        @Override
+        public List<Item> getAllItem (Integer restaurantId){
+
+            List<Item> allItem = itemRepository.findAllByRestaurantId(restaurantId);
+            return allItem;
+        }
+
+        @Override
+        public Item deleteItem (Integer itemId, Integer restaurantId){
+            Optional<Item> itemOptional = itemRepository.findById(itemId);
+
+            if (itemOptional.isPresent()) {
+                Item item = itemOptional.get();
+
+                if (item.getRestaurant().getId() == restaurantId) {
+                    itemRepository.deleteById(itemId);
+                    return item;
+                } else {
+                    throw new UnauthorizedException("unauthorized access for deleting the item");
+                }
+            } else {
+                throw new NotFoundException("item is not found");
+            }
+        }
+
 
     @Override
     public Item updateItem(ItemUpdateDto itemUpdateDto, Integer restaurantId) {

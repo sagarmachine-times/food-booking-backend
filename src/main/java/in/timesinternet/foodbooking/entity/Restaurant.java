@@ -1,5 +1,6 @@
 package in.timesinternet.foodbooking.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.timesinternet.foodbooking.entity.embeddable.RestaurantDetail;
 import lombok.*;
@@ -26,9 +27,11 @@ public class Restaurant {
     @Embedded
     RestaurantDetail restaurantDetail;
 
+    @JsonFormat( pattern = "dd-MM-yyyy hh:mm:ss")
     @CreationTimestamp
     Date createdAt;
 
+    @JsonFormat( pattern = "dd-MM-yyyy hh:mm:ss")
     @UpdateTimestamp
     Date updatedAt;
 
