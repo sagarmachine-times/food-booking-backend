@@ -13,7 +13,9 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
 //    Boolean existByNameAndRestaurantId(String name, Integer restaurantId);
 
-         Boolean existsByNameAndCategoryRestaurantId(String name, Integer restaurantId);
+    Boolean existsByNameAndCategoryRestaurantId(String name, Integer restaurantId);
+
+
 
 //    Category deleteCategoryById(Integer categoryId);
 }

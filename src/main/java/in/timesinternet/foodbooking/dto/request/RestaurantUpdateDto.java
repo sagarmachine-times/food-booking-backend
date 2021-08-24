@@ -14,4 +14,5 @@ import java.util.Date;
 public class RestaurantUpdateDto {
 
     Address address;
+    RestaurantStatus restaurantStatus=RestaurantStatus.OPEN;
 }

@@ -11,7 +11,7 @@ public interface RestaurantService {
 
     Restaurant createRestaurant(RestaurantDto restaurantDto);
 
-    void updateRestaurantLogo(MultipartFile file, Integer restaurantId, String email);
+    void updateRestaurantLogo(MultipartFile file, Integer restaurantId);
 
     Restaurant getRestaurant(Integer restaurantId);
 

@@ -5,7 +5,7 @@ import in.timesinternet.foodbooking.dto.request.CartDto;
 import in.timesinternet.foodbooking.dto.request.CartItemUpdateDto;
 import in.timesinternet.foodbooking.dto.request.CartStatusUpdateDto;
 import in.timesinternet.foodbooking.entity.Cart;
-import in.timesinternet.foodbooking.entity.CartItem;
+//import in.timesinternet.foodbooking.entity.CartItem;
 import in.timesinternet.foodbooking.service.CartService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class CustomerCartController {
     CartService cartService;
 
     @Autowired
-    BindingResultService bindingResultService;
+     BindingResultService bindingResultService;
 
     @PutMapping("")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
