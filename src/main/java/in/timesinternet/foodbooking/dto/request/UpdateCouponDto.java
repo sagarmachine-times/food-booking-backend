@@ -1,5 +1,6 @@
 package in.timesinternet.foodbooking.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -15,10 +16,15 @@ public class UpdateCouponDto {
     private String name;
     @NotNull(message = "value can't be null")
     private Integer value;
+
+    @JsonFormat( pattern = "dd-MM-yyyy")
     @NotNull(message = "Starting date can't be null")
     private Date startingDate;
+
+    @JsonFormat( pattern = "dd-MM-yyyy")
     @NotNull(message = "Ending date can't be null")
     private Date endingDate;
+
     @NotNull(message = "Cart can't be null")
     private Integer minimumCartValue;
     @NotNull(message = "Max Discount can't be null")

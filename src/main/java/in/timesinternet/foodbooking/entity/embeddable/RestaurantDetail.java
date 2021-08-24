@@ -1,5 +1,6 @@
 package in.timesinternet.foodbooking.entity.embeddable;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import in.timesinternet.foodbooking.entity.embeddable.Address;
 import in.timesinternet.foodbooking.entity.enumeration.RestaurantStatus;
 import lombok.*;
@@ -24,9 +25,11 @@ public class RestaurantDetail {
     @Column(unique = true, updatable = false)
     String subDomain;
 
+    @JsonFormat( pattern = "hh:mm:ss")
     @Temporal(TemporalType.TIME)
     Date openingTime;
 
+    @JsonFormat( pattern = "hh:mm:ss")
     @Temporal(TemporalType.TIME)
     Date closingTime;
 

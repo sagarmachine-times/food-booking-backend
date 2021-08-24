@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -20,7 +21,10 @@ public class RestaurantDto {
     @NotNull(message = "subDomain can't be null")
     String subDomain;
 
+    @JsonFormat( pattern = "dd-MM-yyyy")
     Date openingTime;
+
+    @JsonFormat( pattern = "dd-MM-yyyy")
     Date closingTime;
     Address address;
 
