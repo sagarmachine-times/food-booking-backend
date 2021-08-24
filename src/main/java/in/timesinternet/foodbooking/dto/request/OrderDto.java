@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class OrderDto {
     String couponName;
     OrderType orderType=OrderType.DELIVERY;
 
+    @NotNull(message = "Address can't be null")
     Address address;
     Contact contact;
 }

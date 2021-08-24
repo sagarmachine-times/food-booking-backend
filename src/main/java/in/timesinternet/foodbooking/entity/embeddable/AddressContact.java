@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -11,6 +12,7 @@ import javax.persistence.Embeddable;
 @Setter
 @NoArgsConstructor
 public class AddressContact{
+
     String line1;
     String line2;
     Integer pincode;
