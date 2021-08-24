@@ -54,6 +54,9 @@ public class PackageDelivery {
    public void populateNext() {
         next= new ArrayList<>();
         switch (status) {
+            case ASSIGNED:
+                next.add(PackageDeliveryStatus.ON_THE_WAY_TO_PICK.toString());
+                break;
             case ON_THE_WAY_TO_PICK:
                 next.add(PackageDeliveryStatus.PICKED.toString());
                 next.add(PackageDeliveryStatus.ON_THE_WAY_TO_DROP.toString());
