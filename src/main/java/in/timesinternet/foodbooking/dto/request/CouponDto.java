@@ -20,21 +20,24 @@ public class CouponDto {
 
     @NotNull(message = "name can't be null")
     private String name;
-   @Max(value = 100,message = "Maximum value can't more than 100")
+    @Max(value = 100, message = "Maximum value can't more than 100")
     private Integer value;
 
 
-    @JsonFormat( pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     @NotNull(message = "Starting Date can't be Null")
     private Date startingDate;
 
-    @JsonFormat( pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     @NotNull(message = "Ending Date can't be Null")
     private Date endingDate;
 
+    @NotNull(message = "max discount can't be null")
+    Integer maxDiscount;
+
     @NotNull(message = "Cart value can't be null")
     private Integer minimumCartValue;
-    @NotNull(message = "Maxperuser can't be null")
+    @NotNull(message = "max per user can't be null")
     private Integer maxPerUser;
     @NotNull(message = "Total use can't be null")
     private Integer totalUse;

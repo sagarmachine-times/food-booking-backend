@@ -28,13 +28,12 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     String name;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     Integer value;
 
-    @NotNull
     @JsonFormat( pattern = "dd-MM-yyyy")
     Date startingDate;
 
@@ -42,17 +41,24 @@ public class Coupon {
     @JsonFormat( pattern = "dd-MM-yyyy")
     Date endingDate;
 
-    @NotNull
+
+    @Column(nullable = false)
     Integer minimumCartValue;
 
-    @NotNull
+
+    @Column(nullable = false)
     Integer maxDiscount;
 
-    @NotNull
+
+    @Column(nullable = false)
     Integer maxPerUser;
 
-    @NotNull
+
+    @Column(nullable = false)
     Integer totalUse;
+
+
+    @Column(nullable = false)
     String termsAndCondition;
 
     @JsonFormat( pattern = "dd-MM-yyyy hh:mm:ss")
