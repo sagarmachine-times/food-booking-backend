@@ -46,10 +46,12 @@ public class ItemServiceImpl implements ItemService {
         if (itemRepository.existByNameAndRestaurantId(itemDto.getName(), restaurantId)) {
             throw new AlreadyExistException("Item already exist");
         } else {
+
             Integer categoryId = itemDto.getCategoryId();
             Integer imageId = itemDto.getImageId();
             Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
             Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
+
         if (categoryOptional.isPresent() && restaurantOptional.isPresent()) {
             Category category = categoryOptional.get();
             Restaurant restaurant = restaurantOptional.get();
