@@ -29,7 +29,7 @@ public class CustomerCartController {
 
     @PutMapping("")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<Cart> updateCart(@RequestBody @Valid CartDto cartDto, HttpServletRequest request, BindingResult bindingResult){
+    ResponseEntity<Cart> updateCart(@RequestBody @Valid CartDto cartDto, BindingResult bindingResult ,HttpServletRequest request){
         String userEmail = (String) request.getAttribute("userEmail");
         bindingResultService.validate(bindingResult);
         return ResponseEntity.ok(cartService.updateCart(cartDto, userEmail));
@@ -44,8 +44,8 @@ public class CustomerCartController {
 
     @PutMapping("/cart_item")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<Cart> updateCartItemQuantity(@RequestBody @Valid CartItemUpdateDto cartItemUpdateDto,
-                                                    HttpServletRequest request, BindingResult bindingResult){
+    ResponseEntity<Cart> updateCartItemQuantity(@RequestBody @Valid CartItemUpdateDto cartItemUpdateDto, BindingResult bindingResult,
+                                                    HttpServletRequest request){
         bindingResultService.validate(bindingResult);
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.updateCartItemQuantity(cartItemUpdateDto, userEmail));
@@ -67,7 +67,8 @@ public class CustomerCartController {
 
     @PutMapping("/status")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<Cart> updateCartStatus(@RequestBody CartStatusUpdateDto cartStatusUpdateDto, HttpServletRequest request) {
+    ResponseEntity<Cart> updateCartStatus(@RequestBody @Valid CartStatusUpdateDto cartStatusUpdateDto, BindingResult bindingResult,HttpServletRequest request) {
+        bindingResultService.validate(bindingResult);
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.updateCartStatus(cartStatusUpdateDto.getStatus(), userEmail));
     }

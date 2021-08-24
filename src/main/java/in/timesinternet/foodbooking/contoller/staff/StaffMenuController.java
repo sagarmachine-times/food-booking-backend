@@ -65,7 +65,7 @@ public class StaffMenuController {
 
     @PostMapping("/category")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Category> createCategory(@RequestBody @Valid CategoryDto categoryDto, HttpServletRequest request, BindingResult bindingResult){
+    ResponseEntity<Category> createCategory(@RequestBody @Valid CategoryDto categoryDto,BindingResult bindingResult, HttpServletRequest request){
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
        return ResponseEntity.ok(categoryService.createCategory(categoryDto, restaurantId));
@@ -89,8 +89,8 @@ public class StaffMenuController {
 
     @PatchMapping("/category")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Category> updateCategory(@RequestBody @Valid CategoryUpdateDto categoryUpdateDto, HttpServletRequest request,
-                                             BindingResult bindingResult)
+    ResponseEntity<Category> updateCategory(@RequestBody @Valid CategoryUpdateDto categoryUpdateDto,BindingResult bindingResult, HttpServletRequest request
+                                             )
     {
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
@@ -106,7 +106,7 @@ public class StaffMenuController {
 
     @PostMapping("/item")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Item> createItem(@RequestBody @Valid ItemDto itemDto, HttpServletRequest request, BindingResult bindingResult)
+    ResponseEntity<Item> createItem(@RequestBody @Valid ItemDto itemDto, BindingResult bindingResult, HttpServletRequest request)
     {
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
@@ -131,8 +131,7 @@ public class StaffMenuController {
 
     @PatchMapping("/item")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Item> updateItem(@RequestBody @Valid ItemUpdateDto itemUpdateDto, HttpServletRequest request,
-                                    BindingResult bindingResult)
+    ResponseEntity<Item> updateItem(@RequestBody @Valid ItemUpdateDto itemUpdateDto, BindingResult bindingResult,HttpServletRequest request)
     {
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");

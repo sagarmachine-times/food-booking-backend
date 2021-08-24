@@ -38,7 +38,7 @@ public class AdminRestaurantController {
     }
      @PatchMapping("/{restaurantId}")
      @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<Restaurant> updateRestaurant(@RequestBody @Valid RestaurantUpdateDto restaurantUpdateDto, @PathVariable Integer restaurantId, BindingResult bindingResult)
+    ResponseEntity<Restaurant> updateRestaurant(@RequestBody @Valid RestaurantUpdateDto restaurantUpdateDto,BindingResult bindingResult, @PathVariable Integer restaurantId)
      {
          bindingResultService.validate(bindingResult);
          return ResponseEntity.ok(restaurantService.updateRestaurant(restaurantUpdateDto,restaurantId));

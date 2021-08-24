@@ -46,8 +46,8 @@ public class StaffCouponController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Coupon> addCoupon(@RequestBody @Valid CouponDto couponDto, HttpServletRequest request,
-                                     BindingResult bindingResult) {
+    ResponseEntity<Coupon> addCoupon(@RequestBody @Valid CouponDto couponDto,BindingResult bindingResult,HttpServletRequest request
+                                     ) {
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(couponService.addCoupon(couponDto, restaurantId));
@@ -55,8 +55,8 @@ public class StaffCouponController {
 
     @PatchMapping("/{couponId}")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Coupon> updateCoupon(@RequestBody @Valid UpdateCouponDto updateCouponDto, @PathVariable Integer couponId,
-                                        HttpServletRequest request, BindingResult bindingResult) {
+    ResponseEntity<Coupon> updateCoupon(@RequestBody @Valid UpdateCouponDto updateCouponDto,BindingResult bindingResult, @PathVariable Integer couponId,
+                                        HttpServletRequest request) {
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(couponService.updateCoupon(updateCouponDto, couponId, restaurantId));
