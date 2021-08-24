@@ -15,6 +15,7 @@ import lombok.Setter;
 public class OrderDto {
     String couponName;
     OrderType orderType=OrderType.DELIVERY;
+
     Address address;
     Contact contact;
 }

@@ -72,7 +72,8 @@ public class CustomerController {
 
     @PostMapping(value = "/address")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<List<AddressContact>> addAddress(@RequestBody AddressContact address, HttpServletRequest httpServletRequest){
+    ResponseEntity<List<AddressContact>> addAddress(@RequestBody @Valid AddressContact address, HttpServletRequest httpServletRequest,BindingResult bindingResult){
+        bindingResultService.validate(bindingResult);
         String userEmail =(String) httpServletRequest.getAttribute("userEmail");
         return ResponseEntity.ok(customerService.addAddress(address, userEmail));
     }
