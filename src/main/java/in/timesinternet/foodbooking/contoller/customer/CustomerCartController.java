@@ -71,10 +71,10 @@ public class CustomerCartController {
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(cartService.updateCartStatus(cartStatusUpdateDto.getStatus(), userEmail));
     }
-    @PostMapping(value="/applyCoupon")
-    ResponseEntity<ApplyCouponResponseDto> addCouponOnCurrentCart(HttpServletRequest request, @RequestParam String couponName)
+    @GetMapping(value="/coupon")
+    ResponseEntity<ApplyCouponResponseDto> addCouponOnCurrentCart(HttpServletRequest request, @RequestParam String coupon)
     {
         String userEmail = (String) request.getAttribute("userEmail");
-        return ResponseEntity.ok(cartService.addCouponOnCurrentCart(userEmail, couponName));
+        return ResponseEntity.ok(cartService.addCouponOnCurrentCart(userEmail, coupon));
     }
 }

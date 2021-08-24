@@ -64,7 +64,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     @Transactional
-    public void updateRestaurantLogo(MultipartFile file, Integer restaurantId, String email) {
+    public void updateRestaurantLogo(MultipartFile file, Integer restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
         Image image = imageService.uploadImage(file);
         restaurant.setLogo(image);

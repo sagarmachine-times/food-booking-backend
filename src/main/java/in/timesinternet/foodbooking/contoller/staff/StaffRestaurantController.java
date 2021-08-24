@@ -49,8 +49,7 @@ public class StaffRestaurantController {
     void updateRestaurantLogo(@RequestParam MultipartFile logo, HttpServletRequest request) {
 
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
-        String userEmail = (String) request.getAttribute("userEmail");
-        restaurantService.updateRestaurantLogo(logo, restaurantId, userEmail);
+        restaurantService.updateRestaurantLogo(logo, restaurantId);
     }
 
 

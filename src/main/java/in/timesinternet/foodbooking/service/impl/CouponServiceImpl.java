@@ -41,6 +41,7 @@ public class CouponServiceImpl implements CouponService {
             Image image = imageOptional.get();
             ModelMapper modelMapper=new ModelMapper();
            Coupon coupon= modelMapper.map(couponDto,Coupon.class);
+           coupon.setName(coupon.getName().toUpperCase().trim());
            coupon.setBanner(image);
            coupon.setRestaurant(restaurant);
            // restaurant.addCoupon(coupon);

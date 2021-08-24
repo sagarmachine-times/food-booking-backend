@@ -41,15 +41,8 @@ public class CustomerOrderController {
         String userEmail=(String) httpServletRequest.getAttribute("userEmail");
         return ResponseEntity.ok(orderService.updateOrder(updateOrderDto,userEmail));
     }
-    @GetMapping("/getOrder")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<List<Order>> getAllOrdersOfCustomerForRestaurant(HttpServletRequest httpServletRequest)
-    {
-        String userEmail = (String) httpServletRequest.getAttribute("userEmail");
-        return ResponseEntity.ok(orderService.getAllOrdersOfCustomerForRestaurant(userEmail));
-    }
 
-    @GetMapping("orderId")
+    @GetMapping("/{orderId}")
     ResponseEntity<Order> getOrder(@PathVariable Integer orderId)
     {
 

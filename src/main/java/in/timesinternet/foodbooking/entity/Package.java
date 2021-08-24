@@ -36,9 +36,13 @@ public class Package {
 
     //relationship
 
+
     @OneToOne(mappedBy = "pack")
     @JsonIgnore
     Order order;
+
+    @OneToOne
+    PackageDelivery currentPackageDelivery;
 
     @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL)
     List<PackageDelivery> packageDeliveryList= new ArrayList<>();

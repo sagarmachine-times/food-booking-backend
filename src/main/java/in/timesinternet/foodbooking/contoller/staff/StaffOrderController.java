@@ -19,21 +19,14 @@ public class StaffOrderController {
     @Autowired
     OrderService orderService;
 
-    @PutMapping("/orderId/status")
+    @PatchMapping("/status")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
     ResponseEntity<Order> updateOrderStatus(@RequestBody OrderStatusDto orderStatusDto, HttpServletRequest request){
         String userEmail =(String)request.getAttribute("userEmail");
         return  ResponseEntity.ok(orderService.updateOrderStatus(orderStatusDto, userEmail));
     }
 
-    @PutMapping("/packOrder")
-    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Order> updateOrderWithPackageStatus(@RequestBody OrderStatusDto orderStatusDto, HttpServletRequest request){
-        String userEmail =(String)request.getAttribute("userEmail");
-        return  ResponseEntity.ok(orderService.updateOrderStatus(orderStatusDto, userEmail));
-    }
-
-    @GetMapping("/orderId")
+    @GetMapping("/{orderId}")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
     ResponseEntity<Order> getOrderById(@PathVariable Integer orderId){
 
@@ -44,7 +37,7 @@ public class StaffOrderController {
     ResponseEntity<List<Order>> getAllOrder(HttpServletRequest request)
     {
         Integer restaurantId=(Integer)request.getAttribute("restaurantId");
-        return ResponseEntity.ok(orderService.getAllOrderByStaff(restaurantId));
+        return ResponseEntity.ok(orderService.getAllOrderByRestaurant(restaurantId));
     }
 
 }

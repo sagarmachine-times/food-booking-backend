@@ -10,7 +10,8 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Integer> {
 
     List<Item> findAllByRestaurantId(Integer restaurantId);
-    Boolean existByNameAndRestaurantId(String name, Integer restaurantId);
+         Boolean existsByNameAndCategoryRestaurantId(String name, Integer restaurantId);
+
 
 //    Category deleteCategoryById(Integer categoryId);
 }
