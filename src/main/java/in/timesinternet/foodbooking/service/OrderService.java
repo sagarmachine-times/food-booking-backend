@@ -15,12 +15,12 @@ public interface OrderService {
 
     Order getOrder(Integer orderId);
 
-    List<Order> getAllOrdersOfCustomerForRestaurant(String userEmail);
-
     Order updateOrder(UpdateOrderDto updateOrderDto, String userEmail);
 
 
     List<Order> getAllOrder(String userEmail);
 
-    List<Order> getAllOrderByStaff(Integer restaurantId);
+    List<Order> getAllOrderByRestaurant(Integer restaurantId);
+
+    Order completeOrder(Integer orderId);
 }

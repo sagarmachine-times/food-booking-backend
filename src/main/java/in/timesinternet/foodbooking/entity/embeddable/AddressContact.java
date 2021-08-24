@@ -13,7 +13,7 @@ import javax.persistence.Embeddable;
 public class AddressContact{
     String line1;
     String line2;
-    String pincode;
+    Integer pincode;
     String city;
     String state;
     String contactEmail;

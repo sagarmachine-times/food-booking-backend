@@ -27,7 +27,7 @@ public class Customer extends User {
 
     @CollectionTable
     @ElementCollection
-    private List<AddressContact> addressList= new ArrayList<>();
+    private List<AddressContact> addressList = new ArrayList<>();
     //relationship
 
     @OneToOne(cascade = CascadeType.REMOVE)
@@ -38,6 +38,7 @@ public class Customer extends User {
     Restaurant restaurant;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
     List<Cart> cartList = new ArrayList<>();
 
     public void addCart(Cart cart) {

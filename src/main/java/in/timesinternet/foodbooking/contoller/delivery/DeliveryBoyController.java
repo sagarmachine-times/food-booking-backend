@@ -4,6 +4,7 @@ import in.timesinternet.foodbooking.dto.request.DeliveryBoyUpdateDto;
 import in.timesinternet.foodbooking.dto.request.PackageDeliveryDto;
 import in.timesinternet.foodbooking.dto.request.LoginDto;
 import in.timesinternet.foodbooking.entity.DeliveryBoy;
+import in.timesinternet.foodbooking.entity.Order;
 import in.timesinternet.foodbooking.entity.PackageDelivery;
 import in.timesinternet.foodbooking.service.DeliveryBoyService;
 import in.timesinternet.foodbooking.service.UserService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/delivery_boy")
@@ -37,20 +39,27 @@ public class DeliveryBoyController {
         return  ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword()));
     }
     @PatchMapping("/{deliveryBoyId}")
-    public ResponseEntity<DeliveryBoy>UpdateDeliveryBoy(@RequestBody @Valid DeliveryBoyUpdateDto deliveryBoyUpdateDto, @PathVariable Integer deliveryBoyId,BindingResult bindingResult)
+    public ResponseEntity<DeliveryBoy>updateDeliveryBoy(@RequestBody @Valid DeliveryBoyUpdateDto deliveryBoyUpdateDto, @PathVariable Integer deliveryBoyId,BindingResult bindingResult)
     {
         bindingResultService.validate(bindingResult);
         return ResponseEntity.ok(deliveryBoyService.UpdateDeliveryBoy(deliveryBoyUpdateDto,deliveryBoyId));
     }
 
-    @PutMapping("/updatePackDelivery")
+    @PatchMapping("/package/status")
     @PreAuthorize("hasRole('ROLE_DELIVERY_BOY') ")
-    public ResponseEntity<PackageDelivery> updatePackageDelivery(@RequestBody @Valid PackageDeliveryDto packageDeliveryDto,
+    public ResponseEntity<Order> updatePackageDelivery(@RequestBody @Valid PackageDeliveryDto packageDeliveryDto,
                                                                  BindingResult bindingResult, HttpServletRequest request)
     {
         bindingResultService.validate(bindingResult);
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(deliveryBoyService.updatePackageDelivery(packageDeliveryDto, userEmail));
+    }
+
+    @GetMapping("/package")
+    @PreAuthorize("hasRole('ROLE_DELIVERY_BOY') ")
+    public ResponseEntity<List<Order>> getAllPackage(HttpServletRequest httpServletRequest){
+        String userEmail = (String) httpServletRequest.getAttribute("userEmail");
+       return ResponseEntity.ok(deliveryBoyService.getPackageList(userEmail));
     }
 
 }

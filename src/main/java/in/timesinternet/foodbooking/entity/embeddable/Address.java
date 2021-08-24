@@ -13,7 +13,7 @@ import javax.persistence.Embeddable;
 public class Address {
     String line1;
     String line2;
-    String pincode;
+    Integer pincode;
     String city;
     String state;
 

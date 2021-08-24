@@ -63,6 +63,6 @@ public class CustomerRestaurantController {
     @GetMapping("/{restaurantId}/pincode")
     ResponseEntity<List<Serviceability>> getServiceablePincode(@PathVariable Integer restaurantId)
     {
-        return ResponseEntity.ok(pincodeService.getPincode(restaurantId));
+        return ResponseEntity.ok(pincodeService.getPincodeList(restaurantId));
     }
 }

@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface PincodeService {
     List<Serviceability> addPincode(List<PincodeDto>pincodeDto, Integer restaurantId);
-    List<Serviceability> getPincode(Integer restaurantId);
+    List<Serviceability> getPincodeList(Integer restaurantId);
     Serviceability deletePincode(Integer picodeId, Integer restaurantId);
     Serviceability updatePincode(AvalibilityDto avalibilityDto, Integer restaurantId);
+    Serviceability getPincode(Integer pincode, Integer restaurantId);
 }

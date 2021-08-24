@@ -8,7 +8,6 @@ import in.timesinternet.foodbooking.exception.InvalidRequestException;
 import in.timesinternet.foodbooking.exception.NotFoundException;
 import in.timesinternet.foodbooking.repository.*;
 import in.timesinternet.foodbooking.service.*;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +31,7 @@ import in.timesinternet.foodbooking.service.CustomerService;
 import in.timesinternet.foodbooking.service.OrderService;
 
 @Service
-public class OrderServiceImpl implements OrderService {
+ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OrderRepository orderRepository;
@@ -71,6 +70,9 @@ public class OrderServiceImpl implements OrderService {
     PackageRepository packageRepository;
 
     @Autowired
+    PincodeService pincodeService;
+
+    @Autowired
     PackageService packageService;
     @Autowired
     RestaurantService restaurantService;
@@ -80,16 +82,27 @@ public class OrderServiceImpl implements OrderService {
     public Order createOrder(OrderDto orderDto, String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
         Order order = new Order();
-        if (orderDto.getCouponName() != null) {
-            ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(orderDto.getCouponName(), userEmail);
-            order.setCoupon(couponService.getCoupon(applyCouponResponseDto.getCouponId()));
-            order.setIsCouponApplied(true);
-            order.setDiscount(applyCouponResponseDto.getDiscountedValue());
-        }
-
-        order.setCustomer(customer);
         order.setAddress(orderDto.getAddress());
         order.setContact(orderDto.getContact());
+        if (order.getAddress().getPincode() == null)
+            throw new InvalidRequestException("pincode is required :)");
+        if (orderDto.getCouponName() != null) {
+            ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(userEmail,orderDto.getCouponName());
+            order.setCoupon(couponService.getCoupon(applyCouponResponseDto.getCouponId()));
+            order.setIsCouponApplied(true);
+            order.setDiscount(applyCouponResponseDto.getDiscount());
+        }
+        Integer pincode = order.getAddress().getPincode();
+        Serviceability serviceability = null;
+        try {
+            serviceability = pincodeService.getPincode(pincode, customer.getRestaurant().getId());
+        } catch (NotFoundException ex) {
+            throw new InvalidRequestException("pincode " + pincode + " is not servicable");
+        }
+        order.setDeliveryCharge(serviceability.getDeliveryCharge());
+        order.setTotal((customer.getCurrentCart().getTotal() + order.getDeliveryCharge()) - order.getDiscount());
+        order.setCustomer(customer);
+
         order.setType(order.getType());
         order.setTotal(customer.getCurrentCart().getTotal() - order.getDiscount());
         order.setType(orderDto.getOrderType());
@@ -143,11 +156,12 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Transactional
     Order preparingOrder(Order order) {
         if (!order.getStatus().equals(OrderStatus.APPROVED))
             throw new InvalidRequestException("invalid request order can't be preparing since it is" + order.getStatus().toString());
         order.setStatus(OrderStatus.PREPARING);
-        order.getNext().add(OrderStatus.PREPARING.toString());
+        order.getNext().add(OrderStatus.PACKED.toString());
         return orderRepository.save(order);
     }
 
@@ -170,9 +184,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    private Order packOrder(Order order) {
+    @Transactional
+     Order packOrder(Order order) {
 
-        if (order.getStatus().equals(OrderStatus.APPROVED)) {
+        if (order.getStatus().equals(OrderStatus.APPROVED)||order.getStatus().equals(OrderStatus.PREPARING)) {
             order.setStatus(OrderStatus.PACKED);
             PackageStatusDto packageStatusDto = new PackageStatusDto();
             packageStatusDto.setPackageStatus(PackageStatus.READY);
@@ -181,10 +196,9 @@ public class OrderServiceImpl implements OrderService {
             Package pack = packageService.updatePackageStatus(packageStatusDto);
             order.setPack(pack);
             return orderRepository.save(order);
-        }
-        else
-        {
-            throw new InvalidRequestException(" invalid request for packing order ");
+
+        } else {
+            throw new InvalidRequestException("order can't be packed as it is "+order.getStatus().toString());
         }
     }
 
@@ -212,9 +226,10 @@ public class OrderServiceImpl implements OrderService {
             PackageDelivery packageDelivery = new PackageDelivery();
             packageDelivery.setPack(pack);
             pack.addPackageDelivery(packageDelivery);
+            pack.setCurrentPackageDelivery(packageDelivery);
             packageDelivery.setStatus(PackageDeliveryStatus.UNASSIGNED);
             PackageDelivery packageDeliverySaved = packageDeliveryRepository.save(packageDelivery);
-            Package packSaved = packageRepository.save(pack);
+            packageRepository.save(pack);
             order = orderRepository.save(order);
             Runnable assignDeliveryBoy = () -> {
 //                try {
@@ -222,6 +237,7 @@ public class OrderServiceImpl implements OrderService {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
+
                 DeliveryBoy deliveryBoy = deliveryBoyRepository.findAll().get(0);
                 DeliveryPartner deliveryPartner = deliveryPartnerRepositiory.findAll().get(0);
                 packageDeliverySaved.setDeliveryPartner(deliveryPartner);
@@ -251,7 +267,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    private Order cancelOrder(Order order) {
+    @Transactional
+     Order cancelOrder(Order order) {
         return null;
     }
 
@@ -263,21 +280,14 @@ public class OrderServiceImpl implements OrderService {
         throw new NotFoundException("order not found with id " + orderId);
     }
 
-    private void validateOrder() throws RuntimeException {
+    @Transactional
+     void validateOrder() throws RuntimeException {
         //throw exception is invalid order request
     }
 
     @Override
-    public List<Order> getAllOrdersOfCustomerForRestaurant(String userEmail) {
-        Customer customer = customerService.getCustomer(userEmail);
-
-        return orderRepository.getOrderByCustomer(customer);
-    }
-
-
-    @Override
-    public Order updateOrder(UpdateOrderDto updateOrderDto,String userEmail)
-    {
+    @Transactional
+    public Order updateOrder(UpdateOrderDto updateOrderDto, String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
         Order order = getOrder(updateOrderDto.getOrderId());
 
@@ -285,18 +295,27 @@ public class OrderServiceImpl implements OrderService {
         order.setContact(updateOrderDto.getContact());
         return order;
     }
+
     @Override
-    public List<Order> getAllOrder(String userEmail)
-    {
+    public List<Order> getAllOrder(String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
         return customer.getOrderList();
     }
 
     @Override
-    public List<Order> getAllOrderByStaff(Integer restaurantId)
-    {
-        Restaurant restaurant= restaurantService.getRestaurant(restaurantId);
+    public List<Order> getAllOrderByRestaurant(Integer restaurantId) {
+        Restaurant restaurant = restaurantService.getRestaurant(restaurantId);
         return restaurant.getOrderList();
+    }
+
+    @Override
+    @Transactional
+    public Order completeOrder(Integer orderId) {
+
+        Order order = getOrder(orderId);
+        order.setStatus(OrderStatus.COMPLETED);
+        order.getPayment().setStatus(PaymentStatus.PAID);
+        return orderRepository.save(order);
     }
 
 }

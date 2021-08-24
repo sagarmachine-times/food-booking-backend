@@ -10,9 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplyCouponResponseDto {
-    Integer newTotalValue;
-    Integer oldTotalValue;
-    Integer discountedValue;
+    Integer newTotal;
+    Integer oldTotal;
+    Integer discount;
     String message;
     Integer couponId;
 }
