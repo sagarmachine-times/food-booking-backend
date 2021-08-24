@@ -9,4 +9,8 @@ import  java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> getOrderByCustomer(Customer customer);
+
+    Integer countByCouponId(Integer couponId);
+
+    Integer countByCouponIdAndCustomerId(Integer couponId, Integer customerId);
 }
