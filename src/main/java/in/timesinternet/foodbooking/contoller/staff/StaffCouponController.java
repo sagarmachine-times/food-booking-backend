@@ -46,8 +46,7 @@ public class StaffCouponController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Coupon> addCoupon(@RequestBody @Valid CouponDto couponDto,BindingResult bindingResult,HttpServletRequest request
-                                     ) {
+    ResponseEntity<Coupon> addCoupon(@RequestBody @Valid CouponDto couponDto,BindingResult bindingResult,HttpServletRequest request) {
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(couponService.addCoupon(couponDto, restaurantId));

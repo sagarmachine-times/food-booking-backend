@@ -34,24 +34,23 @@ public class Coupon {
     @Column(unique = true)
     Integer value;
 
-    @NotNull
+
     @JsonFormat( pattern = "dd-MM-yyyy")
     Date startingDate;
 
-    @NotNull
     @JsonFormat( pattern = "dd-MM-yyyy")
     Date endingDate;
 
-    @NotNull
+
     Integer minimumCartValue;
 
-    @NotNull
+
     Integer maxDiscount;
 
-    @NotNull
+
     Integer maxPerUser;
 
-    @NotNull
+
     Integer totalUse;
     String termsAndCondition;
 

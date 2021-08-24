@@ -22,8 +22,6 @@ public class CouponDto {
     private String name;
    @Max(value = 100,message = "Maximum value can't more than 100")
     private Integer value;
-
-
     @JsonFormat( pattern = "dd-MM-yyyy")
     @NotNull(message = "Starting Date can't be Null")
     private Date startingDate;
