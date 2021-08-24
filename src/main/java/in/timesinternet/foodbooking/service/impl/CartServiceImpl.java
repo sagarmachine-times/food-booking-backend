@@ -18,6 +18,8 @@ import in.timesinternet.foodbooking.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,9 +60,13 @@ public class CartServiceImpl implements CartService {
         Customer customer = customerRepository.findByEmail(email).get();
         Cart currentCart = customer.getCurrentCart();
         Integer total = 0;
-        System.out.println(currentCart.getCartItemList().size());
-        while (!currentCart.getCartItemList().isEmpty())
-            currentCart.getCartItemList().remove(0);
+        List<CartItem> cartItems=new ArrayList<CartItem>(currentCart.getCartItemList());
+        while (!cartItems.isEmpty()) {
+            currentCart.getCartItemList().remove(cartItems.get(0));
+            cartItems.remove(0);
+            System.out.println(currentCart.getCartItemList().size());
+        }
+        System.out.println(cartDto.getCartItemList().size());
         for (CartItemDto cartItemDto : cartDto.getCartItemList()) {
             Optional<Item> itemOptional = itemRepository.findById(cartItemDto.getItemId());
             if (itemOptional.isPresent() && itemOptional.get().getIsAvailable()) {
