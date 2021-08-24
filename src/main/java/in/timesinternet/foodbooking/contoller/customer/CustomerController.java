@@ -40,8 +40,8 @@ public class CustomerController {
 
 
     @PostMapping(value = "/login")
-    ResponseEntity<HashMap<String,Object>> loginCustomer(@RequestBody @Valid LoginDto loginDto,
-                                                         @RequestParam Integer restaurantId, BindingResult bindingResult){
+    ResponseEntity<HashMap<String,Object>> loginCustomer(@RequestBody @Valid LoginDto loginDto, BindingResult bindingResult,
+                                                         @RequestParam Integer restaurantId){
 
         bindingResultService.validate(bindingResult);
         return ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword(),  restaurantId));
@@ -62,8 +62,8 @@ public class CustomerController {
 
     @PutMapping(value="/updateProfile")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<Customer> updateCustomerProfile(@RequestBody @Valid CustomerUpdateDto customerUpdateDto,
-                                                   HttpServletRequest httpServletRequest, BindingResult bindingResult )
+    ResponseEntity<Customer> updateCustomerProfile(@RequestBody @Valid CustomerUpdateDto customerUpdateDto, BindingResult bindingResult,
+                                                   HttpServletRequest httpServletRequest)
     {
         bindingResultService.validate(bindingResult);
         String userEmail =(String) httpServletRequest.getAttribute("userEmail");
@@ -72,7 +72,7 @@ public class CustomerController {
 
     @PostMapping(value = "/address")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<List<AddressContact>> addAddress(@RequestBody @Valid AddressContact address, HttpServletRequest httpServletRequest,BindingResult bindingResult){
+    ResponseEntity<List<AddressContact>> addAddress(@RequestBody @Valid AddressContact address,BindingResult bindingResult, HttpServletRequest httpServletRequest){
         bindingResultService.validate(bindingResult);
         String userEmail =(String) httpServletRequest.getAttribute("userEmail");
         return ResponseEntity.ok(customerService.addAddress(address, userEmail));

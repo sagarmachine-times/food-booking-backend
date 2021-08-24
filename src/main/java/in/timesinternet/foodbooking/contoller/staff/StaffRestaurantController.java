@@ -62,7 +62,7 @@ public class StaffRestaurantController {
 
     @PatchMapping("")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Restaurant> updateRestaurant(@RequestBody @Valid RestaurantUpdateDto restaurantUpdateDto, HttpServletRequest request, BindingResult bindingResult) {
+    ResponseEntity<Restaurant> updateRestaurant(@RequestBody @Valid RestaurantUpdateDto restaurantUpdateDto, BindingResult bindingResult, HttpServletRequest request) {
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(restaurantService.updateRestaurant(restaurantUpdateDto, restaurantId));

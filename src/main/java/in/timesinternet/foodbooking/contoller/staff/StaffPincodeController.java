@@ -35,8 +35,7 @@ public class StaffPincodeController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<List<Serviceability>> addPincode(@RequestBody @Valid List<PincodeDto> pincodeDto, HttpServletRequest request,
-                                                    BindingResult bindingResult) {
+    ResponseEntity<List<Serviceability>> addPincode(@RequestBody @Valid List<PincodeDto> pincodeDto,BindingResult bindingResult, HttpServletRequest request) {
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(pincodeService.addPincode(pincodeDto, restaurantId));
@@ -53,8 +52,7 @@ public class StaffPincodeController {
 
     @PatchMapping("")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Serviceability> updatePincode(@RequestBody @Valid AvalibilityDto avalibilityDto, HttpServletRequest request,
-                                                 BindingResult bindingResult) {
+    ResponseEntity<Serviceability> updatePincode(@RequestBody @Valid AvalibilityDto avalibilityDto, BindingResult bindingResult,HttpServletRequest request) {
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(pincodeService.updatePincode(avalibilityDto, restaurantId));

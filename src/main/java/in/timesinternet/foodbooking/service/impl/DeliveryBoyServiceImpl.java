@@ -8,6 +8,7 @@ import in.timesinternet.foodbooking.entity.enumeration.PackageDeliveryStatus;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
 import in.timesinternet.foodbooking.exception.InvalidRequestException;
 import in.timesinternet.foodbooking.exception.NotFoundException;
+import in.timesinternet.foodbooking.exception.UnauthorizedException;
 import in.timesinternet.foodbooking.exception.UserAlreadyExistException;
 import in.timesinternet.foodbooking.repository.DeliveryBoyRepository;
 import in.timesinternet.foodbooking.repository.PackageDeliveryRepository;
@@ -124,7 +125,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
 
             InHousePackageDeliveryDetail inHousePackageDeliveryDetail =(InHousePackageDeliveryDetail) packageDelivery.getPack().getCurrentPackageDelivery().getPack().getCurrentPackageDelivery().getPackageDeliveryDetail();
             if (!inHousePackageDeliveryDetail.getDeliveryBoy().getId().equals(deliveryBoy.getId()))
-                 throw  new RuntimeException("unauthorized request");
+                 throw  new UnauthorizedException("unauthorized request");
             switch (packageDeliveryDto.getPackageDeliveryStatus()) {
                 case ON_THE_WAY_TO_PICK:
                     return onTheWayToPickPackage(packageDelivery);
