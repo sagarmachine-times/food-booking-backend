@@ -224,6 +224,7 @@ public class OrderServiceImpl implements OrderService {
             PackageDelivery packageDelivery = new PackageDelivery();
             packageDelivery.setPack(pack);
             pack.addPackageDelivery(packageDelivery);
+            pack.setCurrentPackageDelivery(packageDelivery);
             packageDelivery.setStatus(PackageDeliveryStatus.UNASSIGNED);
             PackageDelivery packageDeliverySaved = packageDeliveryRepository.save(packageDelivery);
             packageRepository.save(pack);

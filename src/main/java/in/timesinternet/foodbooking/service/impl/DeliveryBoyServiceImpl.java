@@ -4,6 +4,8 @@ import in.timesinternet.foodbooking.dto.request.DeliveryBoyDto;
 import in.timesinternet.foodbooking.dto.request.PackageDeliveryDto;
 import in.timesinternet.foodbooking.dto.request.DeliveryBoyUpdateDto;
 import in.timesinternet.foodbooking.entity.DeliveryBoy;
+import in.timesinternet.foodbooking.entity.InHousePackageDeliveryDetail;
+import in.timesinternet.foodbooking.entity.Order;
 import in.timesinternet.foodbooking.entity.PackageDelivery;
 import in.timesinternet.foodbooking.entity.enumeration.PackageDeliveryStatus;
 import in.timesinternet.foodbooking.entity.enumeration.Role;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -145,7 +148,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
                 case CANCELED:
                     return canceledThePackage(packageDelivery);
                 default:
-                    throw new NotFoundException("package not found");
+                    throw new InvalidRequestException("invalid package delivery status");
             }
         }
         else
@@ -153,6 +156,15 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             throw  new NotFoundException("given package with package id - "+packageDeliveryDto.getPackageDeliveryId()+" not found");
         }
 
+    }
+
+    @Override
+    public List<Order> getPackageList(String userEmail) {
+        DeliveryBoy deliveryBoy= getDeliveryBoy(userEmail);
+        List<Order> orderList= new ArrayList<>();
+        for(InHousePackageDeliveryDetail inHousePackageDeliveryDetail: deliveryBoy.getInHousePackageDeliveryDetailList())
+             orderList.add(inHousePackageDeliveryDetail.getPackageDelivery().getPack().getOrder());
+        return orderList;
     }
 
     PackageDelivery onTheWayToPickPackage(PackageDelivery packageDelivery)

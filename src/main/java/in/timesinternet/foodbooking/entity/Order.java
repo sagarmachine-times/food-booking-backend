@@ -56,7 +56,6 @@ public class Order {
 
     //relationship
     @ManyToOne
-    @JsonIgnore
     Restaurant restaurant;
 
     @ManyToOne
