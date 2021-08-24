@@ -51,15 +51,19 @@ public class PackageDelivery {
     List<String> next = new ArrayList<>();
 
     @PostLoad
-    void populateNext() {
+   public void populateNext() {
+        next= new ArrayList<>();
         switch (status) {
-            case ON_THE_WAY_TO_PICK:next.add(PackageDeliveryStatus.PICKED.toString());
+            case ON_THE_WAY_TO_PICK:
+                next.add(PackageDeliveryStatus.PICKED.toString());
                 next.add(PackageDeliveryStatus.ON_THE_WAY_TO_DROP.toString());
                 break;
-            case PICKED:next.add(PackageDeliveryStatus.ON_THE_WAY_TO_DROP.toString());
+            case PICKED:
+                next.add(PackageDeliveryStatus.ON_THE_WAY_TO_DROP.toString());
                 next.add(PackageDeliveryStatus.DELIVERED.toString());
                 break;
-            case ON_THE_WAY_TO_DROP:next.add(PackageDeliveryStatus.DELIVERED.toString());
+            case ON_THE_WAY_TO_DROP:
+                next.add(PackageDeliveryStatus.DELIVERED.toString());
         }
     }
 }

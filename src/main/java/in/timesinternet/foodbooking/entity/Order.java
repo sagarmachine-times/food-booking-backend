@@ -78,7 +78,8 @@ public class Order {
     List<String> next = new ArrayList<>();
 
     @PostLoad
-    void populateNext() {
+    public void populateNext() {
+        next= new ArrayList<>();
         switch (status) {
             case APPROVED:next.add(OrderStatus.PACKED.toString());
             next.add(OrderStatus.PREPARING.toString());

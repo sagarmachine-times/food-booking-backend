@@ -39,13 +39,13 @@ public class DeliveryBoyController {
         return  ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword()));
     }
     @PatchMapping("/{deliveryBoyId}")
-    public ResponseEntity<DeliveryBoy>UpdateDeliveryBoy(@RequestBody @Valid DeliveryBoyUpdateDto deliveryBoyUpdateDto, @PathVariable Integer deliveryBoyId,BindingResult bindingResult)
+    public ResponseEntity<DeliveryBoy>updateDeliveryBoy(@RequestBody @Valid DeliveryBoyUpdateDto deliveryBoyUpdateDto, @PathVariable Integer deliveryBoyId,BindingResult bindingResult)
     {
         bindingResultService.validate(bindingResult);
         return ResponseEntity.ok(deliveryBoyService.UpdateDeliveryBoy(deliveryBoyUpdateDto,deliveryBoyId));
     }
 
-    @PatchMapping("/package")
+    @PatchMapping("/package/status")
     @PreAuthorize("hasRole('ROLE_DELIVERY_BOY') ")
     public ResponseEntity<Order> updatePackageDelivery(@RequestBody @Valid PackageDeliveryDto packageDeliveryDto,
                                                                  BindingResult bindingResult, HttpServletRequest request)

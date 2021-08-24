@@ -147,8 +147,10 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
     public List<Order> getPackageList(String userEmail) {
         DeliveryBoy deliveryBoy = getDeliveryBoy(userEmail);
         List<Order> orderList = new ArrayList<>();
-        for (InHousePackageDeliveryDetail inHousePackageDeliveryDetail : deliveryBoy.getInHousePackageDeliveryDetailList())
+        for (InHousePackageDeliveryDetail inHousePackageDeliveryDetail : deliveryBoy.getInHousePackageDeliveryDetailList()) {
             orderList.add(inHousePackageDeliveryDetail.getPackageDelivery().getPack().getOrder());
+            inHousePackageDeliveryDetail.getPackageDelivery().populateNext();
+        }
         return orderList;
     }
 
@@ -156,13 +158,14 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if (!packageDelivery.getStatus().equals(PackageDeliveryStatus.ASSIGNED))
             throw new InvalidRequestException("invalid request package is " + packageDelivery.getStatus().toString());
         packageDelivery.setStatus(PackageDeliveryStatus.ON_THE_WAY_TO_PICK);
-
+           packageDelivery.populateNext();
         return packageDeliveryRepository.save(packageDelivery).getPack().getOrder();
     }
 
     Order pickedThePackage(PackageDelivery packageDelivery) {
         if (packageDelivery.getStatus().equals(PackageDeliveryStatus.ASSIGNED) || packageDelivery.getStatus().equals(PackageDeliveryStatus.ON_THE_WAY_TO_PICK)) {
             packageDelivery.setStatus(PackageDeliveryStatus.PICKED);
+            packageDelivery.populateNext();
             return packageDeliveryRepository.save(packageDelivery).getPack().getOrder();
         } else {
             throw new InvalidRequestException("invalid request for package is " + packageDelivery.getStatus());
@@ -173,6 +176,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if (!(packageDelivery.getStatus().equals(PackageDeliveryStatus.PICKED) || packageDelivery.getStatus().equals(PackageDeliveryStatus.ASSIGNED) || packageDelivery.getStatus().equals(PackageDeliveryStatus.ON_THE_WAY_TO_PICK)))
             throw new InvalidRequestException("invalid request for package is " + packageDelivery.getStatus());
         packageDelivery.setStatus(PackageDeliveryStatus.ON_THE_WAY_TO_DROP);
+        packageDelivery.populateNext();
         return packageDeliveryRepository.save(packageDelivery).getPack().getOrder();
     }
 
@@ -180,6 +184,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
         if (packageDelivery.getStatus().equals(PackageDeliveryStatus.PICKED) || packageDelivery.getStatus().equals(PackageDeliveryStatus.ON_THE_WAY_TO_DROP)) {
             packageDelivery.setStatus(PackageDeliveryStatus.DELIVERED);
             orderService.completeOrder(packageDelivery.getPack().getOrder().getId());
+            packageDelivery.populateNext();
             return packageDeliveryRepository.save(packageDelivery).getPack().getOrder();
         } else {
             throw new InvalidRequestException("invalid request package is " + packageDelivery.getStatus());
