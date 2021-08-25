@@ -220,7 +220,7 @@ public class CartServiceImpl implements CartService {
                 applyCouponResponseDto.setOldTotal(currentCart.getTotal());
 
                 String message = "";
-                int cartValue = currentCart.getTotal();
+                int cartValue = currentCart.getTotal()+currentCart.getDiscount();
                 int minCartValue = coupon.getMinimumCartValue();
 
                 int maxPerUser = coupon.getMaxPerUser();
