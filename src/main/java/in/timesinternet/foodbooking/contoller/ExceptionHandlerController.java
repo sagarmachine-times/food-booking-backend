@@ -12,7 +12,7 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(value ={InvalidRequestBodyException.class, UserAlreadyExistException.class,
             NotFoundException.class, UnauthorizedException.class, AlreadyExistException.class,
-    InvalidRequestException.class})
+    InvalidRequestException.class,BadCredentialsException.class})
     public ResponseEntity<HashMap<String,String>> runTimeExceptionHandler(RuntimeException runtimeException){
 
         return ResponseEntity.badRequest().body(new HashMap<String, String>(){{put("message",runtimeException.getMessage());}});

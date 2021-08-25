@@ -167,6 +167,7 @@ import in.timesinternet.foodbooking.service.OrderService;
 
     @Transactional
     Order declineOrder(Order order) {
+        System.out.println("DELEITING---------");
         if (!order.getStatus().equals(OrderStatus.PENDING))
             throw new InvalidRequestException("invalid request order can't be decline since it is" + order.getStatus().toString());
 
