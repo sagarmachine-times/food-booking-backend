@@ -1,8 +1,10 @@
 package in.timesinternet.foodbooking.contoller.customer;
 
 import in.timesinternet.foodbooking.dto.request.OrderDto;
+import in.timesinternet.foodbooking.dto.request.OrderStatusDto;
 import in.timesinternet.foodbooking.dto.request.UpdateOrderDto;
 import in.timesinternet.foodbooking.entity.Order;
+import in.timesinternet.foodbooking.entity.enumeration.OrderStatus;
 import in.timesinternet.foodbooking.service.OrderService;
 import in.timesinternet.foodbooking.service.impl.BindingResultService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,16 @@ public class CustomerOrderController {
     {
         String userEmail = (String) request.getAttribute("userEmail");
         return  ResponseEntity.ok(orderService.getAllOrder(userEmail));
+    }
+
+    @PostMapping(value="/cancel")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    ResponseEntity<Order> cancelOrderByCustomer(@RequestBody @Valid OrderStatusDto orderStatusDto,
+                                                BindingResult bindingResult, HttpServletRequest request)
+    {
+        bindingResultService.validate(bindingResult);
+        String userEmail = (String) request.getAttribute("userEmail");
+        return ResponseEntity.ok(orderService.cancelOrderByCustomer(orderStatusDto, userEmail));
     }
 
 }

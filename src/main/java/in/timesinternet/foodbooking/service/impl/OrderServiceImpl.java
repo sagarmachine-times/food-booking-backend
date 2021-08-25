@@ -318,4 +318,25 @@ import in.timesinternet.foodbooking.service.OrderService;
         return orderRepository.save(order);
     }
 
+    @Override
+    public Order cancelOrderByCustomer(OrderStatusDto orderStatusDto, String email)
+    {
+        Customer customer = customerService.getCustomer(email);
+        Order order = getOrder(orderStatusDto.getOrderId());
+
+        if (order.getStatus().equals(OrderStatus.PENDING) || order.getStatus().equals(OrderStatus.APPROVED))
+        {
+            order.setStatus(OrderStatus.CANCELED);
+            PackageDelivery packageDelivery = order.getPack().getCurrentPackageDelivery();
+            packageDelivery.setStatus(PackageDeliveryStatus.CANCELED);
+            order.getPack().setCurrentPackageDelivery(packageDelivery);
+            packageDeliveryRepository.save(packageDelivery);
+
+            return orderRepository.save(order);
+        }
+        else
+        {
+            throw new InvalidRequestException(" Your order cannot be cancelled. Your order is in following stage :- "+order.getStatus());
+        }
+    }
 }
