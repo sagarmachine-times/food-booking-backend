@@ -23,4 +23,6 @@ public interface OrderService {
     List<Order> getAllOrderByRestaurant(Integer restaurantId);
 
     Order completeOrder(Integer orderId);
+
+    Order cancelOrderByCustomer(Integer orderId, String email);
 }
