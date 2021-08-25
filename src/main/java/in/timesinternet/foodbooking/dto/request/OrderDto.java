@@ -17,8 +17,6 @@ import javax.validation.constraints.NotNull;
 public class OrderDto {
     String couponName;
     OrderType orderType=OrderType.DELIVERY;
-
-    @NotNull(message = "Address can't be null")
     Address address;
     Contact contact;
 }

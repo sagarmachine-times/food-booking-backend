@@ -24,5 +24,5 @@ public interface OrderService {
 
     Order completeOrder(Integer orderId);
 
-    Order cancelOrderByCustomer(OrderStatusDto orderStatusDto, String email);
+    Order cancelOrderByCustomer(OrderStatusDto orderStatusDto, String userEmail);
 }
