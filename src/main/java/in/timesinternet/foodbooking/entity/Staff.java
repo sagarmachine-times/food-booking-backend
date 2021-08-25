@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 public class Staff extends User {
 
     @ManyToOne
-    @JsonIgnore
     Restaurant restaurant;
 
 }

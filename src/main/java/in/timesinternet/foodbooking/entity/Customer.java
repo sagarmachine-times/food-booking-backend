@@ -34,7 +34,6 @@ public class Customer extends User {
     Cart currentCart;
 
     @ManyToOne
-    @JsonIgnore
     Restaurant restaurant;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE, orphanRemoval = true)
