@@ -82,12 +82,13 @@ import in.timesinternet.foodbooking.service.OrderService;
     public Order createOrder(OrderDto orderDto, String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
         Order order = new Order();
+        Cart currentCart= customer.getCurrentCart();
         order.setAddress(orderDto.getAddress());
         order.setContact(orderDto.getContact());
         if (order.getAddress().getPincode() == null)
             throw new InvalidRequestException("pincode is required :)");
-        if (orderDto.getCouponName() != null) {
-            ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(userEmail,orderDto.getCouponName());
+        if (currentCart.getCoupon()!= null) {
+            ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(userEmail,currentCart.getCoupon().getName());
             order.setCoupon(couponService.getCoupon(applyCouponResponseDto.getCouponId()));
             order.setIsCouponApplied(true);
             order.setDiscount(applyCouponResponseDto.getDiscount());

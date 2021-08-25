@@ -17,6 +17,7 @@ import in.timesinternet.foodbooking.service.CustomerService;
 import in.timesinternet.foodbooking.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -199,6 +200,7 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
+    @Transactional
     public ApplyCouponResponseDto addCouponOnCurrentCart(String email, String couponName) {
         Optional<Customer> customerOptional = customerRepository.findByEmail(email);
 
@@ -248,6 +250,12 @@ public class CartServiceImpl implements CartService {
                 applyCouponResponseDto.setDiscount(discountedValue);
                 applyCouponResponseDto.setMessage("you have saved " + discountedValue);
                 applyCouponResponseDto.setCouponId(coupon.getId());
+
+                currentCart.setCoupon(coupon);
+                currentCart.setTotal(cartValue-discountedValue);
+                currentCart.setDiscount(discountedValue);
+                cartRepository.save(currentCart);
+
                 return applyCouponResponseDto;
             } else {
                 throw new NotFoundException("this coupon is not found");

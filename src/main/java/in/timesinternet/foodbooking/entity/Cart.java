@@ -31,10 +31,15 @@ public class Cart {
 
     Integer total=0;
 
+    Integer discount=0;
+
     @Enumerated(EnumType.STRING)
     CartStatus status = CartStatus.MUTABLE;
 
 //    relationships
+
+    @ManyToOne
+    Coupon coupon;
 
     @ManyToOne
     @JsonIgnore

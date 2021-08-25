@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDto {
-    String couponName;
     OrderType orderType=OrderType.DELIVERY;
     Address address;
     Contact contact;
