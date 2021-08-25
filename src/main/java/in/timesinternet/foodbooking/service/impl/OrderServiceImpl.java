@@ -320,10 +320,10 @@ import in.timesinternet.foodbooking.service.OrderService;
     }
 
     @Override
-    public Order cancelOrderByCustomer(OrderStatusDto orderStatusDto, String email)
+    public Order cancelOrderByCustomer(Integer orderId, String email)
     {
         Customer customer = customerService.getCustomer(email);
-        Order order = getOrder(orderStatusDto.getOrderId());
+        Order order = getOrder(orderId);
 
         if (order.getStatus().equals(OrderStatus.PENDING) || order.getStatus().equals(OrderStatus.APPROVED))
         {

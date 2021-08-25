@@ -59,14 +59,13 @@ public class CustomerOrderController {
         return  ResponseEntity.ok(orderService.getAllOrder(userEmail));
     }
 
-    @PostMapping(value="/cancel")
+    @PostMapping(value="/cancel/{orderId}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    ResponseEntity<Order> cancelOrderByCustomer(@RequestBody @Valid OrderStatusDto orderStatusDto,
-                                                BindingResult bindingResult, HttpServletRequest request)
+    ResponseEntity<Order> cancelOrderByCustomer(@PathVariable Integer orderId, HttpServletRequest request)
     {
-        bindingResultService.validate(bindingResult);
+
         String userEmail = (String) request.getAttribute("userEmail");
-        return ResponseEntity.ok(orderService.cancelOrderByCustomer(orderStatusDto, userEmail));
+        return ResponseEntity.ok(orderService.cancelOrderByCustomer(orderId, userEmail));
     }
 
 }
