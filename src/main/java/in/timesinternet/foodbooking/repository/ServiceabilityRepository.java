@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface ServiceabilityRepository extends JpaRepository<Serviceability,Integer> {
 
 Optional<Serviceability> findByPincodeAndRestaurantId(Integer pincode, Integer restaurantId);
+
+void deleteAllByRestaurantId(Integer restaurantId);
 }

@@ -62,4 +62,11 @@ public class DeliveryBoyController {
        return ResponseEntity.ok(deliveryBoyService.getPackageList(userEmail));
     }
 
+//    @PatchMapping("/package/{packageDeliveryId}/cancel")
+//    @PreAuthorize("hasRole('ROLE_DELIVERY_BOY') ")
+//    public ResponseEntity<Order> cancelPackageDelivery(@PathVariable Integer packageDeliveryId,HttpServletRequest request)
+//    {
+//        String userEmail = (String) request.getAttribute("userEmail");
+//        return ResponseEntity.ok(deliveryBoyService.cancelPackageDelivery(packageDeliveryId, userEmail));
+//    }
 }

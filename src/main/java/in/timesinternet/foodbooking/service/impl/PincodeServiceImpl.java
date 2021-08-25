@@ -11,6 +11,7 @@ import in.timesinternet.foodbooking.repository.ServiceabilityRepository;
 import in.timesinternet.foodbooking.service.PincodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,7 @@ public class PincodeServiceImpl implements PincodeService {
     ServiceabilityRepository serviceabilityRepository;
 
     @Override
+    @Transactional
     public List<Serviceability> addPincode(List<PincodeDto> pincodeDtoList, Integer restaurantId) {
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
         if (optionalRestaurant.isPresent()) {
@@ -33,6 +35,7 @@ public class PincodeServiceImpl implements PincodeService {
             Restaurant restaurant = optionalRestaurant.get();
             HashSet<Integer> pincodeValues = new HashSet<>();
 
+            serviceabilityRepository.deleteAllByRestaurantId(restaurantId);
             for (PincodeDto pincodeDto : pincodeDtoList) {
                 if (pincodeValues.contains(pincodeDto.getPincode()))
                     continue;

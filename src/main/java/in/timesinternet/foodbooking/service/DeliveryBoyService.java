@@ -26,5 +26,4 @@ public interface DeliveryBoyService {
     Order updatePackageDelivery(PackageDeliveryDto packageDeliveryDto, String userEmail);
 
     List<Order> getPackageList(String userEmail);
-
 }
