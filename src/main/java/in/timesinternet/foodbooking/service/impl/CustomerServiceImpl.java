@@ -48,8 +48,14 @@ public class CustomerServiceImpl implements CustomerService {
 
 
         Restaurant restaurant = restaurantRepository.findById(customerDto.getRestaurantId()).get();
-        Customer customer = modelMapper.map(customerDto, Customer.class);
+        Customer customer = new Customer();
+        customer.setAddress(customerDto.getAddress());
+        customer.setContact(customerDto.getContact());
         customer.setRestaurant(restaurant);
+        customer.setPassword(customerDto.getPassword());
+        customer.setFirstName(customerDto.getFirstName());
+        customer.setLastName(customerDto.getLastName());
+        customer.setEmail(customerDto.getEmail());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         customer.setRole(Role.ROLE_CUSTOMER);
         customer.setActualEmail(customer.getEmail());
