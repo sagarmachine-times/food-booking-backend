@@ -46,7 +46,7 @@ public class StaffController {
 
     @PostMapping(value = "")
     @PreAuthorize("hasRole('ROLE_OWNER')")
-    ResponseEntity<List<Staff>> createStaff(@RequestBody @Valid StaffDto staffDto, HttpServletRequest request, BindingResult bindingResult) {
+    ResponseEntity<List<Staff>> createStaff(@RequestBody @Valid StaffDto staffDto,BindingResult bindingResult, HttpServletRequest request) {
         bindingResultService.validate(bindingResult);
         Integer restaurantId = (Integer) request.getAttribute("restaurantId");
         return ResponseEntity.ok(staffService.createStaff(restaurantId, staffDto));
@@ -61,7 +61,7 @@ public class StaffController {
 
     @PatchMapping(value = "")
     @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_MANAGER')")
-    ResponseEntity<Staff> updateStaff(@RequestBody @Valid StaffUpdateDto staffUpdateDto, HttpServletRequest request, BindingResult bindingResult) {
+    ResponseEntity<Staff> updateStaff(@RequestBody @Valid StaffUpdateDto staffUpdateDto,BindingResult bindingResult, HttpServletRequest request) {
         bindingResultService.validate(bindingResult);
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(staffService.updateStaff(userEmail, staffUpdateDto));
@@ -69,8 +69,8 @@ public class StaffController {
 
     @DeleteMapping("/{staffId}")
     @PreAuthorize("hasRole('ROLE_OWNER')")
-    ResponseEntity<Staff> deleteStaff(@PathVariable @Valid Integer staffId, HttpServletRequest request, BindingResult bindingResult) {
-        bindingResultService.validate(bindingResult);
+    ResponseEntity<Staff> deleteStaff(@PathVariable @Valid Integer staffId,  HttpServletRequest request) {
+        
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(staffService.deleteStaff(userEmail, staffId));
     }
