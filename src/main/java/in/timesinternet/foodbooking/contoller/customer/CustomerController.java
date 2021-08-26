@@ -47,10 +47,10 @@ public class CustomerController {
         return ResponseEntity.ok(userService.login(loginDto.getEmail(), loginDto.getPassword(),  restaurantId));
     }
 
-    @GetMapping(value="/restaurant/{subDomain}")
-    ResponseEntity<RestaurantResponseDto> getRestaurantDetail(@PathVariable String subDomain)
+    @GetMapping(value="/restaurant/{restaurantId}")
+    ResponseEntity<RestaurantResponseDto> getRestaurantDetail(@PathVariable Integer restaurantId)
     {
-        return ResponseEntity.ok(customerService.getRestaurantDetail(subDomain));
+        return ResponseEntity.ok(customerService.getRestaurantDetail(restaurantId));
     }
 
     @GetMapping("")

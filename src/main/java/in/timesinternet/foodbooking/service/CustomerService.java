@@ -15,7 +15,7 @@ public interface CustomerService {
 
     Customer createCustomer(CustomerDto customerDto);
 
-    RestaurantResponseDto getRestaurantDetail(String subDomain);
+    RestaurantResponseDto getRestaurantDetail(Integer restaurantId);
 
     Customer getCustomer(String email);
     Customer getCustomer(Integer id);

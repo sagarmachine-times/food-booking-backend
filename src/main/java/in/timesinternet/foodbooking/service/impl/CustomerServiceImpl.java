@@ -79,8 +79,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public RestaurantResponseDto getRestaurantDetail(String subDomain) {
-        Optional<Restaurant> restaurantOptional = restaurantRepository.findByRestaurantDetailSubDomain(subDomain);
+    public RestaurantResponseDto getRestaurantDetail(Integer restaurantId) {
+//        Optional<Restaurant> restaurantOptional = restaurantRepository.findByRestaurantDetailSubDomain(subDomain);
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
 
         if (restaurantOptional.isPresent()) {
             RestaurantResponseDto restaurantResponseDto = new RestaurantResponseDto();
@@ -102,7 +103,7 @@ public class CustomerServiceImpl implements CustomerService {
 
             return restaurantResponseDto;
         } else {
-            throw new NotFoundException("restaurant is not found with given subdomain :- " + subDomain);
+            throw new NotFoundException("restaurant is not found with given subdomain :- " + restaurantId);
         }
     }
 
