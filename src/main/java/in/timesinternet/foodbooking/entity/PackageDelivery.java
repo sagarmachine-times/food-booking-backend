@@ -62,24 +62,24 @@ public class PackageDelivery {
         next= new ArrayList<>();
         switch (status) {
             case ASSIGNED:
-                next.add(new Next("ON_THE_WAY_TO_PICK", PackageDeliveryStatus.ON_THE_WAY_TO_PICK.toString()));
+                next.add(new Next("Picking Order", PackageDeliveryStatus.ON_THE_WAY_TO_PICK.toString()));
                 break;
             case ON_THE_WAY_TO_PICK:
                 next.add(new Next("Picked", PackageDeliveryStatus.PICKED.toString()));
                 break;
             case PICKED:
-                next.add(new Next("ON_THE_WAY_TO_DROP", PackageDeliveryStatus.ON_THE_WAY_TO_DROP.toString()));
+                next.add(new Next("Dropping Order", PackageDeliveryStatus.ON_THE_WAY_TO_DROP.toString()));
                 break;
             case ON_THE_WAY_TO_DROP:
-                next.add(new Next("ON_THE_WAY_TO_DROP", PackageDeliveryStatus.DELIVERED.toString()));
+                next.add(new Next("Delivered", PackageDeliveryStatus.DELIVERED.toString()));
         }
         switch (status) {
-            case ASSIGNED:stage="ASSIGNED";break;
-            case DELIVERED:stage="DELIVERED";break;
-            case CANCELED:stage="CANCELED";break;
-            case ON_THE_WAY_TO_DROP:stage="Picking Up Order";break;
-            case ON_THE_WAY_TO_PICK:stage="Dropping Order";break;
-            case PICKED:stage="PICKED";break;
+            case ASSIGNED:stage="Assigned";break;
+            case DELIVERED:stage="Delivered";break;
+            case CANCELED:stage="Canceled";break;
+            case ON_THE_WAY_TO_DROP:stage="On the way to drop";break;
+            case ON_THE_WAY_TO_PICK:stage="On the way to pick";break;
+            case PICKED:stage="Picked";break;
             case UNASSIGNED:stage="UNASSIGNED";break;
         }
     }
