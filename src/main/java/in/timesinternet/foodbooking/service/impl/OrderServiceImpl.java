@@ -311,6 +311,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.COMPLETED);
         order.getPayment().setStatus(PaymentStatus.PAID);
         CODPaymentDetail paymentDetail = (CODPaymentDetail) order.getPayment().getPaymentDetail();
+        if(paymentDetail!=null)
         paymentDetail.setCashReceived(order.getTotal());
         order.populateNext();
         return orderRepository.save(order);
