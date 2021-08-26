@@ -37,7 +37,7 @@ public class PincodeServiceImpl implements PincodeService {
 
             serviceabilityRepository.deleteAllByRestaurantId(restaurantId);
             for (PincodeDto pincodeDto : pincodeDtoList) {
-                if (pincodeValues.contains(pincodeDto.getPincode()))
+                if (pincodeValues.contains(pincodeDto.getPincode()) || pincodeDto.getPincode().toString().length()!=6)
                     continue;
                 pincodeValues.add(pincodeDto.getPincode());
                 // Print all elements of ArrayList

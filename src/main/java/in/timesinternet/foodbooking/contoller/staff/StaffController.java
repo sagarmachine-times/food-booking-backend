@@ -70,7 +70,7 @@ public class StaffController {
     @DeleteMapping("/{staffId}")
     @PreAuthorize("hasRole('ROLE_OWNER')")
     ResponseEntity<Staff> deleteStaff(@PathVariable @Valid Integer staffId,  HttpServletRequest request) {
-        
+
         String userEmail = (String) request.getAttribute("userEmail");
         return ResponseEntity.ok(staffService.deleteStaff(userEmail, staffId));
     }
