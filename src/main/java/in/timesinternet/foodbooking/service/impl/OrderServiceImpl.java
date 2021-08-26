@@ -31,7 +31,7 @@ import in.timesinternet.foodbooking.service.CustomerService;
 import in.timesinternet.foodbooking.service.OrderService;
 
 @Service
- public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OrderRepository orderRepository;
@@ -82,13 +82,13 @@ import in.timesinternet.foodbooking.service.OrderService;
     public Order createOrder(OrderDto orderDto, String userEmail) {
         Customer customer = customerService.getCustomer(userEmail);
         Order order = new Order();
-        Cart currentCart= customer.getCurrentCart();
+        Cart currentCart = customer.getCurrentCart();
         order.setAddress(orderDto.getAddress());
         order.setContact(orderDto.getContact());
         if (order.getAddress().getPincode() == null)
             throw new InvalidRequestException("pincode is required :)");
-        if (currentCart.getCoupon()!= null) {
-            ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(userEmail,currentCart.getCoupon().getName());
+        if (currentCart.getCoupon() != null) {
+            ApplyCouponResponseDto applyCouponResponseDto = cartService.addCouponOnCurrentCart(userEmail, currentCart.getCoupon().getName());
             order.setCoupon(couponService.getCoupon(applyCouponResponseDto.getCouponId()));
             order.setIsCouponApplied(true);
             order.setDiscount(applyCouponResponseDto.getDiscount());
@@ -115,6 +115,7 @@ import in.timesinternet.foodbooking.service.OrderService;
         Payment payment = new Payment();
         payment.setStatus(PaymentStatus.PENDING);
         payment.setMode(PaymentMode.COD);
+        payment.setPaymentDetail(new CODPaymentDetail());
 
         order.setPayment(payment);
 //        try {
@@ -127,8 +128,7 @@ import in.timesinternet.foodbooking.service.OrderService;
 //            cartService.updateCartStatus(CartStatus.MUTABLE, userEmail);
 //        }
         order = orderRepository.save(order);
-        order.getNext().add(OrderStatus.DECLINED.toString());
-        order.getNext().add(OrderStatus.APPROVED.toString());
+        order.populateNext();
 //        order.getNext().add(OrderStatus.CANCELED.toString());
 
         return order;
@@ -160,7 +160,7 @@ import in.timesinternet.foodbooking.service.OrderService;
         if (!order.getStatus().equals(OrderStatus.APPROVED))
             throw new InvalidRequestException("invalid request order can't be preparing since it is" + order.getStatus().toString());
         order.setStatus(OrderStatus.PREPARING);
-        order.getNext().add(OrderStatus.PACKED.toString());
+        order.populateNext();
         return orderRepository.save(order);
     }
 
@@ -179,15 +179,16 @@ import in.timesinternet.foodbooking.service.OrderService;
         cartDto.setCartItemList(cartItemDtoList);
         cartService.updateCart(cartDto, customer.getEmail());
         //set order declined
+        order.populateNext();
         order.setStatus(OrderStatus.DECLINED);
         return orderRepository.save(order);
     }
 
 
     @Transactional
-     Order packOrder(Order order) {
+    Order packOrder(Order order) {
 
-        if (order.getStatus().equals(OrderStatus.APPROVED)||order.getStatus().equals(OrderStatus.PREPARING)) {
+        if (order.getStatus().equals(OrderStatus.APPROVED) || order.getStatus().equals(OrderStatus.PREPARING)) {
             order.setStatus(OrderStatus.PACKED);
             PackageStatusDto packageStatusDto = new PackageStatusDto();
             packageStatusDto.setPackageStatus(PackageStatus.READY);
@@ -198,7 +199,7 @@ import in.timesinternet.foodbooking.service.OrderService;
             return orderRepository.save(order);
 
         } else {
-            throw new InvalidRequestException("order can't be packed as it is "+order.getStatus().toString());
+            throw new InvalidRequestException("order can't be packed as it is " + order.getStatus().toString());
         }
     }
 
@@ -216,7 +217,7 @@ import in.timesinternet.foodbooking.service.OrderService;
         pack.setOrder(order);
         order.setPack(pack);
         pack.setStatus(PackageStatus.NOT_READY);
-        pack.getNext().add(PackageStatus.READY.toString());
+        order.populateNext();
         //if order delivery
 
         if (order.getType().equals(OrderType.DELIVERY)) {
@@ -259,8 +260,7 @@ import in.timesinternet.foodbooking.service.OrderService;
                 e.printStackTrace();
             }
         }
-        order.getNext().add(OrderStatus.PACKED.toString());
-        order.getNext().add(OrderStatus.PREPARING.toString());
+        order.populateNext();
 //        order.getNext().add(OrderStatus.CANCELED.toString());
 
         return orderRepository.findById(order.getId()).get();
@@ -276,7 +276,7 @@ import in.timesinternet.foodbooking.service.OrderService;
     }
 
     @Transactional
-     void validateOrder() throws RuntimeException {
+    void validateOrder() throws RuntimeException {
         //throw exception is invalid order request
     }
 
@@ -310,28 +310,27 @@ import in.timesinternet.foodbooking.service.OrderService;
         Order order = getOrder(orderId);
         order.setStatus(OrderStatus.COMPLETED);
         order.getPayment().setStatus(PaymentStatus.PAID);
+        CODPaymentDetail paymentDetail = (CODPaymentDetail) order.getPayment().getPaymentDetail();
+        paymentDetail.setCashReceived(order.getTotal());
+        order.populateNext();
         return orderRepository.save(order);
     }
 
     @Override
-    public Order cancelOrderByCustomer(Integer orderId, String email)
-    {
+    public Order cancelOrderByCustomer(Integer orderId, String email) {
         Customer customer = customerService.getCustomer(email);
         Order order = getOrder(orderId);
 
-        if (customer.getId().equals(order.getCustomer().getId())&& (order.getStatus().equals(OrderStatus.PENDING) || order.getStatus().equals(OrderStatus.APPROVED)))
-        {
+        if (customer.getId().equals(order.getCustomer().getId()) && (order.getStatus().equals(OrderStatus.PENDING) || order.getStatus().equals(OrderStatus.APPROVED))) {
             order.setStatus(OrderStatus.CANCELED);
             PackageDelivery packageDelivery = order.getPack().getCurrentPackageDelivery();
             packageDelivery.setStatus(PackageDeliveryStatus.CANCELED);
 //            order.getPack().setCurrentPackageDelivery(packageDelivery);
             packageDeliveryRepository.save(packageDelivery);
-
+            order.populateNext();
             return orderRepository.save(order);
-        }
-        else
-        {
-            throw new InvalidRequestException(" Your order cannot be cancelled. Your order is in following stage :- "+order.getStatus());
+        } else {
+            throw new InvalidRequestException(" Your order cannot be cancelled. Your order is in following stage :- " + order.getStatus());
         }
     }
 }

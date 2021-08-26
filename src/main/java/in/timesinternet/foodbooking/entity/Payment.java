@@ -38,4 +38,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     PaymentStatus status;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    PaymentDetail paymentDetail;
+
 }

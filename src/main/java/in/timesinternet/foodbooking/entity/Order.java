@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.timesinternet.foodbooking.entity.embeddable.Address;
 import in.timesinternet.foodbooking.entity.embeddable.Contact;
+import in.timesinternet.foodbooking.entity.embeddable.Next;
 import in.timesinternet.foodbooking.entity.enumeration.OrderStatus;
 import in.timesinternet.foodbooking.entity.enumeration.OrderType;
 import lombok.AllArgsConstructor;
@@ -30,11 +31,11 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @JsonFormat( pattern = "dd-MM-yyyy hh:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     @CreationTimestamp
     Date createdAt;
 
-    @JsonFormat( pattern = "dd-MM-yyyy hh:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     @UpdateTimestamp
     Date updatedAt;
 
@@ -78,20 +79,37 @@ public class Order {
     Payment payment;
 
     @Transient
-    List<String> next = new ArrayList<>();
+    List<Next> next = new ArrayList<>();
+
+    @Transient
+    String stage;
 
     @PostLoad
     public void populateNext() {
-        next= new ArrayList<>();
+        next = new ArrayList<>();
         switch (status) {
-            case APPROVED:next.add(OrderStatus.PACKED.toString());
-            next.add(OrderStatus.PREPARING.toString());
-            break;
-            case PENDING:next.add(OrderStatus.DECLINED.toString());
-            next.add(OrderStatus.APPROVED.toString());
-            break;
-            case PREPARING:next.add(OrderStatus.PACKED.toString());
+            case APPROVED:
+                next.add(new Next("Preparing", OrderStatus.PREPARING.toString()));
+                break;
+            case PENDING:
+                next.add(new Next("Approve", OrderStatus.APPROVED.toString()));
+                next.add(new Next("Decline", OrderStatus.DECLINED.toString()));
+                break;
+            case PREPARING:
+                next.add(new Next("Pack", OrderStatus.PACKED.toString()));
         }
+
+        switch (status) {
+            case PREPARING:stage="PREPARING";break;
+            case DECLINED:stage="DECLINED";break;
+            case CANCELED:stage="CANCELED";break;
+            case PACKED:stage="PACKED";break;
+            case PENDING:stage="PENDING";break;
+            case APPROVED:stage="APPROVED";break;
+            case COMPLETED:stage="COMPLETED";break;
+        }
+
     }
+
 
 }

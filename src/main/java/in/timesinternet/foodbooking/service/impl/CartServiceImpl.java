@@ -100,9 +100,12 @@ public class CartServiceImpl implements CartService {
     public Cart updateCartStatus(CartStatus cartStatus, String email) {
         Customer customer = customerService.getCustomer(email);
         Cart currentCart = customer.getCurrentCart();
-        if (cartStatus.equals(CartStatus.IMMUTABLE))
+        if (cartStatus.equals(CartStatus.IMMUTABLE)) {
+            if(currentCart.getCartItemList().size()==0)
+                 throw new InvalidRequestException("cart is empty");
             for (CartItem cartItem : currentCart.getCartItemList())
                 cartItem.setPrice(cartItem.getItem().getSellingPrice());
+        }
         currentCart.setStatus(cartStatus);
 
         return cartRepository.save(currentCart);
@@ -144,7 +147,7 @@ public class CartServiceImpl implements CartService {
         Cart currentCart = customer.getCurrentCart();
         if (customer.getCurrentCart().getStatus().equals(CartStatus.IMMUTABLE))
             throw new UnauthorizedException("cart is immutable");
-        if (!(customer.getCurrentCart().getRestaurant().getId().equals(customer.getRestaurant().getId())&&customer.getRestaurant().getId().equals(itemId)))
+        if (!(customer.getCurrentCart().getRestaurant().getId().equals(customer.getRestaurant().getId())||customer.getRestaurant().getId().equals(item.getRestaurant().getId())))
             throw new UnauthorizedException("item does not belong to restaurant " + customer.getRestaurant().getId());
         if (customer.getCurrentCart().getCartItemList().parallelStream().anyMatch(existingCartItem -> existingCartItem.getItem().getId().equals(itemId)))
             throw new UnauthorizedException("item already exist");
@@ -216,6 +219,12 @@ public class CartServiceImpl implements CartService {
 
                 if (!coupon.getRestaurant().getId().equals(customer.getRestaurant().getId()))
                     throw new NotFoundException("no coupon is found with name " + couponName + " in restaurant " + customer.getRestaurant().getId());
+
+                if (customer.getCurrentCart().getCartItemList().isEmpty())
+                {
+                    throw new InvalidRequestException("Your cart is empty. Kindly add items in the card");
+                }
+
                 ApplyCouponResponseDto applyCouponResponseDto = new ApplyCouponResponseDto();
                 applyCouponResponseDto.setOldTotal(currentCart.getTotal());
 

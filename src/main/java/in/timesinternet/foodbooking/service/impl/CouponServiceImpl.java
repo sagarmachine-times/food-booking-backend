@@ -71,7 +71,7 @@ public class CouponServiceImpl implements CouponService {
             Image image=optionalImage.get();
             Coupon coupon=optionalCoupon.get();
             Restaurant restaurant = coupon.getRestaurant();
-            if (restaurant.getId() == restaurantId) {
+            if (restaurant.getId().equals(restaurantId)) {
                 coupon.setName(updateCouponDto.getName());
                 coupon.setMaxDiscount(updateCouponDto.getMaxDiscount());
                 coupon.setMaxPerUser(updateCouponDto.getMaxPerUser());
