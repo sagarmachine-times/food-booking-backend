@@ -148,8 +148,6 @@ import in.timesinternet.foodbooking.service.OrderService;
                 return declineOrder(order);
             case APPROVED:
                 return approveOrder(order);
-            case CANCELED:
-                return cancelOrder(order);
             case PREPARING:
                 return preparingOrder(order);
             default:
@@ -269,11 +267,6 @@ import in.timesinternet.foodbooking.service.OrderService;
     }
 
 
-    @Transactional
-     Order cancelOrder(Order order) {
-        return null;
-    }
-
     @Override
     public Order getOrder(Integer orderId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
@@ -326,12 +319,12 @@ import in.timesinternet.foodbooking.service.OrderService;
         Customer customer = customerService.getCustomer(email);
         Order order = getOrder(orderId);
 
-        if (order.getStatus().equals(OrderStatus.PENDING) || order.getStatus().equals(OrderStatus.APPROVED))
+        if (customer.getId().equals(order.getCustomer().getId())&& (order.getStatus().equals(OrderStatus.PENDING) || order.getStatus().equals(OrderStatus.APPROVED)))
         {
             order.setStatus(OrderStatus.CANCELED);
             PackageDelivery packageDelivery = order.getPack().getCurrentPackageDelivery();
             packageDelivery.setStatus(PackageDeliveryStatus.CANCELED);
-            order.getPack().setCurrentPackageDelivery(packageDelivery);
+//            order.getPack().setCurrentPackageDelivery(packageDelivery);
             packageDeliveryRepository.save(packageDelivery);
 
             return orderRepository.save(order);

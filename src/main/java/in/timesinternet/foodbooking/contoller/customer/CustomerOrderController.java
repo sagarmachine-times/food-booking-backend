@@ -59,7 +59,7 @@ public class CustomerOrderController {
         return  ResponseEntity.ok(orderService.getAllOrder(userEmail));
     }
 
-    @PostMapping(value="/cancel/{orderId}")
+    @PatchMapping(value="/{orderId}/cancel")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     ResponseEntity<Order> cancelOrderByCustomer(@PathVariable Integer orderId, HttpServletRequest request)
     {

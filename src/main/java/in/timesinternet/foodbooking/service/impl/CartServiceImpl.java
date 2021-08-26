@@ -144,7 +144,7 @@ public class CartServiceImpl implements CartService {
         Cart currentCart = customer.getCurrentCart();
         if (customer.getCurrentCart().getStatus().equals(CartStatus.IMMUTABLE))
             throw new UnauthorizedException("cart is immutable");
-        if (!customer.getCurrentCart().getRestaurant().getId().equals(customer.getRestaurant().getId()))
+        if (!(customer.getCurrentCart().getRestaurant().getId().equals(customer.getRestaurant().getId())&&customer.getRestaurant().getId().equals(itemId)))
             throw new UnauthorizedException("item does not belong to restaurant " + customer.getRestaurant().getId());
         if (customer.getCurrentCart().getCartItemList().parallelStream().anyMatch(existingCartItem -> existingCartItem.getItem().getId().equals(itemId)))
             throw new UnauthorizedException("item already exist");
