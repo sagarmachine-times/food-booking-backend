@@ -20,8 +20,6 @@ public class AddressContact{
     String line1;
     String line2;
     @NotNull(message = "pincode can't be null")
-    @Max(value = 6,message = "pincode length is greater than 6")
-    @Min(value = 6,message = "pincode length is lesser than 6")
     Integer pincode;
     @NotNull(message = "city can't be null")
     String city;
@@ -31,8 +29,6 @@ public class AddressContact{
     @NotNull(message = "email can't be null")
     String contactEmail;
     @NotNull(message = "contact number can't be null")
-    @Max(value = 10,message = "contact number length is greater than 10")
-    @Min(value = 10,message = "contact number length is lesser than 10")
     String contactNumber;
     @NotNull(message = "firstname can't be null")
     String contactFirstName;
