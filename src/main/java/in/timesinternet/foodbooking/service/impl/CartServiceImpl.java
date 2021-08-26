@@ -100,9 +100,12 @@ public class CartServiceImpl implements CartService {
     public Cart updateCartStatus(CartStatus cartStatus, String email) {
         Customer customer = customerService.getCustomer(email);
         Cart currentCart = customer.getCurrentCart();
-        if (cartStatus.equals(CartStatus.IMMUTABLE))
+        if (cartStatus.equals(CartStatus.IMMUTABLE)) {
+            if(currentCart.getCartItemList().size()==0)
+                 throw new InvalidRequestException("cart is empty");
             for (CartItem cartItem : currentCart.getCartItemList())
                 cartItem.setPrice(cartItem.getItem().getSellingPrice());
+        }
         currentCart.setStatus(cartStatus);
 
         return cartRepository.save(currentCart);
