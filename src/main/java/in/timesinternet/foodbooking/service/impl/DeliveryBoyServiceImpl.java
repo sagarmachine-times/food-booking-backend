@@ -204,7 +204,7 @@ public class DeliveryBoyServiceImpl implements DeliveryBoyService {
             throw new InvalidRequestException("invalid request for cancelling");
 
         packageDelivery.setStatus(PackageDeliveryStatus.CANCELED);
-
+          packageDelivery.populateNext();
         return packageDeliveryRepository.save(packageDelivery).getPack().getOrder();
     }
 

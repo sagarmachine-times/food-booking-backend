@@ -127,8 +127,7 @@ import in.timesinternet.foodbooking.service.OrderService;
 //            cartService.updateCartStatus(CartStatus.MUTABLE, userEmail);
 //        }
         order = orderRepository.save(order);
-        order.getNext().add(OrderStatus.DECLINED.toString());
-        order.getNext().add(OrderStatus.APPROVED.toString());
+        order.populateNext();
 //        order.getNext().add(OrderStatus.CANCELED.toString());
 
         return order;
@@ -160,7 +159,7 @@ import in.timesinternet.foodbooking.service.OrderService;
         if (!order.getStatus().equals(OrderStatus.APPROVED))
             throw new InvalidRequestException("invalid request order can't be preparing since it is" + order.getStatus().toString());
         order.setStatus(OrderStatus.PREPARING);
-        order.getNext().add(OrderStatus.PACKED.toString());
+        order.populateNext();
         return orderRepository.save(order);
     }
 
@@ -179,6 +178,7 @@ import in.timesinternet.foodbooking.service.OrderService;
         cartDto.setCartItemList(cartItemDtoList);
         cartService.updateCart(cartDto, customer.getEmail());
         //set order declined
+        order.populateNext();
         order.setStatus(OrderStatus.DECLINED);
         return orderRepository.save(order);
     }
@@ -216,7 +216,7 @@ import in.timesinternet.foodbooking.service.OrderService;
         pack.setOrder(order);
         order.setPack(pack);
         pack.setStatus(PackageStatus.NOT_READY);
-        pack.getNext().add(PackageStatus.READY.toString());
+        order.populateNext();
         //if order delivery
 
         if (order.getType().equals(OrderType.DELIVERY)) {
@@ -259,8 +259,7 @@ import in.timesinternet.foodbooking.service.OrderService;
                 e.printStackTrace();
             }
         }
-        order.getNext().add(OrderStatus.PACKED.toString());
-        order.getNext().add(OrderStatus.PREPARING.toString());
+        order.populateNext();
 //        order.getNext().add(OrderStatus.CANCELED.toString());
 
         return orderRepository.findById(order.getId()).get();
@@ -310,6 +309,7 @@ import in.timesinternet.foodbooking.service.OrderService;
         Order order = getOrder(orderId);
         order.setStatus(OrderStatus.COMPLETED);
         order.getPayment().setStatus(PaymentStatus.PAID);
+        order.populateNext();
         return orderRepository.save(order);
     }
 
@@ -326,7 +326,7 @@ import in.timesinternet.foodbooking.service.OrderService;
             packageDelivery.setStatus(PackageDeliveryStatus.CANCELED);
 //            order.getPack().setCurrentPackageDelivery(packageDelivery);
             packageDeliveryRepository.save(packageDelivery);
-
+            order.populateNext();
             return orderRepository.save(order);
         }
         else
