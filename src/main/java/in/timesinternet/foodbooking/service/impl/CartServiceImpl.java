@@ -216,6 +216,12 @@ public class CartServiceImpl implements CartService {
 
                 if (!coupon.getRestaurant().getId().equals(customer.getRestaurant().getId()))
                     throw new NotFoundException("no coupon is found with name " + couponName + " in restaurant " + customer.getRestaurant().getId());
+
+                if (customer.getCurrentCart().getCartItemList().isEmpty())
+                {
+                    throw new InvalidRequestException("Your cart is empty. Kindly add items in the card");
+                }
+
                 ApplyCouponResponseDto applyCouponResponseDto = new ApplyCouponResponseDto();
                 applyCouponResponseDto.setOldTotal(currentCart.getTotal());
 
