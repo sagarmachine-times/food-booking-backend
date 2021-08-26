@@ -16,10 +16,10 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 public class AddressContact{
-    @NotNull(message = "Address can't be null")
+    @NotNull(message = "address can't be null")
     String line1;
     String line2;
-    @NotNull(message = "Pincode can't be nUll")
+    @NotNull(message = "pincode can't be null")
     @Max(value = 6,message = "pincode length is greater than 6")
     @Min(value = 6,message = "pincode length is lesser than 6")
     Integer pincode;
@@ -27,7 +27,7 @@ public class AddressContact{
     String city;
     @NotNull(message = "state can't be null")
     String state;
-    @Email(message = "Invalid email")
+    @Email(message = "invalid email")
     @NotNull(message = "email can't be null")
     String contactEmail;
     @NotNull(message = "contact number can't be null")
