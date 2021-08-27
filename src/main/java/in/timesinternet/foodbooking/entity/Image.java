@@ -33,6 +33,8 @@ public class Image {
     @JsonIgnore
     String deleteUrl;
 
+    @OneToOne
+    ImageDetail imageDetail;
 
 
 }
