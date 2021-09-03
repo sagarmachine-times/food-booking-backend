@@ -3,6 +3,8 @@ package in.timesinternet.foodbooking;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -34,7 +36,9 @@ public class FoodBookingApplication {
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
-        return new JedisConnectionFactory();
+        RedisStandaloneConfiguration redisStandaloneConfiguration=new RedisStandaloneConfiguration("redis-16822.c51.ap-southeast-2-1.ec2.cloud.redislabs.com",16822 );
+        redisStandaloneConfiguration.setPassword("6ckc4NI3jS94hs4dcD14IF9jNklI3qvK");
+        return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
     @Bean
