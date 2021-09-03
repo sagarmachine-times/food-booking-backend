@@ -17,13 +17,13 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeliveryBoy extends User {
+public class DeliveryBoy extends User  {
 
     @Enumerated(EnumType.STRING)
     DeliveryBoyStatus deliveryBoyStatus = DeliveryBoyStatus.AVAILABLE;
 
     //relationship
-    @OneToMany(mappedBy = "deliveryBoy", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "deliveryBoy")
     @JsonIgnore
     List<InHousePackageDeliveryDetail> inHousePackageDeliveryDetailList = new ArrayList<>();
 

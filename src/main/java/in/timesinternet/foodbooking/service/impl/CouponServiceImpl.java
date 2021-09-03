@@ -30,46 +30,46 @@ public class CouponServiceImpl implements CouponService {
     RestaurantRepository restaurantRepository;
     @Autowired
     CouponRepository couponRepository;
+
+    @Autowired
+    in.timesinternet.foodbooking.cache.CouponRepository couponRepositoryCache;
+
     @Override
     public Coupon addCoupon(CouponDto couponDto, Integer restaurantId) {
         Integer imageId = couponDto.getImageId();
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
         Optional<Image> imageOptional = imageRepository.findById(imageId);
-        if(restaurantOptional.isPresent() && imageOptional.isPresent())
-        {
+        if (restaurantOptional.isPresent() && imageOptional.isPresent()) {
             Restaurant restaurant = restaurantOptional.get();
             Image image = imageOptional.get();
-            ModelMapper modelMapper=new ModelMapper();
-           Coupon coupon= modelMapper.map(couponDto,Coupon.class);
-           coupon.setName(coupon.getName().toUpperCase().trim());
-           coupon.setBanner(image);
-           coupon.setRestaurant(restaurant);
-           // restaurant.addCoupon(coupon);
+            ModelMapper modelMapper = new ModelMapper();
+            Coupon coupon = modelMapper.map(couponDto, Coupon.class);
+            coupon.setName(coupon.getName().toUpperCase().trim());
+            coupon.setBanner(image);
+            coupon.setRestaurant(restaurant);
+            // restaurant.addCoupon(coupon);
             try {
+                couponRepositoryCache.addCouponList(restaurant.getCouponList(), restaurantId);
                 return couponRepository.save(coupon);
-            }
-            catch (DataIntegrityViolationException e)
-            {
+            } catch (DataIntegrityViolationException e) {
                 throw new AlreadyExistException("Coupon name should be unique");
             }
 
 
-        }
-        else
-        {
+        } else {
             throw new NotFoundException(" either restaurant or image is not found");
         }
     }
+
     @Override
-    public Coupon updateCoupon(UpdateCouponDto updateCouponDto,Integer couponId,Integer restaurantId)
-    {
+    public Coupon updateCoupon(UpdateCouponDto updateCouponDto, Integer couponId, Integer restaurantId) {
         Optional<Coupon> optionalCoupon = couponRepository.findById(couponId);
-        Optional<Image> optionalImage=imageRepository.findById(updateCouponDto.getImageId());
+        Optional<Image> optionalImage = imageRepository.findById(updateCouponDto.getImageId());
 
         if (optionalCoupon.isPresent() && optionalImage.isPresent()) {
 
-            Image image=optionalImage.get();
-            Coupon coupon=optionalCoupon.get();
+            Image image = optionalImage.get();
+            Coupon coupon = optionalCoupon.get();
             Restaurant restaurant = coupon.getRestaurant();
             if (restaurant.getId().equals(restaurantId)) {
                 coupon.setName(updateCouponDto.getName());
@@ -82,10 +82,10 @@ public class CouponServiceImpl implements CouponService {
                 coupon.setBanner(image);
 
                 try {
+                    couponRepositoryCache.addCouponList(restaurant.getCouponList(), restaurantId);
+
                     return couponRepository.save(coupon);
-                }
-                catch (DataIntegrityViolationException e)
-                {
+                } catch (DataIntegrityViolationException e) {
                     throw new AlreadyExistException("Coupon name should be unique");
                 }
 
@@ -93,42 +93,44 @@ public class CouponServiceImpl implements CouponService {
             } else {
                 throw new UnauthorizedException("You are not authorised to update this coupon");
             }
-        }
-        else {
-            throw new NotFoundException(" Coupon does not exist of Id "+ couponId);
+        } else {
+            throw new NotFoundException(" Coupon does not exist of Id " + couponId);
         }
     }
+
     @Override
-    public Coupon deleteCoupon(Integer couponId,Integer restaurantId)
-    {
+    public Coupon deleteCoupon(Integer couponId, Integer restaurantId) {
         Optional<Coupon> optionalCoupon = couponRepository.findById(couponId);
 
-        if (optionalCoupon.isPresent() ) {
+        if (optionalCoupon.isPresent()) {
 
 
-            Coupon coupon=optionalCoupon.get();
+            Coupon coupon = optionalCoupon.get();
             Restaurant restaurant = coupon.getRestaurant();
             if (restaurant.getId() == restaurantId) {
 
 
-                 couponRepository.delete(coupon);
-                 return coupon;
+                couponRepository.delete(coupon);
+                return coupon;
 
             } else {
                 throw new UnauthorizedException("You are not authorised to update this coupon");
             }
-        }
-        else {
-            throw new NotFoundException(" Coupon does not exist of Id "+ couponId);
+        } else {
+            throw new NotFoundException(" Coupon does not exist of Id " + couponId);
         }
     }
 
     @Override
-    public List<Coupon> getAllCoupon(Integer restaurantId)
-    {
-
+    public List<Coupon> getAllCoupon(Integer restaurantId) {
+        if (couponRepositoryCache.doesExist(restaurantId)) {
+            System.out.println("CACHE----HIT");
+            return couponRepositoryCache.getCouponList(restaurantId);
+        }
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
         if (optionalRestaurant.isPresent()) {
+            System.out.println(couponRepositoryCache.doesExist(restaurantId)+" "+restaurantId);
+
             Restaurant restaurant = optionalRestaurant.get();
             return restaurant.getCouponList();
         } else {
@@ -140,7 +142,7 @@ public class CouponServiceImpl implements CouponService {
     public Coupon getCoupon(Integer couponId) {
         Optional<Coupon> couponOptional = couponRepository.findById(couponId);
         if (couponOptional.isPresent())
-             return  couponOptional.get();
-        throw  new RuntimeException("coupon doesn't exist");
+            return couponOptional.get();
+        throw new RuntimeException("coupon doesn't exist");
     }
 }

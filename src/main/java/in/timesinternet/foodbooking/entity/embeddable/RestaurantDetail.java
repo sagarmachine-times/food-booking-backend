@@ -6,6 +6,7 @@ import in.timesinternet.foodbooking.entity.enumeration.RestaurantStatus;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Embeddable
@@ -14,7 +15,7 @@ import java.util.Date;
 @Getter
 @Setter
 //@ToString
-public class RestaurantDetail {
+public class RestaurantDetail implements Serializable {
 
     @Column(unique = true, updatable = false)
     String name;

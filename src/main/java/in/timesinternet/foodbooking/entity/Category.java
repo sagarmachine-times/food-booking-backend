@@ -45,7 +45,7 @@ public class Category implements Serializable {
     @JsonIgnore
     Restaurant restaurant;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category",fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<Item> itemList = new ArrayList<>();
 

@@ -1,6 +1,8 @@
 package in.timesinternet.foodbooking.entity;
 
-public class NetBankingPaymentDetail extends PaymentDetail {
+import java.io.Serializable;
+
+public class NetBankingPaymentDetail extends PaymentDetail implements Serializable {
 
     String bankName;
     String transactionId;

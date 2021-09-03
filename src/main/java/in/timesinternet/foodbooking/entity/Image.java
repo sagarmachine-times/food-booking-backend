@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @NoArgsConstructor
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
-public class Image {
+public class Image implements Serializable {
 
     public Image(String mainUrl, String thumbnailUrl, String deleteUrl) {
         this.mainUrl = mainUrl;

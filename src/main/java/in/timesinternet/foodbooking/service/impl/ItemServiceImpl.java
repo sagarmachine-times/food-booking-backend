@@ -39,6 +39,9 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     CategoryService categoryService;
 
+    @Autowired
+    in.timesinternet.foodbooking.cache.ItemRepository itemRepositoryCache;
+
     @Override
     public Item createItem(ItemDto itemDto, Integer restaurantId) {
 
@@ -46,7 +49,6 @@ public class ItemServiceImpl implements ItemService {
         if (itemRepository.existsByNameAndCategoryRestaurantId(itemDto.getName(), restaurantId)) {
             throw new AlreadyExistException("Item already exist");
         } else {
-
 
 
             Integer categoryId = itemDto.getCategoryId();
@@ -58,7 +60,6 @@ public class ItemServiceImpl implements ItemService {
             if (categoryOptional.isPresent() && restaurantOptional.isPresent()) {
                 Category category = categoryOptional.get();
                 Restaurant restaurant = restaurantOptional.get();
-
 
 
                 Item item = new Item();
@@ -76,7 +77,7 @@ public class ItemServiceImpl implements ItemService {
                 category.addItem(item);
 
                 restaurant.addItem(item);
-
+                itemRepositoryCache.addItemList(category.getItemList(), restaurantId);
                 return itemRepository.save(item);
             } else {
                 throw new NotFoundException("either restaurant or category is not fouund ");
@@ -85,31 +86,34 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-        @Override
-        public List<Item> getAllItem (Integer restaurantId){
+    @Override
+    public List<Item> getAllItem(Integer restaurantId) {
 
-            List<Item> allItem = itemRepository.findAllByRestaurantId(restaurantId);
-            return allItem;
+        if (itemRepositoryCache.doesExist(restaurantId)) {
+            System.out.println("CACHE--- HIT");
+            return itemRepositoryCache.getItemList(restaurantId);
         }
+        List<Item> allItem = itemRepository.findAllByRestaurantId(restaurantId);
+        return allItem;
+    }
 
-        @Override
-        public Item deleteItem (Integer itemId, Integer restaurantId){
-            Optional<Item> itemOptional = itemRepository.findById(itemId);
+    @Override
+    public Item deleteItem(Integer itemId, Integer restaurantId) {
+        Optional<Item> itemOptional = itemRepository.findById(itemId);
 
-            if (itemOptional.isPresent()) {
-                Item item = itemOptional.get();
+        if (itemOptional.isPresent()) {
+            Item item = itemOptional.get();
 
-                if (item.getRestaurant().getId() == restaurantId) {
-                    itemRepository.deleteById(itemId);
-                    return item;
-                } else {
-                    throw new UnauthorizedException("unauthorized access for deleting the item");
-                }
+            if (item.getRestaurant().getId() == restaurantId) {
+                itemRepository.deleteById(itemId);
+                return item;
             } else {
-                throw new NotFoundException("item is not found");
+                throw new UnauthorizedException("unauthorized access for deleting the item");
             }
+        } else {
+            throw new NotFoundException("item is not found");
         }
-
+    }
 
     @Override
     public Item updateItem(ItemUpdateDto itemUpdateDto, Integer restaurantId) {
@@ -152,7 +156,7 @@ public class ItemServiceImpl implements ItemService {
                         item.setImage(image);
                     }
                 }
-
+                itemRepositoryCache.addItemList(item.getCategory().getItemList(), restaurantId);
                 itemRepository.save(item);
                 return item;
             } else {

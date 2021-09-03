@@ -26,6 +26,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     RestaurantRepository restaurantRepository;
 
+    @Autowired
+    in.timesinternet.foodbooking.cache.CategoryRepository categoryRepositoryCache;
+
     @Override
     public Category createCategory(CategoryDto categoryDto, Integer restaurantId) {
 
@@ -39,7 +42,9 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = new Category();
             category.setName(categoryDto.getName());
             restaurant.addCategory(category);
-
+            List<Category> categoryList = restaurant.getCategoryList();
+            System.out.println(categoryList);
+            categoryRepositoryCache.addCategoryList(restaurant.getCategoryList(), restaurantId);
             return categoryRepository.save(category);
 
 
@@ -50,7 +55,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategory(Integer restaurantId) {
-
+        if (categoryRepositoryCache.doesExist(restaurantId)) {
+            System.out.println("CACHE--- HIT");
+            return categoryRepositoryCache.getCategoryList(restaurantId);
+        }
         List<Category> allCategory = categoryRepository.findAllByRestaurantId(restaurantId);
         return allCategory;
     }
@@ -88,6 +96,8 @@ public class CategoryServiceImpl implements CategoryService {
 
                 if (categoryUpdateDto.getIsAvailable() != null)
                     category.setIsAvailable(categoryUpdateDto.getIsAvailable());
+
+                categoryRepositoryCache.addCategoryList(category.getRestaurant().getCategoryList(), restaurantId);
 
                 categoryRepository.save(category);
                 return category;
