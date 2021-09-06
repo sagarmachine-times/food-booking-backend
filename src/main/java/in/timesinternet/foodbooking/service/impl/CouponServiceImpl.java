@@ -49,8 +49,10 @@ public class CouponServiceImpl implements CouponService {
             coupon.setRestaurant(restaurant);
             // restaurant.addCoupon(coupon);
             try {
+                coupon = couponRepository.save(coupon);
+                restaurant.addCoupon(coupon);
                 couponRepositoryCache.addCouponList(restaurant.getCouponList(), restaurantId);
-                return couponRepository.save(coupon);
+                return coupon;
             } catch (DataIntegrityViolationException e) {
                 throw new AlreadyExistException("Coupon name should be unique");
             }
@@ -129,7 +131,7 @@ public class CouponServiceImpl implements CouponService {
         }
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
         if (optionalRestaurant.isPresent()) {
-            System.out.println(couponRepositoryCache.doesExist(restaurantId)+" "+restaurantId);
+            System.out.println(couponRepositoryCache.doesExist(restaurantId) + " " + restaurantId);
 
             Restaurant restaurant = optionalRestaurant.get();
             return restaurant.getCouponList();

@@ -41,11 +41,12 @@ public class CategoryServiceImpl implements CategoryService {
             Restaurant restaurant = restaurantOptional.get();
             Category category = new Category();
             category.setName(categoryDto.getName());
-            restaurant.addCategory(category);
             List<Category> categoryList = restaurant.getCategoryList();
             System.out.println(categoryList);
+            category = categoryRepository.save(category);
+            restaurant.addCategory(category);
             categoryRepositoryCache.addCategoryList(restaurant.getCategoryList(), restaurantId);
-            return categoryRepository.save(category);
+            return category;
 
 
         } else
@@ -96,10 +97,10 @@ public class CategoryServiceImpl implements CategoryService {
 
                 if (categoryUpdateDto.getIsAvailable() != null)
                     category.setIsAvailable(categoryUpdateDto.getIsAvailable());
-
+                category = categoryRepository.save(category);
+                category.getRestaurant().addCategory(category);
                 categoryRepositoryCache.addCategoryList(category.getRestaurant().getCategoryList(), restaurantId);
 
-                categoryRepository.save(category);
                 return category;
             } else
                 throw new UnauthorizedException("authorised access for updating category");

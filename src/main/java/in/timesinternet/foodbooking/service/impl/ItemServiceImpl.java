@@ -74,11 +74,11 @@ public class ItemServiceImpl implements ItemService {
                     item.setImage(image);
                 }
 
-                category.addItem(item);
 
-                restaurant.addItem(item);
+                item = itemRepository.save(item);
+                category.addItem(item);
                 itemRepositoryCache.addItemList(category.getItemList(), restaurantId);
-                return itemRepository.save(item);
+                return  item;
             } else {
                 throw new NotFoundException("either restaurant or category is not fouund ");
             }
@@ -156,8 +156,9 @@ public class ItemServiceImpl implements ItemService {
                         item.setImage(image);
                     }
                 }
-                itemRepositoryCache.addItemList(item.getCategory().getItemList(), restaurantId);
                 itemRepository.save(item);
+                item.getCategory().addItem(item);
+                itemRepositoryCache.addItemList(item.getCategory().getItemList(), restaurantId);
                 return item;
             } else {
                 throw new UnauthorizedException(" unauthorised access for updating the item");
